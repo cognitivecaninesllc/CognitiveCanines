@@ -18,66 +18,72 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
-.nav-logo{display:flex;align-items:center;gap:12px}
-.nav-logo .mark{width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid var(--accent)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo .mark{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
 .nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 10%}
-.nav-logo span{font-size:14px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase}
-.nav-links{display:flex;gap:1.8rem;align-items:center}
-.nav-links a{font-size:12px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
-.nav-links a:hover{color:var(--accent2)}
-.nav-cta{background:var(--accent);color:#fff !important;padding:0.5rem 1.2rem;border-radius:2px;font-size:12px;font-weight:500;letter-spacing:0.06em}
+.nav-logo span{font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase}
+.nav-links{display:flex;gap:1.2rem;align-items:center}
+.nav-links a.hide-mobile{display:none}
+.nav-cta{background:var(--accent);color:#fff !important;padding:0.45rem 1rem;border-radius:2px;font-size:11px;font-weight:500;letter-spacing:0.06em;text-decoration:none;white-space:nowrap}
 .nav-cta:hover{background:var(--accent2) !important}
 
-.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-.hero-left{display:flex;flex-direction:column;justify-content:center;padding:8rem 4rem 4rem 5rem;background:var(--surface)}
-.hero-eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.5rem;display:flex;align-items:center;gap:10px}
-.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:var(--gold)}
-.hero-left h1{font-family:var(--serif);font-size:clamp(3rem,4.5vw,5.2rem);line-height:1.06;font-weight:400;margin-bottom:1.8rem}
-.hero-left h1 em{font-style:italic;color:var(--accent2)}
-.hero-left p{font-size:1.02rem;color:var(--ink2);max-width:400px;line-height:1.85;margin-bottom:2.5rem;font-weight:300}
-.hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+/* BUTTONS */
 .btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
 .btn-primary:hover{background:var(--accent2)}
 .btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid #ccc;cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
 .btn-outline:hover{border-color:var(--ink);background:var(--ink);color:#fff}
-.hero-right{position:relative;overflow:hidden}
-.hero-right img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:6rem 1.5rem 3rem;background:var(--surface)}
+.hero-eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.2rem;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold)}
+.hero-left h1{font-family:var(--serif);font-size:clamp(2.4rem,8vw,5.2rem);line-height:1.06;font-weight:400;margin-bottom:1.4rem}
+.hero-left h1 em{font-style:italic;color:var(--accent2)}
+.hero-left p{font-size:1rem;color:var(--ink2);line-height:1.85;margin-bottom:2rem;font-weight:300}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-right{position:relative;overflow:hidden;min-height:60vw}
+.hero-right img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;position:absolute;inset:0}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,28,18,0.93) 0%,rgba(10,28,18,0.45) 55%,rgba(10,28,18,0.1) 100%)}
-.hero-tribute{position:absolute;bottom:0;left:0;right:0;padding:2.5rem;color:#fff;text-align:center}
-.tribute-name{font-family:var(--serif);font-size:2.6rem;font-weight:400;margin-bottom:0.2rem}
-.tribute-sub{font-size:10px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.5;margin-bottom:1.6rem}
-.tribute-rule{width:36px;height:1px;background:rgba(255,255,255,0.2);margin:0 auto 1.6rem}
-.sub-dogs{display:flex;gap:1.8rem;justify-content:center}
-.sub-dog .thumb{width:52px;height:52px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,0.3);margin:0 auto 5px}
+.hero-tribute{position:absolute;bottom:0;left:0;right:0;padding:2rem 1.5rem;color:#fff;text-align:center}
+.tribute-name{font-family:var(--serif);font-size:2.2rem;font-weight:400;margin-bottom:0.2rem}
+.tribute-sub{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.5;margin-bottom:1.4rem}
+.tribute-rule{width:36px;height:1px;background:rgba(255,255,255,0.2);margin:0 auto 1.4rem}
+.sub-dogs{display:flex;gap:1.5rem;justify-content:center}
+.sub-dog .thumb{width:48px;height:48px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,0.3);margin:0 auto 5px}
 .sub-dog .thumb img{width:100%;height:100%;object-fit:cover}
 .sub-dog span{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.45}
 
-.virtual-banner{background:var(--ink);padding:1.1rem 5rem;display:flex;align-items:center;justify-content:space-around;gap:2rem;flex-wrap:wrap}
-.vpill{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.65);font-size:12px;letter-spacing:0.04em}
+/* BANNERS */
+.virtual-banner{background:var(--ink);padding:1rem 1.5rem;display:flex;flex-direction:column;gap:0.8rem}
+.vpill{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.65);font-size:12px}
 .vpill svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .vpill strong{color:#fff;font-weight:500}
-.promise{background:var(--gold);padding:1rem 5rem;display:flex;align-items:center;gap:10px}
-.promise svg{width:16px;height:16px;flex-shrink:0}
-.promise p{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#fff}
+.promise{background:var(--gold);padding:1rem 1.5rem;display:flex;align-items:flex-start;gap:10px}
+.promise svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.promise p{font-size:12px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:#fff;line-height:1.5}
 
-.philosophy{padding:6rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+/* SECTIONS */
 .section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
-.phil-left h2{font-family:var(--serif);font-size:clamp(2rem,3.2vw,3.2rem);line-height:1.15;font-weight:400;margin-bottom:1.4rem}
+.philosophy{padding:4rem 1.5rem;display:flex;flex-direction:column;gap:3rem}
+.phil-left h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3.2rem);line-height:1.15;font-weight:400;margin-bottom:1.2rem}
 .phil-left h2 em{font-style:italic;color:var(--accent2)}
 .phil-left p{color:var(--ink2);font-weight:300;line-height:1.9;font-size:1rem;margin-bottom:1rem}
 .pillars{display:flex;flex-direction:column}
-.pillar{padding:1.4rem 0;border-bottom:0.5px solid var(--border);display:flex;gap:1.4rem;align-items:flex-start}
+.pillar{padding:1.2rem 0;border-bottom:0.5px solid var(--border);display:flex;gap:1.2rem;align-items:flex-start}
 .pillar:first-child{border-top:0.5px solid var(--border)}
-.pillar-num{font-family:var(--serif);font-size:1.7rem;color:var(--gold);min-width:38px;line-height:1}
+.pillar-num{font-family:var(--serif);font-size:1.6rem;color:var(--gold);min-width:36px;line-height:1}
 .pillar-body h4{font-size:13px;font-weight:500;letter-spacing:0.05em;margin-bottom:4px;text-transform:uppercase}
 .pillar-body p{font-size:0.88rem;color:var(--muted);line-height:1.75}
 
-.tiers{padding:6rem 5rem;background:var(--surface)}
-.tiers-header{text-align:center;margin-bottom:3.5rem}
-.tiers-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.6rem}
-.tiers-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:520px;margin:0 auto;line-height:1.8}
-.tiers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--border)}
+/* TIERS */
+.tiers{padding:4rem 1.5rem;background:var(--surface)}
+.tiers-header{text-align:center;margin-bottom:2.5rem}
+.tiers-header h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3rem);font-weight:400;margin-bottom:0.6rem}
+.tiers-header p{color:var(--muted);font-size:0.9rem;font-weight:300;line-height:1.8}
+.tiers-grid{display:flex;flex-direction:column;gap:2px;background:var(--border)}
 .tier-card{background:var(--white);padding:2rem 1.5rem;display:flex;flex-direction:column}
 .tier-card.featured{background:var(--accent);color:#fff}
 .tier-card.featured .tier-desc,.tier-card.featured .tier-commit{color:rgba(255,255,255,0.7)}
@@ -86,72 +92,74 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .tier-card.featured .tier-badge{background:var(--gold);color:#fff}
 .tier-card.featured .tier-features{border-top-color:rgba(255,255,255,0.15)}
 .tier-card.featured .tier-check{color:var(--gold2)}
-.tier-icon{font-size:1.4rem;margin-bottom:1rem}
-.tier-name{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:0.3rem}
-.tier-level{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
-.tier-desc{font-size:0.82rem;color:var(--ink2);line-height:1.7;font-weight:300;margin-bottom:1.2rem;flex:1}
-.tier-features{border-top:0.5px solid var(--border);padding-top:1rem;margin-bottom:1.2rem}
-.tier-feature{font-size:0.78rem;color:var(--ink2);padding:0.35rem 0;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+.tier-icon{font-size:1.4rem;margin-bottom:0.8rem}
+.tier-name{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:0.2rem}
+.tier-level{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem}
+.tier-desc{font-size:0.85rem;color:var(--ink2);line-height:1.7;font-weight:300;margin-bottom:1rem;flex:1}
+.tier-features{border-top:0.5px solid var(--border);padding-top:1rem;margin-bottom:1rem}
+.tier-feature{font-size:0.82rem;color:var(--ink2);padding:0.3rem 0;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
 .tier-feature:last-child{border-bottom:none}
-.tier-check{color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px}
-.tier-badge{display:inline-block;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-top:auto}
-.tier-commit{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.8rem}
-.tiers-note{text-align:center;margin-top:2.5rem;font-size:0.85rem;color:var(--muted);font-weight:300}
+.tier-check{color:var(--gold);font-weight:700;flex-shrink:0}
+.tier-badge{display:inline-block;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-top:auto;align-self:flex-start}
+.tiers-note{text-align:center;margin-top:2rem;font-size:0.85rem;color:var(--muted);font-weight:300}
 
-.dogs{padding:6rem 5rem;background:var(--white)}
-.dogs-header{margin-bottom:3.5rem}
-.dogs-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.5rem}
-.dogs-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:500px;line-height:1.8}
-.dogs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border)}
+/* DOGS */
+.dogs{padding:4rem 1.5rem;background:var(--white)}
+.dogs-header{margin-bottom:2.5rem}
+.dogs-header h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3rem);font-weight:400;margin-bottom:0.5rem}
+.dogs-header p{color:var(--muted);font-size:0.95rem;font-weight:300;line-height:1.8}
+.dogs-grid{display:flex;flex-direction:column;gap:2px;background:var(--border)}
 .dog-card{background:var(--white);overflow:hidden}
-.dog-photo{width:100%;aspect-ratio:1/1;overflow:hidden}
+.dog-photo{width:100%;aspect-ratio:4/3;overflow:hidden}
 .dog-photo img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
 .dog-card:hover .dog-photo img{transform:scale(1.04)}
-.dog-info{padding:1.8rem 2rem}
+.dog-info{padding:1.5rem}
 .dog-card.memorial .dog-info{background:var(--accent)}
 .dog-card.memorial h3,.dog-card.memorial .dog-bio{color:#fff}
 .dog-card.memorial .dog-meta{color:rgba(255,255,255,0.45)}
 .dog-card.memorial .dog-badge{background:rgba(255,255,255,0.12);color:var(--gold2)}
 .dog-card h3{font-family:var(--serif);font-size:1.35rem;font-weight:400;margin-bottom:0.2rem}
-.dog-meta{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem}
-.dog-badge{display:inline-block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-bottom:0.8rem}
+.dog-meta{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem}
+.dog-badge{display:inline-block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-bottom:0.7rem}
 .dog-bio{font-size:0.87rem;color:var(--ink2);line-height:1.8;font-weight:300}
 
-.shop{padding:6rem 5rem;background:var(--surface)}
-.shop-header{text-align:center;margin-bottom:3.5rem}
-.shop-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.6rem}
-.shop-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:520px;margin:0 auto;line-height:1.8}
-.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border)}
-.shop-card{background:var(--white);padding:2rem;transition:background 0.3s}
+/* SHOP */
+.shop{padding:4rem 1.5rem;background:var(--surface)}
+.shop-header{text-align:center;margin-bottom:2.5rem}
+.shop-header h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3rem);font-weight:400;margin-bottom:0.6rem}
+.shop-header p{color:var(--muted);font-size:0.9rem;font-weight:300;line-height:1.8}
+.shop-grid{display:flex;flex-direction:column;gap:2px;background:var(--border)}
+.shop-card{background:var(--white);padding:1.8rem 1.5rem;transition:background 0.3s}
 .shop-card:hover{background:var(--accent);color:#fff}
 .shop-card:hover .shop-desc,.shop-card:hover .shop-brand{color:rgba(255,255,255,0.65)}
 .shop-card:hover .shop-icon{background:rgba(255,255,255,0.1)}
 .shop-card:hover .shop-icon svg{stroke:var(--gold2)}
 .shop-card:hover .shop-cta{color:#fff;border-color:rgba(255,255,255,0.3)}
-.shop-icon{width:44px;height:44px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;transition:background 0.3s}
+.shop-icon{width:44px;height:44px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;transition:background 0.3s}
 .shop-icon svg{width:20px;height:20px;stroke:var(--accent2);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.3s}
 .shop-brand{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;transition:color 0.3s}
-.shop-card h4{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.6rem}
-.shop-desc{font-size:0.83rem;color:var(--ink2);line-height:1.75;font-weight:300;transition:color 0.3s}
-.shop-cta{display:inline-block;margin-top:1.2rem;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color 0.3s,border-color 0.3s;text-decoration:none;cursor:pointer}
+.shop-card h4{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.5rem}
+.shop-desc{font-size:0.85rem;color:var(--ink2);line-height:1.75;font-weight:300;transition:color 0.3s}
+.shop-cta{display:inline-block;margin-top:1rem;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color 0.3s,border-color 0.3s;text-decoration:none;cursor:pointer}
 
-.diff{padding:6rem 5rem;background:var(--ink);color:#fff;text-align:center}
+/* DIFF */
+.diff{padding:4rem 1.5rem;background:var(--ink);color:#fff;text-align:center}
 .diff-inner{max-width:680px;margin:0 auto}
-.diff-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}
-.diff h2{font-family:var(--serif);font-size:clamp(2.2rem,3.5vw,3.8rem);line-height:1.1;font-weight:400;margin-bottom:1.4rem}
+.diff-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.diff h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3.8rem);line-height:1.1;font-weight:400;margin-bottom:1.2rem}
 .diff h2 em{font-style:italic;color:var(--gold2)}
-.diff p.body{font-size:1rem;color:rgba(255,255,255,0.58);line-height:1.9;font-weight:300;margin-bottom:2.5rem}
-.diff-rule{width:50px;height:1px;background:rgba(255,255,255,0.15);margin:2rem auto}
+.diff p.body{font-size:0.95rem;color:rgba(255,255,255,0.58);line-height:1.9;font-weight:300;margin-bottom:2rem}
+.diff-rule{width:50px;height:1px;background:rgba(255,255,255,0.15);margin:1.5rem auto}
 
-.booking{padding:6rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
-.booking-left h2{font-family:var(--serif);font-size:clamp(1.8rem,2.8vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
-.booking-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.8rem}
-.form-group{margin-bottom:1.1rem}
+/* BOOKING */
+.booking{padding:4rem 1.5rem;display:flex;flex-direction:column;gap:3rem}
+.booking-left h2{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
+.booking-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;border-radius:2px;transition:border-color 0.2s;appearance:none}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
 .form-group textarea{resize:vertical;min-height:90px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .form-submit{width:100%;background:var(--accent);color:#fff;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;transition:background 0.2s;border-radius:2px;margin-top:0.4rem}
 .form-submit:hover{background:var(--accent2)}
 .contact-block{margin-bottom:1.5rem}
@@ -172,7 +180,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .info-box.light p{color:var(--muted)}
 .info-box.dark p{color:rgba(255,255,255,0.5)}
 
-footer{background:var(--ink);color:rgba(255,255,255,0.38);padding:2rem 5rem;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid rgba(255,255,255,0.07)}
+footer{background:var(--ink);color:rgba(255,255,255,0.38);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid rgba(255,255,255,0.07)}
 footer p{font-size:11px;letter-spacing:0.06em}
 .footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55)}
 
@@ -183,42 +191,29 @@ footer p{font-size:11px;letter-spacing:0.06em}
 .hero-left p{animation-delay:0.3s}
 .hero-actions{animation-delay:0.4s}
 
-@media (max-width: 768px) {
-  nav { padding: 1rem 1.5rem; }
-  .nav-links a:not(.nav-cta) { display: none; }
-  .nav-cta { padding: 0.45rem 1rem; }
-
-  .hero { grid-template-columns: 1fr; min-height: auto; }
-  .hero-left { padding: 7rem 2rem 3rem; }
-  .hero-right { min-height: 60vw; }
-  .tribute-name { font-size: 2rem; }
-
-  .virtual-banner { padding: 1rem 1.5rem; flex-direction: column; gap: 0.8rem; align-items: flex-start; }
-  .promise { padding: 1rem 1.5rem; }
-
-  .philosophy { grid-template-columns: 1fr; padding: 4rem 2rem; gap: 3rem; }
-
-  .tiers { padding: 4rem 2rem; }
-  .tiers-grid { grid-template-columns: 1fr; }
-
-  .dogs { padding: 4rem 2rem; }
-  .dogs-grid { grid-template-columns: 1fr; }
-
-  .shop { padding: 4rem 2rem; }
-  .shop-grid { grid-template-columns: 1fr 1fr; }
-
-  .diff { padding: 4rem 2rem; }
-
-  .booking { grid-template-columns: 1fr; padding: 4rem 2rem; gap: 3rem; }
-  .form-row { grid-template-columns: 1fr; }
-
-  footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 2rem 1.5rem; }
-}
-
-@media (max-width: 480px) {
-  .hero-left h1 { font-size: 2.4rem; }
-  .shop-grid { grid-template-columns: 1fr; }
-  .sub-dogs { gap: 1rem; }
+/* DESKTOP */
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .nav-links a.hide-mobile{display:inline;font-size:12px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+  .nav-links a.hide-mobile:hover{color:var(--accent2)}
+  .hero{flex-direction:row;min-height:100vh}
+  .hero-left{flex:1;padding:8rem 4rem 4rem 5rem}
+  .hero-right{flex:1;min-height:auto;position:relative}
+  .virtual-banner{flex-direction:row;justify-content:space-around;padding:1.1rem 5rem}
+  .promise{padding:1rem 5rem}
+  .philosophy{flex-direction:row;padding:6rem 5rem;gap:5rem}
+  .phil-left{flex:1}
+  .pillars{flex:1}
+  .tiers{padding:6rem 5rem}
+  .tiers-grid{display:grid;grid-template-columns:repeat(5,1fr)}
+  .dogs{padding:6rem 5rem}
+  .dogs-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+  .shop{padding:6rem 5rem}
+  .shop-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .diff{padding:6rem 5rem}
+  .booking{flex-direction:row;padding:6rem 5rem;gap:5rem}
+  .booking-left,.booking-right{flex:1}
+  footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
 }
 </style>
 </head>
@@ -230,10 +225,10 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <span>Cognitive Canines</span>
   </div>
   <div class="nav-links">
-    <a href="#philosophy">Philosophy</a>
-    <a href="#tiers">Programs</a>
-    <a href="#dogs">Our Dogs</a>
-    <a href="#shop">Shop</a>
+    <a href="#philosophy" class="hide-mobile">Philosophy</a>
+    <a href="#tiers" class="hide-mobile">Programs</a>
+    <a href="#dogs" class="hide-mobile">Our Dogs</a>
+    <a href="#shop" class="hide-mobile">Shop</a>
     <a href="#booking" class="nav-cta">Book a Session</a>
   </div>
 </nav>
@@ -461,500 +456,12 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div class="section-eyebrow">Get Started</div>
     <h2>Book a consultation.</h2>
     <p>Tell us about your dog and your goals. We will reach out within 24 hours to find the right program for your team, wherever you are in the world.</p>
-    <div class="form-row">
-      <div class="form-group"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
-      <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" name="phone" placeholder="+1 720 555 0100"></div>
-    </div>
+    <div class="form-group"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
+    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" name="phone" placeholder="+1 720 555 0100"></div>
     <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="jane@example.com" required></div>
     <div class="form-group"><label>Your Location</label><input type="text" name="location" placeholder="City, Country"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Dog's Name</label><input type="text" name="dog_name" placeholder="Biscuit"></div>
-      <div class="form-group"><label>Breed and Age</label><input type="text" name="breed_age" placeholder="GSD, 3 yrs"></div>
-    </div>
-    <div class="form-group">
-      <label>Program Interest</label>
-      <select name="program_interest">
-        <option value="">Select a tier...</option>
-        <option>Bronze — Self-paced foundations</option>
-        <option>Silver — Live group sessions</option>
-        <option>Gold — Private coaching</option>
-        <option>Platinum — Behavior modification</option>
-        <option>Celestial — Elite sport and behavior</option>
-        <option>Not sure — help me choose</option>
-      </select>
-    </div>
-    <div class="form-group"><label>Tell us about your goals</label><textarea name="goals" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
-    <button type="submit" class="form-submit">Send Inquiry</button>
-    </form>
-  </div>
-  <div class="booking-right">
-    <div class="contact-block">
-      <h4>Contact</h4>
-      <div class="contact-item">
-        <div class="c-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
-        <div class="c-text"><strong>Email</strong>hello@cognitivecanines.com</div>
-      </div>
-      <div class="contact-item">
-        <div class="c-icon"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
-        <div class="c-text"><strong>Phone / WhatsApp</strong>(720) 555-0100</div>
-      </div>
-      <div class="contact-item">
-        <div class="c-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div>
-        <div class="c-text"><strong>Serving</strong>Clients worldwide</div>
-      </div>
-    </div>
-    <div class="info-box light">
-      <h4>Our Guarantee</h4>
-      <p>Not satisfied after your first session? It is on us. We are committed to finding the right approach for you and your dog, no exceptions.</p>
-    </div>
-    <div class="info-box dark">
-      <h4>Train from anywhere</h4>
-      <p>All sessions are virtual. No geographic restrictions. We work across time zones, wherever you and your dog call home.</p>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-logo">Cognitive Canines K9</div>
-  <p>2025 Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
-</footer>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cognitive Canines K9</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --ink:#0D0D0D;--ink2:#3a3a3a;--muted:#7a7a7a;
-  --accent:#1a3a2a;--accent2:#2d6b4a;
-  --gold:#b8914a;--gold2:#e8b96e;--gold-light:#f5e6cc;
-  --surface:#f7f6f2;--white:#fff;--border:#e0ddd6;
-  --serif:'Instrument Serif',Georgia,serif;
-  --sans:'DM Sans',system-ui,sans-serif;
-}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
-.nav-logo{display:flex;align-items:center;gap:12px}
-.nav-logo .mark{width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid var(--accent)}
-.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 10%}
-.nav-logo span{font-size:14px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase}
-.nav-links{display:flex;gap:1.8rem;align-items:center}
-.nav-links a{font-size:12px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
-.nav-links a:hover{color:var(--accent2)}
-.nav-cta{background:var(--accent);color:#fff !important;padding:0.5rem 1.2rem;border-radius:2px;font-size:12px;font-weight:500;letter-spacing:0.06em}
-.nav-cta:hover{background:var(--accent2) !important}
-
-.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-.hero-left{display:flex;flex-direction:column;justify-content:center;padding:8rem 4rem 4rem 5rem;background:var(--surface)}
-.hero-eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.5rem;display:flex;align-items:center;gap:10px}
-.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:var(--gold)}
-.hero-left h1{font-family:var(--serif);font-size:clamp(3rem,4.5vw,5.2rem);line-height:1.06;font-weight:400;margin-bottom:1.8rem}
-.hero-left h1 em{font-style:italic;color:var(--accent2)}
-.hero-left p{font-size:1.02rem;color:var(--ink2);max-width:400px;line-height:1.85;margin-bottom:2.5rem;font-weight:300}
-.hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
-.btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
-.btn-primary:hover{background:var(--accent2)}
-.btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid #ccc;cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
-.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:#fff}
-.hero-right{position:relative;overflow:hidden}
-.hero-right img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,28,18,0.93) 0%,rgba(10,28,18,0.45) 55%,rgba(10,28,18,0.1) 100%)}
-.hero-tribute{position:absolute;bottom:0;left:0;right:0;padding:2.5rem;color:#fff;text-align:center}
-.tribute-name{font-family:var(--serif);font-size:2.6rem;font-weight:400;margin-bottom:0.2rem}
-.tribute-sub{font-size:10px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.5;margin-bottom:1.6rem}
-.tribute-rule{width:36px;height:1px;background:rgba(255,255,255,0.2);margin:0 auto 1.6rem}
-.sub-dogs{display:flex;gap:1.8rem;justify-content:center}
-.sub-dog .thumb{width:52px;height:52px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,255,255,0.3);margin:0 auto 5px}
-.sub-dog .thumb img{width:100%;height:100%;object-fit:cover}
-.sub-dog span{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.45}
-
-.virtual-banner{background:var(--ink);padding:1.1rem 5rem;display:flex;align-items:center;justify-content:space-around;gap:2rem;flex-wrap:wrap}
-.vpill{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.65);font-size:12px;letter-spacing:0.04em}
-.vpill svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.vpill strong{color:#fff;font-weight:500}
-.promise{background:var(--gold);padding:1rem 5rem;display:flex;align-items:center;gap:10px}
-.promise svg{width:16px;height:16px;flex-shrink:0}
-.promise p{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#fff}
-
-.philosophy{padding:6rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
-.section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
-.phil-left h2{font-family:var(--serif);font-size:clamp(2rem,3.2vw,3.2rem);line-height:1.15;font-weight:400;margin-bottom:1.4rem}
-.phil-left h2 em{font-style:italic;color:var(--accent2)}
-.phil-left p{color:var(--ink2);font-weight:300;line-height:1.9;font-size:1rem;margin-bottom:1rem}
-.pillars{display:flex;flex-direction:column}
-.pillar{padding:1.4rem 0;border-bottom:0.5px solid var(--border);display:flex;gap:1.4rem;align-items:flex-start}
-.pillar:first-child{border-top:0.5px solid var(--border)}
-.pillar-num{font-family:var(--serif);font-size:1.7rem;color:var(--gold);min-width:38px;line-height:1}
-.pillar-body h4{font-size:13px;font-weight:500;letter-spacing:0.05em;margin-bottom:4px;text-transform:uppercase}
-.pillar-body p{font-size:0.88rem;color:var(--muted);line-height:1.75}
-
-.tiers{padding:6rem 5rem;background:var(--surface)}
-.tiers-header{text-align:center;margin-bottom:3.5rem}
-.tiers-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.6rem}
-.tiers-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:520px;margin:0 auto;line-height:1.8}
-.tiers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--border)}
-.tier-card{background:var(--white);padding:2rem 1.5rem;display:flex;flex-direction:column}
-.tier-card.featured{background:var(--accent);color:#fff}
-.tier-card.featured .tier-desc,.tier-card.featured .tier-commit{color:rgba(255,255,255,0.7)}
-.tier-card.featured .tier-level{color:rgba(255,255,255,0.45)}
-.tier-card.featured .tier-feature{color:rgba(255,255,255,0.85);border-bottom-color:rgba(255,255,255,0.12)}
-.tier-card.featured .tier-badge{background:var(--gold);color:#fff}
-.tier-card.featured .tier-features{border-top-color:rgba(255,255,255,0.15)}
-.tier-card.featured .tier-check{color:var(--gold2)}
-.tier-icon{font-size:1.4rem;margin-bottom:1rem}
-.tier-name{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:0.3rem}
-.tier-level{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
-.tier-desc{font-size:0.82rem;color:var(--ink2);line-height:1.7;font-weight:300;margin-bottom:1.2rem;flex:1}
-.tier-features{border-top:0.5px solid var(--border);padding-top:1rem;margin-bottom:1.2rem}
-.tier-feature{font-size:0.78rem;color:var(--ink2);padding:0.35rem 0;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:6px;line-height:1.4}
-.tier-feature:last-child{border-bottom:none}
-.tier-check{color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px}
-.tier-badge{display:inline-block;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-top:auto}
-.tier-commit{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.8rem}
-.tiers-note{text-align:center;margin-top:2.5rem;font-size:0.85rem;color:var(--muted);font-weight:300}
-
-.dogs{padding:6rem 5rem;background:var(--white)}
-.dogs-header{margin-bottom:3.5rem}
-.dogs-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.5rem}
-.dogs-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:500px;line-height:1.8}
-.dogs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border)}
-.dog-card{background:var(--white);overflow:hidden}
-.dog-photo{width:100%;aspect-ratio:1/1;overflow:hidden}
-.dog-photo img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
-.dog-card:hover .dog-photo img{transform:scale(1.04)}
-.dog-info{padding:1.8rem 2rem}
-.dog-card.memorial .dog-info{background:var(--accent)}
-.dog-card.memorial h3,.dog-card.memorial .dog-bio{color:#fff}
-.dog-card.memorial .dog-meta{color:rgba(255,255,255,0.45)}
-.dog-card.memorial .dog-badge{background:rgba(255,255,255,0.12);color:var(--gold2)}
-.dog-card h3{font-family:var(--serif);font-size:1.35rem;font-weight:400;margin-bottom:0.2rem}
-.dog-meta{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem}
-.dog-badge{display:inline-block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;padding:0.2rem 0.6rem;background:var(--gold-light);color:var(--gold);border-radius:2px;margin-bottom:0.8rem}
-.dog-bio{font-size:0.87rem;color:var(--ink2);line-height:1.8;font-weight:300}
-
-.shop{padding:6rem 5rem;background:var(--surface)}
-.shop-header{text-align:center;margin-bottom:3.5rem}
-.shop-header h2{font-family:var(--serif);font-size:clamp(2rem,3vw,3rem);font-weight:400;margin-bottom:0.6rem}
-.shop-header p{color:var(--muted);font-size:0.95rem;font-weight:300;max-width:520px;margin:0 auto;line-height:1.8}
-.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border)}
-.shop-card{background:var(--white);padding:2rem;transition:background 0.3s}
-.shop-card:hover{background:var(--accent);color:#fff}
-.shop-card:hover .shop-desc,.shop-card:hover .shop-brand{color:rgba(255,255,255,0.65)}
-.shop-card:hover .shop-icon{background:rgba(255,255,255,0.1)}
-.shop-card:hover .shop-icon svg{stroke:var(--gold2)}
-.shop-card:hover .shop-cta{color:#fff;border-color:rgba(255,255,255,0.3)}
-.shop-icon{width:44px;height:44px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;transition:background 0.3s}
-.shop-icon svg{width:20px;height:20px;stroke:var(--accent2);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.3s}
-.shop-brand{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;transition:color 0.3s}
-.shop-card h4{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.6rem}
-.shop-desc{font-size:0.83rem;color:var(--ink2);line-height:1.75;font-weight:300;transition:color 0.3s}
-.shop-cta{display:inline-block;margin-top:1.2rem;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color 0.3s,border-color 0.3s;text-decoration:none;cursor:pointer}
-
-.diff{padding:6rem 5rem;background:var(--ink);color:#fff;text-align:center}
-.diff-inner{max-width:680px;margin:0 auto}
-.diff-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}
-.diff h2{font-family:var(--serif);font-size:clamp(2.2rem,3.5vw,3.8rem);line-height:1.1;font-weight:400;margin-bottom:1.4rem}
-.diff h2 em{font-style:italic;color:var(--gold2)}
-.diff p.body{font-size:1rem;color:rgba(255,255,255,0.58);line-height:1.9;font-weight:300;margin-bottom:2.5rem}
-.diff-rule{width:50px;height:1px;background:rgba(255,255,255,0.15);margin:2rem auto}
-
-.booking{padding:6rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
-.booking-left h2{font-family:var(--serif);font-size:clamp(1.8rem,2.8vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
-.booking-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.8rem}
-.form-group{margin-bottom:1.1rem}
-.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;border-radius:2px;transition:border-color 0.2s;appearance:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
-.form-group textarea{resize:vertical;min-height:90px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.form-submit{width:100%;background:var(--accent);color:#fff;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;transition:background 0.2s;border-radius:2px;margin-top:0.4rem}
-.form-submit:hover{background:var(--accent2)}
-.contact-block{margin-bottom:1.5rem}
-.contact-block h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem}
-.contact-item{display:flex;align-items:center;gap:12px;padding:0.9rem 0;border-bottom:0.5px solid var(--border)}
-.contact-item:first-of-type{border-top:0.5px solid var(--border)}
-.c-icon{width:34px;height:34px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.c-icon svg{width:14px;height:14px;stroke:var(--accent2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.c-text{font-size:0.88rem;color:var(--ink2)}
-.c-text strong{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;font-weight:400}
-.info-box{padding:1.4rem;border-radius:2px;margin-top:1.2rem}
-.info-box.light{background:var(--surface);border:0.5px solid var(--border)}
-.info-box.dark{background:var(--ink)}
-.info-box h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem}
-.info-box.light h4{color:var(--accent2)}
-.info-box.dark h4{color:var(--gold)}
-.info-box p{font-size:0.83rem;line-height:1.7;font-weight:300}
-.info-box.light p{color:var(--muted)}
-.info-box.dark p{color:rgba(255,255,255,0.5)}
-
-footer{background:var(--ink);color:rgba(255,255,255,0.38);padding:2rem 5rem;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid rgba(255,255,255,0.07)}
-footer p{font-size:11px;letter-spacing:0.06em}
-.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55)}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-.hero-left>*{animation:fadeUp 0.7s ease both}
-.hero-eyebrow{animation-delay:0.1s}
-.hero-left h1{animation-delay:0.2s}
-.hero-left p{animation-delay:0.3s}
-.hero-actions{animation-delay:0.4s}
-</style>
-</head>
-<body>
-
-<nav>
-  <div class="nav-logo">
-    <div class="mark"><img src="https://i.imgur.com/GXSkRFJ.jpg" alt="Oliver"></div>
-    <span>Cognitive Canines</span>
-  </div>
-  <div class="nav-links">
-    <a href="#philosophy">Philosophy</a>
-    <a href="#tiers">Programs</a>
-    <a href="#dogs">Our Dogs</a>
-    <a href="#shop">Shop</a>
-    <a href="#booking" class="nav-cta">Book a Session</a>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-eyebrow">100% Virtual · Train from Anywhere</div>
-    <h1>Train smarter.<br><em>Bond deeper.</em><br>Live better.</h1>
-    <p>World-class, relationship-first dog training delivered entirely online. Expert guidance is one video call away, and your dog never has to leave home.</p>
-    <div class="hero-actions">
-      <a href="#tiers" class="btn-primary">View Programs</a>
-      <a href="#philosophy" class="btn-outline">Our Approach</a>
-    </div>
-  </div>
-  <div class="hero-right">
-    <img src="https://i.imgur.com/icbA3DB.jpg" alt="Kingston, Belgian Malinois">
-    <div class="hero-overlay"></div>
-    <div class="hero-tribute">
-      <div class="tribute-name">Kingston</div>
-      <div class="tribute-sub">Belgian Malinois · In Memoriam</div>
-      <div class="tribute-rule"></div>
-      <div class="sub-dogs">
-        <div class="sub-dog">
-          <div class="thumb"><img src="https://i.imgur.com/GXSkRFJ.jpg" alt="Oliver"></div>
-          <span>Oliver</span>
-        </div>
-        <div class="sub-dog">
-          <div class="thumb"><img src="https://i.imgur.com/2QLB72q.jpg" alt="Silas"></div>
-          <span>Silas</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="virtual-banner">
-  <div class="vpill"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span><strong>100% virtual</strong> — all sessions via video call</span></div>
-  <div class="vpill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg><span><strong>No geographic limits</strong> — train from anywhere</span></div>
-  <div class="vpill"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span><strong>Your home</strong> — your dog trains in their own environment</span></div>
-</div>
-<div class="promise">
-  <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-  <p>Our commitment: Your dog works only with you. No contact with other dogs or unfamiliar handlers. Ever.</p>
-</div>
-
-<section class="philosophy" id="philosophy">
-  <div class="phil-left">
-    <div class="section-eyebrow">Our Philosophy</div>
-    <h2>Partnership over<br><em>compliance.</em></h2>
-    <p>A truly trained dog is not one who has learned to obey. It is one who genuinely wants to work with you. That distinction changes everything about how we approach every session.</p>
-    <p>We prioritize the emotional experience of both dog and handler. When training is enjoyable and meaningful, engagement becomes intrinsic and results are lasting. None of it requires you to leave your home.</p>
-  </div>
-  <div class="pillars">
-    <div class="pillar"><div class="pillar-num">01</div><div class="pillar-body"><h4>Process Over Results</h4><p>The quality of every training moment matters more than any single outcome. A dog trained well and joyfully is a dog trained for life.</p></div></div>
-    <div class="pillar"><div class="pillar-num">02</div><div class="pillar-body"><h4>Synchronization</h4><p>True partnership means your dog reads your body language and moves with you, not because they were commanded, but because they are genuinely in sync with you.</p></div></div>
-    <div class="pillar"><div class="pillar-num">03</div><div class="pillar-body"><h4>Train the Dog in Front of You</h4><p>No two dogs are alike. Every session adapts to your dog's unique temperament, drives, and learning style. No rigid, one-size-fits-all approaches here.</p></div></div>
-    <div class="pillar"><div class="pillar-num">04</div><div class="pillar-body"><h4>Tools Serve the Dog</h4><p>Kindness is not the absence of tools. It is using every tool thoughtfully, fairly, and only when it genuinely serves the dog's long-term wellbeing. We meet every dog where they are.</p></div></div>
-  </div>
-</section>
-
-<section class="tiers" id="tiers">
-  <div class="tiers-header">
-    <div class="section-eyebrow" style="text-align:center;margin-bottom:0.8rem">Membership Programs</div>
-    <h2>Find your tier.</h2>
-    <p>Five levels of training support, from self-paced foundations to elite sport and behavior work. All sessions are virtual. Dogs never interact with other dogs in any program.</p>
-  </div>
-  <div class="tiers-grid">
-    <div class="tier-card">
-      <div class="tier-icon">🥉</div>
-      <div class="tier-name">Bronze</div>
-      <div class="tier-level">Foundation Access</div>
-      <p class="tier-desc">Self-paced video content covering general obedience and puppy raising fundamentals. Learn at your own pace, on your own schedule.</p>
-      <div class="tier-features">
-        <div class="tier-feature"><span class="tier-check">+</span>Pre-recorded training library</div>
-        <div class="tier-feature"><span class="tier-check">+</span>General obedience curriculum</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Puppy raising guides</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Community message board access</div>
-      </div>
-      <span class="tier-badge">Monthly</span>
-    </div>
-    <div class="tier-card">
-      <div class="tier-icon">🥈</div>
-      <div class="tier-name">Silver</div>
-      <div class="tier-level">Live Group Access</div>
-      <p class="tier-desc">Everything in Bronze, plus live group video sessions and access to tier-specific message boards segmented by dog age and training focus.</p>
-      <div class="tier-features">
-        <div class="tier-feature"><span class="tier-check">+</span>All Bronze content</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Live group video sessions</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Tier-specific message boards</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Age and focus segmented boards</div>
-      </div>
-      <span class="tier-badge">Monthly</span>
-    </div>
-    <div class="tier-card featured">
-      <div class="tier-icon">🥇</div>
-      <div class="tier-name">Gold</div>
-      <div class="tier-level">Private Coaching</div>
-      <p class="tier-desc">Silver access plus private one-on-one video sessions with your trainer. Behavior foundations built from the ground up, with equipment shipped to your door.</p>
-      <div class="tier-features">
-        <div class="tier-feature"><span class="tier-check">+</span>All Silver content</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Private 1-on-1 video sessions</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Behavior foundation curriculum</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Tripod, prong collar and leash shipped</div>
-      </div>
-      <span class="tier-badge">2-month minimum</span>
-    </div>
-    <div class="tier-card">
-      <div class="tier-icon">💎</div>
-      <div class="tier-name">Platinum</div>
-      <div class="tier-level">Behavior Modification</div>
-      <p class="tier-desc">Gold access plus advanced content targeting minor to moderate behavior modification. A basket muzzle is shipped if needed for your dog's protocol.</p>
-      <div class="tier-features">
-        <div class="tier-feature"><span class="tier-check">+</span>All Gold content and sessions</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Advanced behavior content</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Minor to moderate modification</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Basket muzzle shipped if needed</div>
-      </div>
-      <span class="tier-badge">3-month minimum</span>
-    </div>
-    <div class="tier-card">
-      <div class="tier-icon">✦</div>
-      <div class="tier-name">Celestial</div>
-      <div class="tier-level">Elite Sport and Behavior</div>
-      <p class="tier-desc">The highest level. Platinum access plus elite coaching for serious behavior cases and sport dog training at the highest level. E-collar shipped to you.</p>
-      <div class="tier-features">
-        <div class="tier-feature"><span class="tier-check">+</span>All Platinum content and sessions</div>
-        <div class="tier-feature"><span class="tier-check">+</span>Elite sport dog training</div>
-        <div class="tier-feature"><span class="tier-check">+</span>High-level behavior work</div>
-        <div class="tier-feature"><span class="tier-check">+</span>E-collar shipped to you</div>
-      </div>
-      <span class="tier-badge">4-month minimum</span>
-    </div>
-  </div>
-  <p class="tiers-note">Not sure which tier is right for you? Book a free consultation and we will help you find the right fit.</p>
-</section>
-
-<section class="dogs" id="dogs">
-  <div class="dogs-header">
-    <div class="section-eyebrow">The Team</div>
-    <h2>Meet the Belgians.</h2>
-    <p>Three dogs. Three chapters. Each one a testament to what relationship-first training makes possible.</p>
-  </div>
-  <div class="dogs-grid">
-    <div class="dog-card">
-      <div class="dog-photo"><img src="https://i.imgur.com/GXSkRFJ.jpg" alt="Oliver, Malinois Mix" style="object-position:center 15%"></div>
-      <div class="dog-info">
-        <div class="dog-badge">Chapter One</div>
-        <h3>Oliver</h3>
-        <div class="dog-meta">Malinois Mix · The Beginning</div>
-        <p class="dog-bio">Oliver was the first. A former cardiac alert service dog, he opened the door to what dogs are truly capable of when trust is the foundation. He is the reason this journey started.</p>
-      </div>
-    </div>
-    <div class="dog-card memorial">
-      <div class="dog-photo"><img src="https://i.imgur.com/icbA3DB.jpg" alt="Kingston, Belgian Malinois" style="object-position:center 20%"></div>
-      <div class="dog-info">
-        <div class="dog-badge">Chapter Two</div>
-        <h3>Kingston</h3>
-        <div class="dog-meta">Belgian Malinois · In Memoriam</div>
-        <p class="dog-bio">Kingston changed everything. A contracted working dog with the United States Military, he brought the world of sport and working dogs into focus. The standard we measure everything against. Forever in our hearts.</p>
-      </div>
-    </div>
-    <div class="dog-card">
-      <div class="dog-photo"><img src="https://i.imgur.com/2QLB72q.jpg" alt="Silas, Belgian Tervuren"></div>
-      <div class="dog-info">
-        <div class="dog-badge">Chapter Three</div>
-        <h3>Silas</h3>
-        <div class="dog-meta">Belgian Tervuren · The Culmination</div>
-        <p class="dog-bio">Silas is the baby and the joy. A purebred Tervuren bred for sport, he represents the culmination of everything learned across Oliver and Kingston's chapters. Pure fun, pure elegance, pure drive.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="shop" id="shop">
-  <div class="shop-header">
-    <div class="section-eyebrow" style="text-align:center;margin-bottom:0.8rem">The Shop</div>
-    <h2>Tools we trust.</h2>
-    <p>We only carry equipment we use ourselves. Every product is chosen for its quality, effectiveness, and suitability for the dogs and handlers we work with.</p>
-  </div>
-  <div class="shop-grid">
-    <div class="shop-card">
-      <div class="shop-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg></div>
-      <div class="shop-brand">CCK9 Standard</div>
-      <h4>Slip Leads</h4>
-      <p class="shop-desc">Our everyday standard. Simple, effective, and humane. The foundation tool for every dog we work with, regardless of tier.</p>
-      <span class="shop-cta">Shop slip leads</span>
-    </div>
-    <div class="shop-card">
-      <div class="shop-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
-      <div class="shop-brand">Herm Sprenger</div>
-      <h4>Prong Collars</h4>
-      <p class="shop-desc">The gold standard in prong collar craftsmanship. Used judiciously for dogs who need clearer mechanical communication in their protocol.</p>
-      <span class="shop-cta">Shop prong collars</span>
-    </div>
-    <div class="shop-card">
-      <div class="shop-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-      <div class="shop-brand">E-Collar Technologies</div>
-      <h4>Mini Educator</h4>
-      <p class="shop-desc">Precision remote training for dogs working at the Celestial level. Highly adjustable stimulation for advanced behavior work.</p>
-      <span class="shop-cta">Shop Mini Educator</span>
-    </div>
-    <div class="shop-card">
-      <div class="shop-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-      <div class="shop-brand">Dogtra</div>
-      <h4>E-Collars</h4>
-      <p class="shop-desc">Professional-grade remote training collars trusted by working dog handlers worldwide. Built for durability, precision, and dog safety.</p>
-      <span class="shop-cta">Shop Dogtra</span>
-    </div>
-  </div>
-</section>
-
-<section class="diff">
-  <div class="diff-inner">
-    <div class="diff-eyebrow">Our Standard</div>
-    <h2>Wherever you are.<br><em>World-class training.</em></h2>
-    <div class="diff-rule"></div>
-    <p class="body">Cognitive Canines exists because great dog training should not depend on your zip code. Every session is conducted live via video call, giving you direct access to expert, relationship-first guidance no matter where you are. Your dog stays home. Your trainer shows up. No contact with other dogs. No geographic limits. No compromises.</p>
-    <a href="#booking" class="btn-primary">Start Your Journey</a>
-  </div>
-</section>
-
-<section class="booking" id="booking">
-  <div class="booking-left">
-    <form action="https://formspree.io/f/mrerdppl" method="POST">
-    <div class="section-eyebrow">Get Started</div>
-    <h2>Book a consultation.</h2>
-    <p>Tell us about your dog and your goals. We will reach out within 24 hours to find the right program for your team, wherever you are in the world.</p>
-    <div class="form-row">
-      <div class="form-group"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
-      <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" name="phone" placeholder="+1 720 555 0100"></div>
-    </div>
-    <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="jane@example.com" required></div>
-    <div class="form-group"><label>Your Location</label><input type="text" name="location" placeholder="City, Country"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Dog's Name</label><input type="text" name="dog_name" placeholder="Biscuit"></div>
-      <div class="form-group"><label>Breed and Age</label><input type="text" name="breed_age" placeholder="GSD, 3 yrs"></div>
-    </div>
+    <div class="form-group"><label>Dog's Name</label><input type="text" name="dog_name" placeholder="Biscuit"></div>
+    <div class="form-group"><label>Breed and Age</label><input type="text" name="breed_age" placeholder="GSD, 3 yrs"></div>
     <div class="form-group">
       <label>Program Interest</label>
       <select name="program_interest">
