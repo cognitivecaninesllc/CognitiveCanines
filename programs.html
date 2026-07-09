@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programs | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1a18;--ink2:#3a3830;--muted:#7a7568;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#e09558;--gold-light:#f2e8d8;
+  --surface:#f2f0eb;--white:#fff;--border:#ddd9d0;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo .mark{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
+.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 10%}
+.nav-logo span{font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
+.nav-links{display:flex;gap:1.2rem;align-items:center}
+.nav-links a.hide-mobile{display:none}
+.nav-cta{background:var(--accent);color:#fff !important;padding:0.45rem 1rem;border-radius:2px;font-size:11px;font-weight:500;letter-spacing:0.06em;text-decoration:none;white-space:nowrap}
+.nav-cta:hover{background:var(--accent2) !important}
+
+.btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid #ccc;cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s}
+
+.section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.page-hero{min-height:40vh;display:flex;align-items:flex-end;position:relative;overflow:hidden;padding-top:80px}
+.page-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,28,18,0.9) 0%,rgba(10,28,18,0.4) 100%)}
+.page-hero-text{position:relative;z-index:1;padding:3rem 1.5rem;color:#fff}
+.page-hero-text h1{font-family:var(--serif);font-size:clamp(2.5rem,7vw,4.5rem);font-weight:400;line-height:1.05;margin-bottom:0.5rem}
+.page-hero-text h1 em{font-style:italic;color:var(--gold2)}
+.page-hero-text p{font-size:0.95rem;color:rgba(255,255,255,0.6);font-weight:300;max-width:500px;line-height:1.8}
+
+footer{background:var(--ink);color:rgba(255,255,255,0.38);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid rgba(255,255,255,0.07)}
+footer p{font-size:11px;letter-spacing:0.06em}
+.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55)}
+
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .nav-links a.hide-mobile{display:inline;font-size:12px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+  .nav-links a.hide-mobile:hover{color:var(--accent2)}
+  .page-hero{min-height:55vh}
+  .page-hero-text{padding:4rem 5rem}
+  footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
+}
+
+
+.tiers{padding:0;position:relative;overflow:hidden}
+.tiers-bg{position:relative;min-height:500px;display:flex;align-items:center;justify-content:center}
+.tiers-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.tiers-bg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,28,18,0.85) 0%,rgba(10,28,18,0.75) 100%)}
+.tiers-intro{position:relative;z-index:1;text-align:center;padding:4rem 1.5rem;color:#fff}
+.tiers-intro h2{font-family:var(--serif);font-size:clamp(2rem,6vw,3.5rem);font-weight:400;margin-bottom:0.8rem}
+.tiers-intro p{font-size:0.95rem;color:rgba(255,255,255,0.65);font-weight:300;max-width:500px;margin:0 auto 2.5rem;line-height:1.8}
+.tier-names{display:flex;flex-direction:column;gap:0;width:100%;max-width:440px;margin:0 auto}
+.tier-name-btn{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);color:#fff;padding:1rem 1.5rem;text-align:left;cursor:pointer;transition:all 0.3s;display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);font-size:14px;letter-spacing:0.04em}
+.tier-name-btn:hover,.tier-name-btn.active{background:var(--gold);border-color:var(--gold)}
+.tier-price-tag{font-size:12px;opacity:0.7}
+.tier-arrow{transition:transform 0.3s;font-size:12px;display:inline-block}
+.tier-name-btn.active .tier-arrow{transform:rotate(180deg)}
+.tiers-detail{padding:3rem 1.5rem;background:var(--surface)}
+.tier-panel{display:none}
+.tier-panel.active{display:block}
+.tier-panel h3{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5rem}
+.tier-panel .tier-level{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.tier-panel p{font-size:0.92rem;color:var(--ink2);line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.tier-features-list{display:flex;flex-direction:column;gap:0}
+.tier-feat{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 0;border-bottom:0.5px solid var(--border);font-size:0.88rem;color:var(--ink2)}
+.tier-feat:first-child{border-top:0.5px solid var(--border)}
+.tier-feat-check{color:var(--gold);font-weight:700;flex-shrink:0;margin-top:2px}
+.tier-commit{display:inline-block;margin-top:1.2rem;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);border:0.5px solid var(--border);padding:0.3rem 0.8rem;border-radius:2px}
+.tiers-note{text-align:center;margin-top:2rem;font-size:0.85rem;color:var(--muted);font-weight:300}
+.booking{padding:4rem 1.5rem;display:flex;flex-direction:column;gap:3rem;background:var(--white)}
+.booking-left h2{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
+.booking-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;border-radius:2px;transition:border-color 0.2s;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-submit{width:100%;background:var(--accent);color:#fff;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;transition:background 0.2s;border-radius:2px;margin-top:0.4rem}
+.form-submit:hover{background:var(--accent2)}
+.booking-right{}
+.info-box{padding:1.4rem;border-radius:2px;margin-bottom:1.2rem}
+.info-box.light{background:var(--surface);border:0.5px solid var(--border)}
+.info-box.dark{background:var(--ink)}
+.info-box h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem}
+.info-box.light h4{color:var(--accent2)}
+.info-box.dark h4{color:var(--gold)}
+.info-box p{font-size:0.83rem;line-height:1.7;font-weight:300}
+.info-box.light p{color:var(--muted)}
+.info-box.dark p{color:rgba(255,255,255,0.5)}
+@media(min-width:768px){
+  .tiers-intro{padding:6rem 5rem}
+  .tiers-detail{padding:4rem 5rem}
+  .booking{flex-direction:row;padding:6rem 5rem;gap:5rem}
+  .booking-left,.booking-right{flex:1}
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="mark"><img src="https://i.imgur.com/GXSkRFJ.jpg" alt="Oliver"></div>
+    <span>Cognitive Canines</span>
+  </a>
+  <div class="nav-links">
+    <a href="about.html" class="hide-mobile">Our Story</a>
+    <a href="programs.html" class="hide-mobile">Programs</a>
+    <a href="shop.html" class="hide-mobile">Shop</a>
+    <a href="contact.html" class="hide-mobile">Contact</a>
+    <a href="contact.html" class="nav-cta">Book a Session</a>
+  </div>
+</nav>
+
+
+<section class="tiers" style="padding-top:80px">
+  <div class="tiers-bg">
+    <img class="tiers-bg-img" src="https://i.imgur.com/VmQNS0i.jpg" alt="Oliver and Kingston in a field">
+    <div class="tiers-bg-overlay"></div>
+    <div class="tiers-intro">
+      <div class="section-eyebrow reveal" style="color:var(--gold2)">Membership Programs</div>
+      <h2 class="reveal reveal-delay-1">Find your tier.</h2>
+      <p class="reveal reveal-delay-2">Five levels of support, from self-paced foundations to elite sport and behavior work. All sessions are virtual. Dogs never interact with other dogs in any program.</p>
+      <div class="tier-names reveal reveal-delay-3">
+        <button class="tier-name-btn active" onclick="showTier('bronze', this)"><span>I. Bronze</span><span class="tier-price-tag">$60/mo <span class="tier-arrow">▾</span></span></button>
+        <button class="tier-name-btn" onclick="showTier('silver', this)"><span>II. Silver</span><span class="tier-price-tag">$129/mo <span class="tier-arrow">▾</span></span></button>
+        <button class="tier-name-btn" onclick="showTier('gold', this)"><span>III. Gold</span><span class="tier-price-tag">$249/mo <span class="tier-arrow">▾</span></span></button>
+        <button class="tier-name-btn" onclick="showTier('platinum', this)"><span>IV. Platinum</span><span class="tier-price-tag">Contact us <span class="tier-arrow">▾</span></span></button>
+        <button class="tier-name-btn" onclick="showTier('celestial', this)"><span>V. Celestial</span><span class="tier-price-tag">Contact us <span class="tier-arrow">▾</span></span></button>
+      </div>
+    </div>
+  </div>
+  <div class="tiers-detail">
+    <div class="tier-panel active" id="tier-bronze"><h3>Bronze</h3><div class="tier-level">Foundation Access</div><p>Self-paced video content covering general obedience and puppy raising fundamentals. Learn at your own pace, on your own schedule.</p><div class="tier-features-list"><div class="tier-feat"><span class="tier-feat-check">+</span>Pre-recorded training library</div><div class="tier-feat"><span class="tier-feat-check">+</span>General obedience curriculum</div><div class="tier-feat"><span class="tier-feat-check">+</span>Puppy raising guides</div><div class="tier-feat"><span class="tier-feat-check">+</span>Community message board access</div></div><span class="tier-commit">Monthly commitment</span></div>
+    <div class="tier-panel" id="tier-silver"><h3>Silver</h3><div class="tier-level">Live Group Access</div><p>Everything in Bronze plus live group video sessions and access to tier-specific message boards segmented by dog age and training focus.</p><div class="tier-features-list"><div class="tier-feat"><span class="tier-feat-check">+</span>All Bronze content</div><div class="tier-feat"><span class="tier-feat-check">+</span>Live group video sessions</div><div class="tier-feat"><span class="tier-feat-check">+</span>Tier-specific message boards</div><div class="tier-feat"><span class="tier-feat-check">+</span>Age and focus segmented boards</div></div><span class="tier-commit">Monthly commitment</span></div>
+    <div class="tier-panel" id="tier-gold"><h3>Gold</h3><div class="tier-level">Private Coaching</div><p>Silver access plus private one-on-one video sessions with your trainer. Behavior foundations built from the ground up, with equipment shipped to your door.</p><div class="tier-features-list"><div class="tier-feat"><span class="tier-feat-check">+</span>All Silver content</div><div class="tier-feat"><span class="tier-feat-check">+</span>Private 1-on-1 video sessions</div><div class="tier-feat"><span class="tier-feat-check">+</span>Behavior foundation curriculum</div><div class="tier-feat"><span class="tier-feat-check">+</span>Tripod, prong collar and leash shipped</div></div><span class="tier-commit">2-month minimum</span></div>
+    <div class="tier-panel" id="tier-platinum"><h3>Platinum</h3><div class="tier-level">Behavior Modification</div><p>Gold access plus advanced content targeting minor to moderate behavior modification. A basket muzzle is shipped if needed for your dog's protocol.</p><div class="tier-features-list"><div class="tier-feat"><span class="tier-feat-check">+</span>All Gold content and sessions</div><div class="tier-feat"><span class="tier-feat-check">+</span>Advanced behavior content</div><div class="tier-feat"><span class="tier-feat-check">+</span>Minor to moderate modification</div><div class="tier-feat"><span class="tier-feat-check">+</span>Basket muzzle shipped if needed</div></div><span class="tier-commit">3-month minimum</span></div>
+    <div class="tier-panel" id="tier-celestial"><h3>Celestial</h3><div class="tier-level">Elite Sport and Behavior</div><p>The highest level. Platinum access plus elite coaching for serious behavior cases and sport dog training at the highest level. E-collar shipped to you.</p><div class="tier-features-list"><div class="tier-feat"><span class="tier-feat-check">+</span>All Platinum content and sessions</div><div class="tier-feat"><span class="tier-feat-check">+</span>Elite sport dog training</div><div class="tier-feat"><span class="tier-feat-check">+</span>High-level behavior work</div><div class="tier-feat"><span class="tier-feat-check">+</span>E-collar shipped to you</div></div><span class="tier-commit">4-month minimum</span></div>
+    <p class="tiers-note">Not sure which tier is right for you? Book a free consultation and we will help you find the right fit.</p>
+  </div>
+</section>
+
+<section class="booking" id="booking">
+  <div class="booking-left">
+    <form action="https://formspree.io/f/mrerdppl" method="POST">
+    <div class="section-eyebrow reveal">Get Started</div>
+    <h2 class="reveal reveal-delay-1">Book a consultation.</h2>
+    <p class="reveal reveal-delay-2">Tell us about your dog and your goals. We will reach out within 24 hours to find the right program for your team, wherever you are in the world.</p>
+    <div class="form-group reveal reveal-delay-3"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
+    <div class="form-group reveal reveal-delay-3"><label>Email</label><input type="email" name="email" placeholder="jane@example.com" required></div>
+    <div class="form-group reveal reveal-delay-3"><label>Your Location</label><input type="text" name="location" placeholder="City, Country"></div>
+    <div class="form-group reveal reveal-delay-3"><label>Dog's Name</label><input type="text" name="dog_name" placeholder="Biscuit"></div>
+    <div class="form-group reveal reveal-delay-3"><label>Breed and Age</label><input type="text" name="breed_age" placeholder="GSD, 3 yrs"></div>
+    <div class="form-group reveal reveal-delay-4"><label>Program Interest</label><select name="program_interest"><option value="">Select a tier...</option><option>Bronze — Self-paced foundations</option><option>Silver — Live group sessions</option><option>Gold — Private coaching</option><option>Platinum — Behavior modification</option><option>Celestial — Elite sport and behavior</option><option>Not sure — help me choose</option></select></div>
+    <div class="form-group reveal reveal-delay-4"><label>Tell us about your goals</label><textarea name="goals" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
+    <button type="submit" class="form-submit reveal reveal-delay-5">Send Inquiry</button>
+    </form>
+  </div>
+  <div class="booking-right reveal-right">
+    <div class="info-box light"><h4>Our Guarantee</h4><p>Not satisfied after your first session? It is on us. We are committed to finding the right approach for you and your dog, no exceptions.</p></div>
+    <div class="info-box dark"><h4>Train from anywhere</h4><p>All sessions are virtual. No geographic restrictions. We work across time zones, wherever you and your dog call home.</p></div>
+  </div>
+</section>
+
+<script>
+function showTier(name, btn) {
+  document.querySelectorAll('.tier-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tier-name-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tier-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+
+
+<footer>
+  <div class="footer-logo">Cognitive Canines</div>
+  <p>2025 Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
+</footer>
+
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
