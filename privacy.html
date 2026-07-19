@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="robots" content="index, follow">
+<title>Privacy Policy | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1a18;--ink2:#3a3830;--muted:#7a7568;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#e09558;--gold-light:#f2e8d8;
+  --surface:#f2f0eb;--white:#fff;--border:#ddd9d0;
+  --card-bg:#fff;--card-hover:#f5ede0;
+  --nav-bg:rgba(242,240,235,0.93);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --ink:#e8e4dc;--ink2:#c5bfb4;--muted:#8a8278;
+    --accent:#3d5c3e;--accent2:#5a7d4a;
+    --gold:#d4824a;--gold2:#e8a96a;--gold-light:#2a1f12;
+    --surface:#1a1c19;--white:#222520;--border:#333830;
+    --card-bg:#222520;--card-hover:#2a2f28;
+    --nav-bg:rgba(22,24,20,0.95);
+  }
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);transition:background 0.3s}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
+.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:99;transition:background 0.3s}
+.nav-links.open{display:flex}
+.nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent2)}
+.nav-links .nav-cta{background:var(--accent);color:#fff !important;padding:0.7rem 2rem;border-radius:2px;font-size:1rem}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:101;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);transition:all 0.3s;border-radius:2px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* SCROLLING TICKER */
+.ticker-wrap{width:100%;overflow:hidden;background:var(--accent);padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ticker-item{display:flex;align-items:center;gap:0.6rem;padding:0 2.5rem;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:400}
+.ticker-item svg{width:13px;height:13px;stroke:var(--gold2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:0.5;flex-shrink:0}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:var(--white)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s}
+
+.section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+
+footer{background:var(--surface);color:var(--muted);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid var(--border);transition:background 0.3s}
+footer p{font-size:11px;letter-spacing:0.06em}
+.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
+.footer-links{display:flex;gap:1.5rem;margin-top:0.5rem}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .hamburger{display:none}
+  .nav-links{display:flex;position:static;background:transparent;flex-direction:row;gap:1.5rem;align-items:center}
+  .nav-links a{font-size:12px}
+  .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
+  footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
+  .footer-links{margin-top:0}
+}
+
+
+.privacy-section{padding:4rem 1.5rem;background:var(--white);transition:background 0.3s;max-width:640px;margin:0 auto}
+.privacy-section h1{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:400;margin-bottom:0.3rem}
+.privacy-section .updated{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem}
+.privacy-section h2{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 0.4rem}
+.privacy-section p,.privacy-section li{font-size:0.85rem;color:var(--ink2);line-height:1.8;font-weight:300;margin-bottom:0.5rem}
+.privacy-section ul{margin-left:1.2rem;margin-bottom:0.5rem}
+.privacy-section a{color:var(--gold);text-decoration:none}
+.privacy-section a:hover{text-decoration:underline}
+@media(min-width:768px){.privacy-section{padding:5rem 5rem}}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
+    <span>Cognitive Canines</span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="about.html" onclick="closeMenu()">Our Story</a>
+    <a href="programs.html" onclick="closeMenu()">Programs</a>
+    <a href="shop.html" onclick="closeMenu()">Shop</a>
+    <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+    <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+
+<div style="height:90px"></div>
+<section class="privacy-section reveal">
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: July 2025</div>
+
+  <p>At Cognitive Canines, your privacy is important to us. This policy explains what information we collect, how we use it, and your rights regarding your data.</p>
+
+  <h2>Information We Collect</h2>
+  <p>When you submit our contact or booking form, we collect the following information that you voluntarily provide:</p>
+  <ul>
+    <li>Your name and email address</li>
+    <li>Your location (city and country)</li>
+    <li>Your dog's name, breed, and age</li>
+    <li>Information about your training goals</li>
+  </ul>
+  <p>We do not collect payment information directly. We do not use tracking cookies or third-party advertising trackers.</p>
+
+  <h2>How We Use Your Information</h2>
+  <p>Information submitted through our contact form is used solely to respond to your inquiry and provide training services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+
+  <h2>Form Submissions</h2>
+  <p>Our contact form is processed by Formspree, a third-party form service. Submissions are sent securely to our email and stored temporarily on Formspree's servers. You can review Formspree's privacy policy at formspree.io.</p>
+
+  <h2>Data Retention</h2>
+  <p>We retain contact form submissions only as long as necessary to respond to your inquiry and maintain our client relationship. You may request deletion of your data at any time by contacting us.</p>
+
+  <h2>Your Rights</h2>
+  <p>You have the right to request access to, correction of, or deletion of any personal information we hold about you. To exercise these rights, please contact us at cognitivecaninesllc@gmail.com.</p>
+
+  <h2>Security</h2>
+  <p>This website is hosted on GitHub Pages over HTTPS. All form submissions are transmitted securely. We take reasonable steps to protect your information, though no method of internet transmission is 100% secure.</p>
+
+  <h2>Children's Privacy</h2>
+  <p>Our services are not directed at children under 13. We do not knowingly collect personal information from children.</p>
+
+  <h2>Changes to This Policy</h2>
+  <p>We may update this privacy policy from time to time. Any changes will be reflected on this page with an updated date.</p>
+
+  <h2>Contact</h2>
+  <p>If you have any questions about this privacy policy, please contact us at <a href="mailto:cognitivecaninesllc@gmail.com">cognitivecaninesllc@gmail.com</a>.</p>
+</section>
+
+
+<footer>
+  <div>
+    <div class="footer-logo">Cognitive Canines</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <p><span id="year"></span> Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
+</footer>
+
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
+
+</body>
+</html>
