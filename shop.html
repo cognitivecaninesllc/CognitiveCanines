@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="robots" content="index, follow">
 <title>Shop | Cognitive Canines</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -31,16 +36,31 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);flex-wrap:wrap;gap:0.5rem;transition:background 0.3s}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);transition:background 0.3s}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
-.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 10%}
+.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
 .nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
-.nav-links{display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap}
-.nav-links a.hide-mobile{display:inline;font-size:11px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
-.nav-links a.hide-mobile:hover{color:var(--accent2)}
-.nav-cta{background:var(--accent);color:#fff !important;padding:0.4rem 0.9rem;border-radius:2px;font-size:11px;font-weight:500;letter-spacing:0.06em;text-decoration:none;white-space:nowrap;transition:background 0.2s}
-.nav-cta:hover{background:var(--accent2) !important}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:99;transition:background 0.3s}
+.nav-links.open{display:flex}
+.nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent2)}
+.nav-links .nav-cta{background:var(--accent);color:#fff !important;padding:0.7rem 2rem;border-radius:2px;font-size:1rem}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:101;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);transition:all 0.3s;border-radius:2px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* SCROLLING TICKER */
+.ticker-wrap{width:100%;overflow:hidden;background:var(--accent);padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ticker-item{display:flex;align-items:center;gap:0.6rem;padding:0 2.5rem;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:400}
+.ticker-item svg{width:13px;height:13px;stroke:var(--gold2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:0.5;flex-shrink:0}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 .btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
 .btn-primary:hover{background:var(--accent2)}
@@ -60,26 +80,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .reveal-delay-5{transition-delay:0.5s}
 
 .section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
-.page-hero{min-height:40vh;display:flex;align-items:flex-end;position:relative;overflow:hidden;padding-top:80px}
-.page-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
-.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,20,10,0.92) 0%,rgba(10,20,10,0.4) 100%)}
-.page-hero-text{position:relative;z-index:1;padding:3rem 1.5rem;color:#fff}
-.page-hero-text h1{font-family:var(--serif);font-size:clamp(2.5rem,7vw,4.5rem);font-weight:400;line-height:1.05;margin-bottom:0.5rem}
-.page-hero-text h1 em{font-style:italic;color:var(--gold2)}
-.page-hero-text p{font-size:0.95rem;color:rgba(255,255,255,0.6);font-weight:300;max-width:500px;line-height:1.8}
 
 footer{background:var(--surface);color:var(--muted);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid var(--border);transition:background 0.3s}
 footer p{font-size:11px;letter-spacing:0.06em}
 .footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
+.footer-links{display:flex;gap:1.5rem;margin-top:0.5rem}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
 
 @media(min-width:768px){
   nav{padding:1rem 3rem}
-  .nav-logo span{font-size:13px}
-  .nav-links{gap:1.5rem}
-  .nav-links a.hide-mobile{font-size:12px}
-  .page-hero{min-height:55vh}
-  .page-hero-text{padding:4rem 5rem}
+  .hamburger{display:none}
+  .nav-links{display:flex;position:static;background:transparent;flex-direction:row;gap:1.5rem;align-items:center}
+  .nav-links a{font-size:12px}
+  .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
   footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
+  .footer-links{margin-top:0}
 }
 
 
@@ -108,16 +124,19 @@ footer p{font-size:11px;letter-spacing:0.06em}
 
 <nav>
   <a class="nav-logo" href="index.html">
-    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston" style="object-position:center 20%"></div>
+    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
     <span>Cognitive Canines</span>
   </a>
-  <div class="nav-links">
-    <a href="about.html" class="hide-mobile">Our Story</a>
-    <a href="programs.html" class="hide-mobile">Programs</a>
-    <a href="shop.html" class="hide-mobile">Shop</a>
-    <a href="contact.html" class="hide-mobile">Contact</a>
-    <a href="contact.html" class="nav-cta">Book a Session</a>
+  <div class="nav-links" id="navLinks">
+    <a href="about.html" onclick="closeMenu()">Our Story</a>
+    <a href="programs.html" onclick="closeMenu()">Programs</a>
+    <a href="shop.html" onclick="closeMenu()">Shop</a>
+    <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+    <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 
@@ -147,7 +166,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <div class="shop-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
       <div class="shop-brand">E-Collar Technologies &amp; Dogtra</div>
       <h4>E-Collars</h4>
-      <p class="shop-desc">We carry both the Mini Educator by E-Collar Technologies and Dogtra's professional line. Both deliver precise, adjustable stimulation for advanced behavior work and sport dog training at the Celestial level. Trusted by working dog handlers worldwide.</p>
+      <p class="shop-desc">We carry both the Mini Educator by E-Collar Technologies and Dogtra's professional line. Recommended only when your trainer determines it is the right tool for your dog's individual protocol.</p>
       <span class="shop-cta">Shop e-collars</span>
     </div>
   </div>
@@ -156,8 +175,14 @@ footer p{font-size:11px;letter-spacing:0.06em}
 
 
 <footer>
-  <div class="footer-logo">Cognitive Canines</div>
-  <p>2025 Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
+  <div>
+    <div class="footer-logo">Cognitive Canines</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <p><span id="year"></span> Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
 </footer>
 
 
@@ -168,6 +193,21 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
 </script>
 
 
