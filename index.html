@@ -326,7 +326,7 @@ function closeMenu() {
 
 
 <!-- WIDGET START -->
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Forum&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Forum&display=swap" rel="stylesheet">
 <style>
   #cc-chat-launcher {
     position: fixed;
@@ -348,15 +348,17 @@ function closeMenu() {
     transition: transform 0.2s ease;
   }
   #cc-chat-launcher:hover { transform: scale(1.06); }
+  #cc-chat-launcher.cc-hide { display: none; }
 
+  /* Desktop / tablet: floating card, fixed height so flex scrolling works */
   #cc-chat-window {
     position: fixed;
     bottom: 96px;
     right: 24px;
-    width: 340px;
+    width: 360px;
     max-width: calc(100vw - 32px);
-    height: 460px;
-    max-height: calc(100vh - 140px);
+    height: 520px;
+    max-height: calc(100vh - 120px);
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 12px 32px rgba(0,0,0,0.25);
@@ -369,9 +371,10 @@ function closeMenu() {
   #cc-chat-window.open { display: flex; }
 
   #cc-chat-header {
+    flex: 0 0 auto;
     background: #2b3a2f;
     color: #fff;
-    padding: 14px 16px;
+    padding: 12px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -384,7 +387,7 @@ function closeMenu() {
     display: block;
     font-family: 'Forum', serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 11px;
     opacity: 0.85;
     margin-top: 3px;
     letter-spacing: 0.3px;
@@ -393,33 +396,38 @@ function closeMenu() {
     background: none;
     border: none;
     color: #fff;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
     line-height: 1;
     padding: 4px 8px;
+    flex-shrink: 0;
   }
 
+  /* This is the piece that actually scrolls - needs min-height:0 inside a flex column */
   #cc-chat-body {
-    flex: 1;
-    padding: 14px;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 12px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: #f7f6f3;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .cc-msg {
     max-width: 85%;
     padding: 10px 13px;
     border-radius: 12px;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 16px;
     line-height: 1.5;
+    color: #1a1a18;
   }
   .cc-msg.bot {
     background: #fff;
-    border: 1px solid #e2e0da;
+    border: 1px solid #d5d1c6;
     align-self: flex-start;
     border-bottom-left-radius: 4px;
   }
@@ -429,40 +437,90 @@ function closeMenu() {
     align-self: flex-end;
     border-bottom-right-radius: 4px;
   }
-  .cc-msg a { color: inherit; text-decoration: underline; }
-  .cc-msg.bot a { color: #2b3a2f; }
+  .cc-msg a { color: inherit; text-decoration: underline; font-weight: 600; }
+  .cc-msg.bot a { color: #1d4d2e; }
 
+  /* Quick replies: ONE row that scrolls sideways, never grows taller no matter how many FAQs exist */
   #cc-quick-replies {
+    flex: 0 0 auto;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
-    padding: 10px 14px;
+    padding: 8px 10px;
+    border-top: 1px solid #e2e0da;
+    background: #fff;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .cc-chip {
+    background: #dfe6d8;
+    border: 1px solid #9fae93;
+    color: #1a2b1c;
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+  .cc-chip:hover { background: #cbd8c1; }
+
+  #cc-input-row {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
     border-top: 1px solid #e2e0da;
     background: #fff;
   }
-  .cc-chip {
-    background: #eef1ec;
+  #cc-text-input {
+    flex: 1;
+    min-width: 0;
     border: 1px solid #d7ddd2;
-    color: #2b3a2f;
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 12.5px;
-    cursor: pointer;
-    transition: background 0.15s ease;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 16px; /* 16px prevents iOS auto-zoom on focus */
+    outline: none;
   }
-  .cc-chip:hover { background: #dde4d7; }
+  #cc-text-send {
+    background: #2b3a2f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
 
   #cc-chat-footer-note {
+    flex: 0 0 auto;
     text-align: center;
-    font-size: 11px;
+    font-size: 10.5px;
     color: #999;
-    padding: 6px 0 10px;
+    padding: 5px 0;
     background: #fff;
   }
 
-  @media (max-width: 400px) {
-    #cc-chat-window { right: 16px; left: 16px; width: auto; }
-    #cc-chat-launcher { right: 16px; }
+  /* MOBILE: full-screen takeover instead of a small floating box */
+  @media (max-width: 480px) {
+    #cc-chat-window {
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100dvh;
+      max-width: 100%;
+      max-height: 100dvh;
+      border-radius: 0;
+    }
+    #cc-chat-header { padding: 14px 14px calc(10px + env(safe-area-inset-top)); padding-top: calc(14px + env(safe-area-inset-top)); }
+    #cc-chat-launcher { bottom: calc(20px + env(safe-area-inset-bottom)); }
+    #cc-input-row { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
   }
 </style>
 
@@ -470,12 +528,18 @@ function closeMenu() {
 
 <div id="cc-chat-window">
   <div id="cc-chat-header">
-    Cognitive Canines
-    <span class="cc-sub">Ask about programs, pricing & more</span>
+    <div>
+      Cognitive Canines
+      <span class="cc-sub">Ask about programs, pricing & more</span>
+    </div>
     <button id="cc-chat-close" aria-label="Close chat">×</button>
   </div>
   <div id="cc-chat-body"></div>
   <div id="cc-quick-replies"></div>
+  <div id="cc-input-row">
+    <input id="cc-text-input" type="text" placeholder="Type a question...">
+    <button id="cc-text-send">Send</button>
+  </div>
   <div id="cc-chat-footer-note">Not the answer you needed? <a href="contact.html" style="color:#2b3a2f;">Contact us directly</a></div>
 </div>
 
@@ -589,20 +653,24 @@ function closeMenu() {
     }
   }
 
-  launcher.addEventListener('click', () => {
-    win.classList.contains('open') ? win.classList.remove('open') : openChat();
-  });
-  closeBtn.addEventListener('click', () => win.classList.remove('open'));
+  function isMobile() {
+    return window.matchMedia('(max-width: 480px)').matches;
+  }
 
-  // Optional: allow free-text typing via a simple prompt-style input
-  const inputRow = document.createElement('div');
-  inputRow.style.cssText = 'display:flex;gap:6px;padding:10px 14px;border-top:1px solid #e2e0da;background:#fff;';
-  inputRow.innerHTML = `
-    <input id="cc-text-input" type="text" placeholder="Type a question..."
-      style="flex:1;border:1px solid #d7ddd2;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;">
-    <button id="cc-text-send" style="background:#2b3a2f;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">Send</button>
-  `;
-  chipsWrap.parentNode.insertBefore(inputRow, chipsWrap.nextSibling);
+  function closeChat() {
+    win.classList.remove('open');
+    if (isMobile()) document.body.style.overflow = '';
+  }
+
+  launcher.addEventListener('click', () => {
+    if (win.classList.contains('open')) {
+      closeChat();
+    } else {
+      openChat();
+      if (isMobile()) document.body.style.overflow = 'hidden'; // lock background scroll on full-screen mobile view
+    }
+  });
+  closeBtn.addEventListener('click', closeChat);
 
   const textInput = document.getElementById('cc-text-input');
   const sendBtn = document.getElementById('cc-text-send');
