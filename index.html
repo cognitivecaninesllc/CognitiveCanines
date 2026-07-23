@@ -9,7 +9,7 @@
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="robots" content="index, follow">
 <title>Home | Cognitive Canines</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Forum&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -20,8 +20,9 @@
   --surface:#f2f0eb;--white:#fff;--border:#ddd9d0;
   --card-bg:#fff;--card-hover:#f5ede0;
   --nav-bg:rgba(242,240,235,0.93);
-  --serif:'Instrument Serif',Georgia,serif;
-  --sans:'DM Sans',system-ui,sans-serif;
+  --serif:'Forum',Georgia,serif;
+  --sans:'Cormorant Garamond',Georgia,serif;
+  --logo:'Cinzel',serif;
 }
 @media(prefers-color-scheme:dark){
   :root{
@@ -41,7 +42,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
 .nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
-.nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
+.nav-logo span{font-family:var(--logo);font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
 .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:99;transition:background 0.3s}
 .nav-links.open{display:flex}
 .nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
@@ -83,7 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 footer{background:var(--surface);color:var(--muted);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid var(--border);transition:background 0.3s}
 footer p{font-size:11px;letter-spacing:0.06em}
-.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
+.footer-logo{font-family:var(--logo);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
 .footer-links{display:flex;gap:1.5rem;margin-top:0.5rem}
 .footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
 .footer-links a:hover{color:var(--gold)}
