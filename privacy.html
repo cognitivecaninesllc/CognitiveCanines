@@ -95,7 +95,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
 @media(min-width:768px){
   nav{padding:1rem 3rem}
   .hamburger{display:none}
-  .nav-links{display:flex;position:static;background:transparent;flex-direction:row;gap:1.5rem;align-items:center}
+  .nav-links{display:flex;position:fixed;top:0;right:0;bottom:auto;left:auto;height:auto;background:transparent;flex-direction:row;align-items:center;gap:1.5rem;padding:1rem 3rem 1rem 0;z-index:150}
   .nav-links a{font-size:12px}
   .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
   footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
@@ -122,18 +122,18 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
     <span>Cognitive Canines</span>
   </a>
-  <div class="nav-links" id="navLinks">
-    <a href="about.html" onclick="closeMenu()">Our Story</a>
-    <a href="programs.html" onclick="closeMenu()">Programs</a>
-    <a href="shop.html" onclick="closeMenu()">Shop</a>
-    <a href="privacy.html" onclick="closeMenu()">Privacy</a>
-    <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
-    <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
-  </div>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+<div class="nav-links" id="navLinks">
+  <a href="about.html" onclick="closeMenu()">Our Story</a>
+  <a href="programs.html" onclick="closeMenu()">Programs</a>
+  <a href="shop.html" onclick="closeMenu()">Shop</a>
+  <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+  <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
+  <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+</div>
 <div class="status-banner">We are not currently accepting new clients, but we are active every day and opening our doors again very soon. Check back soon or join our list at <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Contact</a>.</div>
 
 
