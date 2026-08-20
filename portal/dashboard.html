@@ -46,6 +46,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .dash-nav h2{font-family:var(--serif);font-size:1.1rem;font-weight:400}
 .logout-btn{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:none;border:0.5px solid var(--border);padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;transition:all 0.2s}
 .logout-btn:hover{color:var(--gold);border-color:var(--gold)}
+.dash-nav{flex-wrap:wrap;gap:0.8rem}
+.dash-nav-links{display:none;gap:1.2rem;align-items:center}
+.dash-nav-links a{font-size:11px;text-decoration:none;color:var(--ink2);letter-spacing:0.05em;text-transform:uppercase;transition:color 0.2s}
+.dash-nav-links a:hover{color:var(--gold)}
+@media(min-width:768px){.dash-nav-links{display:flex}}
 .dash-content{max-width:700px;margin:0 auto;padding:2rem 1.5rem}
 .dash-section{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem}
 .dash-section h3{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
@@ -71,6 +76,13 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
   <div class="dash-nav-brand">
     <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
     <h2>My Portal</h2>
+  </div>
+  <div class="dash-nav-links">
+    <a href="../index.html">Home</a>
+    <a href="../about.html">Our Story</a>
+    <a href="../programs.html">Programs</a>
+    <a href="../shop.html">Shop</a>
+    <a href="../contact.html">Contact</a>
   </div>
   <button class="logout-btn" onclick="logout()">Log Out</button>
 </div>
