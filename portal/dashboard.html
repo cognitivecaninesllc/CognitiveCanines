@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portal | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#e8e4dc;--ink2:#c5bfb4;--muted:#8a8278;
+  --accent:#3d5c3e;--accent2:#5a7d4a;
+  --gold:#d4824a;--gold2:#e8a96a;--gold-light:#2a1f12;
+  --surface:#1a1c19;--white:#222520;--border:#333830;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.card{background:var(--white);border:0.5px solid var(--border);padding:2.5rem;max-width:420px;width:100%;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.35)}
+.logo{text-align:center;margin-bottom:2rem}
+.logo .mark{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);margin:0 auto 1rem}
+.logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.logo h1{font-family:var(--serif);font-size:1.6rem;font-weight:400}
+.logo p{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.form-group input{width:100%;padding:0.75rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.9rem;color:var(--ink);outline:none;border-radius:4px;transition:border-color 0.2s}
+.form-group input:focus{border-color:var(--gold)}
+.btn{width:100%;background:var(--gold);color:#1a1c19;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;border-radius:4px;margin-top:0.5rem;transition:background 0.2s}
+.btn:hover{background:var(--gold2)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.msg{font-size:0.82rem;padding:0.7rem 1rem;border-radius:4px;margin-bottom:1rem;display:none}
+.msg.error{background:#3a2020;color:#e8a8a8;display:block}
+.msg.success{background:#1e3320;color:#a8e8b8}
+.link-row{text-align:center;margin-top:1.5rem;font-size:0.82rem;color:var(--muted)}
+.link-row a{color:var(--gold);text-decoration:none}
+.back-link{display:inline-block;margin-bottom:1.5rem;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.05em}
+.back-link:hover{color:var(--gold)}
+
+.dash-body{display:block;padding:0;align-items:initial;justify-content:initial;background:var(--surface)}
+.dash-nav{background:var(--white);border-bottom:0.5px solid var(--border);padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.dash-nav-brand{display:flex;align-items:center;gap:10px}
+.dash-nav-brand .mark{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid var(--gold)}
+.dash-nav-brand .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.dash-nav h2{font-family:var(--serif);font-size:1.1rem;font-weight:400}
+.logout-btn{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:none;border:0.5px solid var(--border);padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;transition:all 0.2s}
+.logout-btn:hover{color:var(--gold);border-color:var(--gold)}
+.dash-content{max-width:700px;margin:0 auto;padding:2rem 1.5rem}
+.dash-section{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem}
+.dash-section h3{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.info-row{display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:0.5px solid var(--border);font-size:0.9rem}
+.info-row:last-child{border-bottom:none}
+.info-row span:first-child{color:var(--muted)}
+.doc-item,.rec-item{padding:0.8rem 0;border-bottom:0.5px solid var(--border)}
+.doc-item:last-child,.rec-item:last-child{border-bottom:none}
+.doc-item a,.rec-item a{color:var(--gold2);text-decoration:none;font-size:0.9rem;font-weight:500}
+.doc-item a:hover,.rec-item a:hover{color:var(--gold)}
+.item-date{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.empty-state{font-size:0.85rem;color:var(--muted);font-style:italic;padding:1rem 0}
+</style>
+</head>
+<body class="dash-body">
+<div class="dash-nav">
+  <div class="dash-nav-brand">
+    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
+    <h2>My Portal</h2>
+  </div>
+  <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+<div class="dash-content">
+
+  <div class="dash-section">
+    <h3>My Trainer</h3>
+    <div id="trainerInfo"><p class="empty-state">Loading...</p></div>
+  </div>
+
+  <div class="dash-section">
+    <h3>My Documents</h3>
+    <div id="documentsList"><p class="empty-state">Loading...</p></div>
+  </div>
+
+  <div class="dash-section">
+    <h3>My Session Recordings</h3>
+    <div id="recordingsList"><p class="empty-state">Loading...</p></div>
+  </div>
+
+</div>
+
+<script>
+const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
+
+async function loadDashboard() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const { data: client, error: clientError } = await supabaseClient
+    .from('clients')
+    .select('*, trainers(*)')
+    .eq('auth_id', user.id)
+    .single();
+
+  if (clientError || !client) {
+    document.getElementById('trainerInfo').innerHTML = '<p class="empty-state">We could not find your client profile. Please contact us.</p>';
+    return;
+  }
+
+  if (client.trainers) {
+    document.getElementById('trainerInfo').innerHTML = `
+      <div class="info-row"><span>Name</span><span>${client.trainers.full_name}</span></div>
+      <div class="info-row"><span>Email</span><span>${client.trainers.email}</span></div>
+      ${client.trainers.phone ? `<div class="info-row"><span>Phone</span><span>${client.trainers.phone}</span></div>` : ''}
+    `;
+  } else {
+    document.getElementById('trainerInfo').innerHTML = '<p class="empty-state">No trainer assigned yet.</p>';
+  }
+
+  const { data: docs } = await supabaseClient
+    .from('documents')
+    .select('*')
+    .eq('client_id', client.id)
+    .order('created_at', { ascending: false });
+
+  const docsList = document.getElementById('documentsList');
+  if (docs && docs.length > 0) {
+    docsList.innerHTML = docs.map(d => `
+      <div class="doc-item">
+        <a href="${d.file_url}" target="_blank">${d.title}</a>
+        <div class="item-date">${new Date(d.created_at).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+  } else {
+    docsList.innerHTML = '<p class="empty-state">No documents yet.</p>';
+  }
+
+  const { data: recs } = await supabaseClient
+    .from('recordings')
+    .select('*')
+    .eq('client_id', client.id)
+    .order('session_date', { ascending: false });
+
+  const recsList = document.getElementById('recordingsList');
+  if (recs && recs.length > 0) {
+    recsList.innerHTML = recs.map(r => `
+      <div class="rec-item">
+        <a href="${r.zoom_link}" target="_blank">${r.title}</a>
+        <div class="item-date">${r.session_date ? new Date(r.session_date).toLocaleDateString() : ''}</div>
+        ${r.notes ? `<div class="item-date">${r.notes}</div>` : ''}
+      </div>
+    `).join('');
+  } else {
+    recsList.innerHTML = '<p class="empty-state">No recordings yet.</p>';
+  }
+}
+
+async function logout() {
+  await supabaseClient.auth.signOut();
+  window.location.href = 'login.html';
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
