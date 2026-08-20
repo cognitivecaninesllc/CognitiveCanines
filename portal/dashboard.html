@@ -63,6 +63,7 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .trainer-photo img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .trainer-name-big{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--ink)}
 .trainer-title{font-size:0.75rem;color:var(--muted);letter-spacing:0.04em}
+.trainer-bio{font-size:0.85rem;color:var(--ink2);line-height:1.7;margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--border)}
 </style>
 </head>
 <body class="dash-body">
@@ -74,6 +75,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
   <button class="logout-btn" onclick="logout()">Log Out</button>
 </div>
 <div class="dash-content">
+
+  <div class="dash-section" id="welcomeSection">
+    <h3 id="welcomeHeading">Welcome</h3>
+    <div id="welcomeInfo"><p class="empty-state">Loading...</p></div>
+  </div>
 
   <div class="dash-section">
     <h3>My Trainer</h3>
@@ -113,6 +119,16 @@ async function loadDashboard() {
     return;
   }
 
+  const firstName = client.full_name ? client.full_name.split(' ')[0] : 'there';
+  document.getElementById('welcomeHeading').textContent = `Welcome, ${firstName}`;
+
+  document.getElementById('welcomeInfo').innerHTML = `
+    <div class="info-row"><span>Your Name</span><span>${client.full_name}</span></div>
+    ${client.dog_name ? `<div class="info-row"><span>Dog's Name</span><span>${client.dog_name}</span></div>` : ''}
+    ${client.breed ? `<div class="info-row"><span>Breed</span><span>${client.breed}</span></div>` : ''}
+    ${client.program_tier ? `<div class="info-row"><span>Program</span><span>${client.program_tier}</span></div>` : ''}
+  `;
+
   if (client.trainers) {
     document.getElementById('trainerInfo').innerHTML = `
       <div class="trainer-photo-row">
@@ -124,6 +140,7 @@ async function loadDashboard() {
       </div>
       <div class="info-row"><span>Email</span><span>${client.trainers.email}</span></div>
       ${client.trainers.phone ? `<div class="info-row"><span>Phone</span><span>${client.trainers.phone}</span></div>` : ''}
+      ${client.trainers.bio ? `<div class="trainer-bio">${client.trainers.bio}</div>` : ''}
     `;
   } else {
     document.getElementById('trainerInfo').innerHTML = '<p class="empty-state">No trainer assigned yet.</p>';
