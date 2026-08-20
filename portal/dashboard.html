@@ -147,12 +147,11 @@ async function loadDashboard() {
         <div class="trainer-photo"><img src="https://i.imgur.com/qKj1rK5.jpg" alt="${client.trainers.full_name}"></div>
         <div>
           <div class="trainer-name-big">${client.trainers.full_name}</div>
-          <div class="trainer-title">Your Trainer</div>
+          <div class="trainer-title">Owner &amp; Operator</div>
         </div>
       </div>
       <div class="info-row"><span>Email</span><span>${client.trainers.email}</span></div>
       ${client.trainers.phone ? `<div class="info-row"><span>Phone</span><span>${client.trainers.phone}</span></div>` : ''}
-      ${client.trainers.bio ? `<div class="trainer-bio">${client.trainers.bio}</div>` : ''}
     `;
   } else {
     document.getElementById('trainerInfo').innerHTML = '<p class="empty-state">No trainer assigned yet.</p>';
