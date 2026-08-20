@@ -173,12 +173,16 @@ document.getElementById('addClientForm').addEventListener('submit', async (e) =>
 
   const { data: { session } } = await supabaseClient.auth.getSession();
 
+  // Automatically assign the trainer - since there's currently one trainer (you), grab it automatically
+  const { data: defaultTrainer } = await supabaseClient.from('trainers').select('id').limit(1).single();
+
   const payload = {
     full_name: document.getElementById('newName').value,
     email: document.getElementById('newEmail').value,
     dog_name: document.getElementById('newDog').value,
     breed: document.getElementById('newBreed').value,
     program_tier: document.getElementById('newTier').value,
+    trainer_id: defaultTrainer ? defaultTrainer.id : null,
   };
 
   try {
