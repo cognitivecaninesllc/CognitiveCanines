@@ -37,21 +37,25 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);border-bottom:0.5px solid var(--border);transition:background 0.3s}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);transition:background 0.3s}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
 .nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
 .nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
-.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:99;transition:background 0.3s}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:200;transition:none}
 .nav-links.open{display:flex}
 .nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
 .nav-links a:hover{color:var(--accent2)}
 .nav-links .nav-cta{background:var(--accent);color:#fff !important;padding:0.7rem 2rem;border-radius:2px;font-size:1rem}
-.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:101;background:none;border:none;padding:4px}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:201;background:none;border:none;padding:4px}
 .hamburger span{display:block;width:22px;height:2px;background:var(--ink);transition:all 0.3s;border-radius:2px}
 .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.status-banner{background:var(--gold);color:#1a1c19;text-align:center;padding:0.7rem 1.5rem;font-size:0.8rem;font-weight:500;letter-spacing:0.02em;margin-top:56px}
+@media(min-width:768px){.status-banner{margin-top:64px}}
+
 
 /* SCROLLING TICKER */
 .ticker-wrap{width:100%;overflow:hidden;background:var(--accent);padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.1)}
@@ -146,12 +150,14 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <a href="programs.html" onclick="closeMenu()">Programs</a>
     <a href="shop.html" onclick="closeMenu()">Shop</a>
     <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+    <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
     <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+<div class="status-banner">We are not currently accepting new clients, but we are active every day and opening our doors again very soon. Check back soon or join our list at <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Contact</a>.</div>
 
 
 <div style="height:90px"></div>
@@ -163,12 +169,10 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div class="about-text">
       <div class="section-eyebrow reveal">About</div>
       <h2 class="reveal reveal-delay-1">Allie Sherman</h2>
-      <p class="reveal reveal-delay-2">I have been training my own dogs since 2008, and began taking on neighborhood clients and working with horses just a few short years later. My real passion took shape when I discovered dog sports and began following and attending seminars with some of the most talented trainers in the world. Along the way, I spent time at Tryon International Equestrian Center working alongside Olympic riders preparing horses for Grand Prix competition, a brief chapter that reinforced how much trust and communication matter across species.</p>
-      <p class="reveal reveal-delay-3">I have worked in veterinary medicine for years, and from 2017 to 2020 that included hands-on experience with zoo animals and as a wildlife rehabilitator for both native and exotic species. That work meant learning to read animals who could not be coaxed, bribed, or reasoned with in the ways a domestic dog can, animals whose survival depended on my ability to correctly interpret stress, pain, and body language in real time.</p>
-      <p class="reveal reveal-delay-4">That background shapes everything about how I train today. Working with apex predators, raptors, and other wildlife taught me that trust is built through consistency and respect, not dominance. Specializing in emergency and exotic medicine sharpened my understanding of physiology and stress response even further, and I still pick up relief veterinary technician shifts every once in a while today.</p>
-      <p class="reveal reveal-delay-5">Before going fully virtual, I owned and ran a successful in-person dog training company in Corpus Christi, Texas, where clients would drive hours just to train with me. I eventually retired that in-person side of the business to focus more fully on my career in emergency veterinary medicine.</p>
-      <p class="reveal reveal-delay-5">I later worked with another online dog training company and saw firsthand both what virtual training could offer and where it often fell short for clients. Too many programs lean on a single alpha-theory, one-size-fits-all approach that simply does not fit every dog or every handler. That experience shaped my belief that training the dog in front of you matters more than following one rigid method.</p>
-      <p class="reveal reveal-delay-5">Cognitive Canines is the culmination of everything I have learned across all of it. Let me share that knowledge with you.</p>
+      <p class="reveal reveal-delay-2">I have been training my own dogs since 2008, and began taking on neighborhood clients and working with horses just a few short years later. My real passion took shape when I discovered dog sports and began following and attending seminars with some of the most talented trainers in the world.</p>
+      <p class="reveal reveal-delay-3">In 2017 I traveled to Tryon International Equestrian Center, where I worked as a groom and trainer for a prominent competition program, preparing horses for Grand Prix events alongside Olympic teams and some of the best riders in the world. That experience confirmed something I already believed: the highest level of performance in any animal comes from trust, communication, and a relationship built on patience.</p>
+      <p class="reveal reveal-delay-4">That same year I began my career as a veterinary technician, eventually specializing in emergency and exotic medicine. I still work as a relief veterinary technician today. That medical background shapes everything about how I read and work with animals. Understanding their physiology, their stress responses, and what they are actually telling you changes how you train.</p>
+      <p class="reveal reveal-delay-5">Cognitive Canines is the combination of everything I have learned across all of it.</p>
     </div>
   </div>
 </section>
@@ -234,365 +238,142 @@ function closeMenu() {
 
 
 <!-- WIDGET START -->
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Forum&display=swap" rel="stylesheet">
 <style>
-  #cc-chat-launcher {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #2b3a2f;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    transition: transform 0.2s ease;
-  }
-  #cc-chat-launcher:hover { transform: scale(1.06); }
-  #cc-chat-launcher.cc-hide { display: none; }
-
-  /* Desktop / tablet: floating card, fixed height so flex scrolling works */
-  #cc-chat-window {
-    position: fixed;
-    bottom: 96px;
-    right: 24px;
-    width: 360px;
-    max-width: calc(100vw - 32px);
-    height: 520px;
-    max-height: calc(100vh - 120px);
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 9999;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  }
-  #cc-chat-window.open { display: flex; }
-
-  #cc-chat-header {
-    flex: 0 0 auto;
-    background: #2b3a2f;
-    color: #fff;
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Cinzel', serif;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: 0.5px;
-  }
-  #cc-chat-header span.cc-sub {
-    display: block;
-    font-family: 'Forum', serif;
-    font-weight: 400;
-    font-size: 11px;
-    opacity: 0.85;
-    margin-top: 3px;
-    letter-spacing: 0.3px;
-  }
-  #cc-chat-close {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 22px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
-    flex-shrink: 0;
-  }
-
-  /* This is the piece that actually scrolls - needs min-height:0 inside a flex column */
-  #cc-chat-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    padding: 12px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: #f7f6f3;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .cc-msg {
-    max-width: 85%;
-    padding: 10px 13px;
-    border-radius: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #1a1a18;
-  }
-  .cc-msg.bot {
-    background: #fff;
-    border: 1px solid #d5d1c6;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-  }
-  .cc-msg.user {
-    background: #2b3a2f;
-    color: #fff;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-  }
-  .cc-msg a { color: inherit; text-decoration: underline; font-weight: 600; }
-  .cc-msg.bot a { color: #1d4d2e; }
-
-  /* Quick replies: ONE row that scrolls sideways, never grows taller no matter how many FAQs exist */
-  #cc-quick-replies {
-    flex: 0 0 auto;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 6px;
-    padding: 8px 10px;
-    border-top: 1px solid #e2e0da;
-    background: #fff;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-  .cc-chip {
-    background: #dfe6d8;
-    border: 1px solid #9fae93;
-    color: #1a2b1c;
-    font-weight: 500;
-    border-radius: 999px;
-    padding: 7px 14px;
-    font-size: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: background 0.15s ease;
-  }
-  .cc-chip:hover { background: #cbd8c1; }
-
-  #cc-input-row {
-    flex: 0 0 auto;
-    display: flex;
-    gap: 6px;
-    padding: 8px 10px;
-    border-top: 1px solid #e2e0da;
-    background: #fff;
-  }
-  #cc-text-input {
-    flex: 1;
-    min-width: 0;
-    border: 1px solid #d7ddd2;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 16px; /* 16px prevents iOS auto-zoom on focus */
-    outline: none;
-  }
-  #cc-text-send {
-    background: #2b3a2f;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  #cc-chat-footer-note {
-    flex: 0 0 auto;
-    text-align: center;
-    font-size: 10.5px;
-    color: #999;
-    padding: 5px 0;
-    background: #fff;
-  }
-
-  /* MOBILE: full-screen takeover instead of a small floating box */
-  @media (max-width: 480px) {
-    #cc-chat-window {
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100dvh;
-      max-width: 100%;
-      max-height: 100dvh;
-      border-radius: 0;
-    }
-    #cc-chat-header { padding: 14px 14px calc(10px + env(safe-area-inset-top)); padding-top: calc(14px + env(safe-area-inset-top)); }
-    #cc-chat-launcher { bottom: calc(20px + env(safe-area-inset-bottom)); }
-    #cc-input-row { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
-  }
+#cck9-chat-btn{position:fixed;bottom:1.5rem;right:1.5rem;width:56px;height:56px;border-radius:50%;background:#2d3a2e;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);z-index:9999;transition:transform 0.2s,background 0.2s}
+#cck9-chat-btn:hover{transform:scale(1.08);background:#4a6741}
+#cck9-chat-btn svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#cck9-chat-btn .close-icon{display:none}
+#cck9-chat-btn.open .chat-icon{display:none}
+#cck9-chat-btn.open .close-icon{display:block}
+#cck9-chat-box{position:fixed;bottom:5rem;right:1.5rem;width:min(340px,92vw);background:#fff;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.18);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;max-height:75vh}
+#cck9-chat-box.open{display:flex}
+@media(prefers-color-scheme:dark){#cck9-chat-box{background:#222520;color:#e8e4dc}}
+.cck9-header{background:#2d3a2e;color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px}
+.cck9-header .avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,0.3);flex-shrink:0}
+.cck9-header .avatar img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.cck9-header-text{}
+.cck9-header-name{font-size:14px;font-weight:500}
+.cck9-header-status{font-size:11px;opacity:0.6}
+.cck9-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.7rem;min-height:200px}
+.cck9-msg{max-width:85%;padding:0.6rem 0.9rem;border-radius:10px;font-size:14px;line-height:1.5}
+.cck9-msg.bot{background:#f2f0eb;color:#1a1a18;align-self:flex-start;border-bottom-left-radius:3px}
+.cck9-msg.user{background:#2d3a2e;color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+@media(prefers-color-scheme:dark){.cck9-msg.bot{background:#2a2f28;color:#e8e4dc}}
+.cck9-chips{padding:0 1rem 0.8rem;display:flex;flex-wrap:wrap;gap:0.4rem}
+.cck9-chip{background:transparent;border:1px solid #2d3a2e;color:#2d3a2e;padding:0.35rem 0.75rem;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap}
+.cck9-chip:hover{background:#2d3a2e;color:#fff}
+@media(prefers-color-scheme:dark){.cck9-chip{border-color:#5a7d4a;color:#e8e4dc}.cck9-chip:hover{background:#3d5c3e}}
+.cck9-input-row{display:flex;border-top:1px solid #e0ddd6;padding:0.6rem}
+@media(prefers-color-scheme:dark){.cck9-input-row{border-color:#333830}}
+.cck9-input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;padding:0.4rem 0.6rem;background:transparent;color:inherit}
+.cck9-send{background:none;border:none;cursor:pointer;padding:0.4rem;color:#2d3a2e;transition:color 0.2s}
+.cck9-send:hover{color:#4a6741}
+@media(prefers-color-scheme:dark){.cck9-send{color:#5a7d4a}}
+.cck9-send svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 
-<button id="cc-chat-launcher" aria-label="Open chat">💬</button>
+<button id="cck9-chat-btn" onclick="cck9Toggle()" aria-label="Chat with us">
+  <svg class="chat-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <svg class="close-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
 
-<div id="cc-chat-window">
-  <div id="cc-chat-header">
-    <div>
-      Cognitive Canines
-      <span class="cc-sub">Ask about programs, pricing & more</span>
+<div id="cck9-chat-box">
+  <div class="cck9-header">
+    <div class="avatar"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
+    <div class="cck9-header-text">
+      <div class="cck9-header-name">Cognitive Canines</div>
+      <div class="cck9-header-status">Typically replies within 24 hours</div>
     </div>
-    <button id="cc-chat-close" aria-label="Close chat">×</button>
   </div>
-  <div id="cc-chat-body"></div>
-  <div id="cc-quick-replies"></div>
-  <div id="cc-input-row">
-    <input id="cc-text-input" type="text" placeholder="Type a question...">
-    <button id="cc-text-send">Send</button>
+  <div class="cck9-messages" id="cck9-messages"></div>
+  <div class="cck9-chips" id="cck9-chips"></div>
+  <div class="cck9-input-row">
+    <input class="cck9-input" id="cck9-input" placeholder="Ask us anything..." onkeydown="if(event.key==='Enter')cck9Send()">
+    <button class="cck9-send" onclick="cck9Send()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
   </div>
-  <div id="cc-chat-footer-note">Not the answer you needed? <a href="contact.html" style="color:#2b3a2f;">Contact us directly</a></div>
 </div>
 
 <script>
-(function () {
-  // ============================================================
-  // EDIT YOUR FAQ CONTENT HERE — this is the only section you need to touch
-  // ============================================================
-  const FAQ_DATA = [
-    {
-      keywords: ["program", "tier", "package", "levels", "options"],
-      question: "What programs do you offer?",
-      answer: "We offer five tiers: Bronze (self-paced foundations), Silver (live group sessions), Gold (private 1-on-1 coaching), Platinum (behavior modification), and Celestial (elite sport and behavior work). Full details are on our <a href='programs.html'>Programs page</a>."
-    },
-    {
-      keywords: ["price", "pricing", "cost", "how much", "rates"],
-      question: "How much does training cost?",
-      answer: "Bronze is $29/mo, Silver $59/mo, Gold $149/mo, Platinum $249/mo, and Celestial $399/mo. Higher tiers include private coaching and more advanced behavior work. See the <a href='programs.html'>Programs page</a> for what's included in each."
-    },
-    {
-      keywords: ["virtual", "online", "remote", "how does it work", "in person"],
-      question: "How does virtual training work?",
-      answer: "All of our training is 100% virtual — you work one-on-one with your trainer from home, anywhere in the world. Only you touch your dog, guided live by your trainer, so there's no dog-to-dog contact and no judgment."
-    },
-    {
-      keywords: ["equipment", "collar", "e-collar", "prong", "leash", "gear", "muzzle"],
-      question: "What equipment is used?",
-      answer: "Equipment is shipped based on your dog's individual protocol. Platinum may include a basket muzzle if required, and Celestial may include an e-collar only if your trainer determines it's the right tool for your dog."
-    },
-    {
-      keywords: ["commit", "commitment", "minimum", "contract", "cancel"],
-      question: "Is there a minimum commitment?",
-      answer: "Bronze and Silver are month-to-month. Gold requires a 2-month minimum, Platinum a 3-month minimum, and Celestial a 4-month minimum, reflecting the deeper behavior work involved."
-    },
-    {
-      keywords: ["book", "schedule", "get started", "sign up", "appointment", "consultation"],
-      question: "How do I get started?",
-      answer: "Book a free consultation through our <a href='programs.html'>booking form</a> and tell us about your dog and goals — we'll follow up within 24 hours to help you find the right tier."
-    },
-    {
-      keywords: ["shop", "buy", "products", "store"],
-      question: "Do you sell products?",
-      answer: "Yes! Check out our <a href='shop.html'>Shop page</a> for training gear. Our full catalog is expanding soon."
-    },
-    {
-      keywords: ["about", "who", "trainer", "allie", "kingston", "story"],
-      question: "Who are the trainers?",
-      answer: "Cognitive Canines was built around a relationship-first training philosophy. Learn more about our story and the dogs behind it on the <a href='about.html'>About page</a>."
-    },
-    {
-      keywords: ["contact", "email", "phone", "reach"],
-      question: "How can I contact you?",
-      answer: "You can email us directly at cognitivecaninesllc@gmail.com, or fill out the booking form on our <a href='contact.html'>Contact page</a> and we'll get back to you within 24 hours."
-    },
-    {
-      keywords: ["guarantee", "refund", "satisfied", "money back"],
-      question: "What if I'm not satisfied?",
-      answer: "We offer a guarantee: if you're not satisfied after your first session, it's on us. We're committed to finding the right approach for you and your dog."
-    }
-  ];
+const CCK9_FAQS = [
+  {q:"How does training work?", a:"All of our training is 100% virtual — conducted live via video call. You and your dog stay in your home while your trainer coaches you in real time. No travel, no other dogs, no distractions."},
+  {q:"What programs do you offer?", a:"We have five tiers: Bronze ($29/mo), Silver ($59/mo), Gold ($149/mo), Platinum ($249/mo), and Celestial ($399/mo). Each builds on the last, from self-paced content all the way up to elite sport and behavior work. Visit our Programs page for full details."},
+  {q:"Will my dog interact with other dogs?", a:"Never. Your dog works exclusively with you in every program. No dog-to-dog contact of any kind — ever."},
+  {q:"Do you ship equipment?", a:"Yes, starting at the Gold tier. Equipment is selected based on your dog's individual needs and protocol — not every dog requires the same tools."},
+  {q:"Where are you located?", a:"We are 100% virtual, which means we have no geographic restrictions. We work with clients anywhere in the world, across all time zones."},
+  {q:"What is the age requirement?", a:"Our services are for clients 18 years of age and older only."},
+  {q:"How do I get started?", a:"Head to our Contact page and fill out the booking form. We will reach out within 24 hours to discuss your dog and find the right program for your team."},
+  {q:"Do you use punishment-based methods?", a:"We train the dog in front of us. Tools and techniques are always chosen based on what genuinely serves the dog — never out of habit or convenience. Kindness and effectiveness are not opposites."},
+  {q:"Can I cancel anytime?", a:"Bronze and Silver are month-to-month with no minimum. Gold requires a 2-month minimum, Platinum 3 months, and Celestial 4 months."},
+  {q:"Who trains my dog?", a:"A Cognitive Canines behaviorist or training professional works one-on-one with you and your dog. All sessions are private."},
+];
 
-  const FALLBACK_ANSWER = "I don't have an answer for that one yet — but our team can help directly. Reach out through the <a href='contact.html'>Contact page</a> and we'll get right back to you!";
-  const GREETING = "Hi! 👋 I can answer quick questions about our programs, pricing, and how virtual training works. Pick a question below, or type your own.";
+let cck9Started = false;
 
-  // ============================================================
-  // Widget logic — no need to edit below this line
-  // ============================================================
-  const launcher = document.getElementById('cc-chat-launcher');
-  const win = document.getElementById('cc-chat-window');
-  const closeBtn = document.getElementById('cc-chat-close');
-  const body = document.getElementById('cc-chat-body');
-  const chipsWrap = document.getElementById('cc-quick-replies');
+function cck9Toggle(){
+  const box = document.getElementById('cck9-chat-box');
+  const btn = document.getElementById('cck9-chat-btn');
+  const isOpen = box.classList.contains('open');
+  box.classList.toggle('open');
+  btn.classList.toggle('open');
+  if(!isOpen && !cck9Started){ cck9Init(); cck9Started=true; }
+}
 
-  function addMessage(text, sender) {
-    const div = document.createElement('div');
-    div.className = 'cc-msg ' + sender;
-    div.innerHTML = text;
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
-  }
+function cck9Init(){
+  cck9AddMsg('bot', "Hi! I'm the Cognitive Canines FAQ assistant. What can I help you with today?");
+  cck9SetChips(['How does training work?','What programs do you offer?','How do I get started?']);
+}
 
-  function renderChips() {
-    chipsWrap.innerHTML = '';
-    FAQ_DATA.forEach(item => {
-      const chip = document.createElement('button');
-      chip.className = 'cc-chip';
-      chip.textContent = item.question;
-      chip.onclick = () => {
-        addMessage(item.question, 'user');
-        setTimeout(() => addMessage(item.answer, 'bot'), 300);
-      };
-      chipsWrap.appendChild(chip);
-    });
-  }
+function cck9AddMsg(type, text){
+  const msgs = document.getElementById('cck9-messages');
+  const div = document.createElement('div');
+  div.className = 'cck9-msg ' + type;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
 
-  function findAnswer(text) {
-    const lower = text.toLowerCase();
-    for (const item of FAQ_DATA) {
-      if (item.keywords.some(k => lower.includes(k))) return item.answer;
-    }
-    return FALLBACK_ANSWER;
-  }
-
-  let initialized = false;
-  function openChat() {
-    win.classList.add('open');
-    if (!initialized) {
-      addMessage(GREETING, 'bot');
-      renderChips();
-      initialized = true;
-    }
-  }
-
-  function isMobile() {
-    return window.matchMedia('(max-width: 480px)').matches;
-  }
-
-  function closeChat() {
-    win.classList.remove('open');
-    if (isMobile()) document.body.style.overflow = '';
-  }
-
-  launcher.addEventListener('click', () => {
-    if (win.classList.contains('open')) {
-      closeChat();
-    } else {
-      openChat();
-      if (isMobile()) document.body.style.overflow = 'hidden'; // lock background scroll on full-screen mobile view
-    }
+function cck9SetChips(list){
+  const chips = document.getElementById('cck9-chips');
+  chips.innerHTML = '';
+  list.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'cck9-chip';
+    btn.textContent = q;
+    btn.onclick = () => cck9Answer(q);
+    chips.appendChild(btn);
   });
-  closeBtn.addEventListener('click', closeChat);
+}
 
-  const textInput = document.getElementById('cc-text-input');
-  const sendBtn = document.getElementById('cc-text-send');
+function cck9Answer(q){
+  cck9AddMsg('user', q);
+  document.getElementById('cck9-chips').innerHTML = '';
+  const match = CCK9_FAQS.find(f => f.q === q);
+  setTimeout(() => {
+    if(match){
+      cck9AddMsg('bot', match.a);
+    } else {
+      cck9AddMsg('bot', cck9Search(q));
+    }
+    cck9SetChips(['How does training work?','What programs do you offer?','Do you ship equipment?','How do I get started?']);
+  }, 350);
+}
 
-  function handleSend() {
-    const val = textInput.value.trim();
-    if (!val) return;
-    addMessage(val, 'user');
-    textInput.value = '';
-    setTimeout(() => addMessage(findAnswer(val), 'bot'), 300);
+function cck9Search(input){
+  const lower = input.toLowerCase();
+  for(const faq of CCK9_FAQS){
+    const keywords = faq.q.toLowerCase().split(/\s+/).concat(faq.a.toLowerCase().split(/\s+/));
+    if(keywords.some(k => k.length > 3 && lower.includes(k))) return faq.a;
   }
-  sendBtn.addEventListener('click', handleSend);
-  textInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
-})();
+  return "Great question! For anything not covered here, please fill out our contact form and we will get back to you within 24 hours.";
+}
+
+function cck9Send(){
+  const input = document.getElementById('cck9-input');
+  const val = input.value.trim();
+  if(!val) return;
+  cck9Answer(val);
+  input.value = '';
+}
 </script>
 <!-- WIDGET END -->
 </body>
