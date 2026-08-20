@@ -67,6 +67,14 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 <script>
 const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
 
+// If already logged in, skip straight to the dashboard instead of showing the login form
+(async () => {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (user) {
+    window.location.href = 'dashboard.html';
+  }
+})();
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('loginBtn');
