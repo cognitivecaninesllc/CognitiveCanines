@@ -93,6 +93,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     <div id="welcomeInfo"><p class="empty-state">Loading...</p></div>
   </div>
 
+  <div class="dash-section" id="intakeSection" style="display:none">
+    <h3>My Intake</h3>
+    <div id="intakeInfo"></div>
+  </div>
+
   <div class="dash-section">
     <h3>My Trainer</h3>
     <div id="trainerInfo"><p class="empty-state">Loading...</p></div>
@@ -112,6 +117,25 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 
 <script>
 const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
+
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+async function loadIntake() {
+  try {
+    const { data } = await supabaseClient.from('intake_results').select('*').order('created_at', { ascending: false }).limit(1);
+    if (!data || !data.length) return;
+    const r = data[0], a = r.answers || {};
+    const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
+    const rows = [
+      ['Dog\'s age', a.age], ['Main goal', a.goal], ['Behaviors', concerns],
+      ['Seriousness', a.severity], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog],
+      ['Starting point', r.recommended_tier],
+      ['Submitted', new Date(r.created_at).toLocaleDateString()]
+    ].filter(x => x[1]);
+    document.getElementById('intakeInfo').innerHTML = rows.map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
+    document.getElementById('intakeSection').style.display = 'block';
+  } catch (e) { /* intake is optional, ignore errors */ }
+}
 
 async function loadDashboard() {
   const { data: { user } } = await supabaseClient.auth.getUser();
@@ -138,8 +162,13 @@ async function loadDashboard() {
     <div class="info-row"><span>Your Name</span><span>${client.full_name}</span></div>
     ${client.dog_name ? `<div class="info-row"><span>Dog's Name</span><span>${client.dog_name}</span></div>` : ''}
     ${client.breed ? `<div class="info-row"><span>Breed</span><span>${client.breed}</span></div>` : ''}
+    ${client.dog_age ? `<div class="info-row"><span>Age</span><span>${client.dog_age}</span></div>` : ''}
+    ${client.dog_sex ? `<div class="info-row"><span>Sex</span><span>${client.dog_sex}</span></div>` : ''}
+    ${client.dog_fixed ? `<div class="info-row"><span>Spayed / Neutered</span><span>${client.dog_fixed}</span></div>` : ''}
     ${client.program_tier ? `<div class="info-row"><span>Program</span><span>${client.program_tier}</span></div>` : ''}
   `;
+
+  loadIntake();
 
   if (client.trainers) {
     document.getElementById('trainerInfo').innerHTML = `
