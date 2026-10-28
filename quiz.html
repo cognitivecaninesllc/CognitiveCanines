@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="copyright" content="Cognitive Canines">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta name="description" content="Cognitive Canines: 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -141,6 +141,13 @@ footer p{font-size:11px;letter-spacing:0.06em}
   .contact-left,.contact-right{flex:1}
 }
 
+.q-count-line{text-align:right;margin-top:-.4rem}
+.q-result-box{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1.2rem;margin:1.4rem 0}
+.q-result-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.q-result-head{font-family:var(--serif);font-size:1.5rem;line-height:1.3;margin-bottom:.5rem}
+.q-result-box p{margin-bottom:.6rem}
+.q-result-box p:last-child{margin-bottom:0}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a8278' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.4rem}
 </style>
 
 <style>
@@ -193,19 +200,19 @@ footer p{font-size:11px;letter-spacing:0.06em}
   <a href="shop.html" onclick="closeMenu()">Shop</a>
   <a href="privacy.html" onclick="closeMenu()">Privacy</a>
   <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
-  <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+  <a href="quiz.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
 </div>
-<div class="status-banner">We are now accepting select clients for select programs. <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Send an inquiry</a> to be considered.</div>
+<div class="status-banner">We are now accepting select clients for select programs. <a href="quiz.html" style="color:#1a1c19;text-decoration:underline">Take the intake quiz</a> to be considered.</div>
 
 
 <section class="quiz-section">
   <div class="quiz-card">
     <div id="quizIntro">
-      <div class="section-eyebrow">Intake Quiz</div>
+      <div class="section-eyebrow">Intake Quiz and Inquiry</div>
       <h2>Find your starting point.</h2>
-      <p id="introText">Answer a few quick questions about you and your dog. It takes about two minutes, and we will point you to the program that fits best. Your answers go straight to your trainer, so you will not have to repeat yourself.</p>
+      <p>Answer a few quick questions about you and your dog, then tell us how to reach you. It takes about three minutes. We will recommend a starting program and send your inquiry to your trainer in one go, so there is no separate form to fill out.</p>
       <button type="button" class="q-btn q-primary" id="startBtn">Start the quiz</button>
-      <p class="q-small" id="introSkip">Already have questions? <a href="contact.html">Visit the contact page</a>.</p>
+      <p class="q-small">Just have a question? <a href="contact.html">Contact us</a>.</p>
     </div>
 
     <div id="quizMain" hidden>
@@ -214,16 +221,28 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <h2 class="q-title" id="qTitle" tabindex="-1"></h2>
       <p class="q-hint" id="qHint"></p>
       <div id="qOpts" role="group" aria-labelledby="qTitle"></div>
+
       <div id="qText" hidden>
         <div class="form-group"><label for="qGood">Your answer (optional)</label><textarea id="qGood" rows="5" maxlength="500" placeholder="A sentence or two is plenty. There are no wrong answers."></textarea></div>
-        <p class="q-small" id="qGoodCount" style="text-align:right;margin-top:-.4rem">0 / 500</p>
+        <p class="q-small q-count-line" id="qGoodCount">0 / 500</p>
       </div>
-      <form id="qContact" hidden novalidate>
+
+      <form id="qYou" hidden novalidate>
         <div class="form-group"><label for="qName">Your Name</label><input type="text" id="qName" autocomplete="name" maxlength="120" required></div>
         <div class="form-group"><label for="qEmail">Email</label><input type="email" id="qEmail" autocomplete="email" maxlength="254" required></div>
-        <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
-        <p class="q-small" style="text-align:left;margin-top:0">By continuing you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
+        <div class="form-group"><label for="qLoc">Your Location (optional)</label><input type="text" id="qLoc" autocomplete="address-level2" maxlength="120" placeholder="City, Country"></div>
       </form>
+
+      <form id="qDogForm" hidden novalidate>
+        <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
+        <div class="form-group"><label for="qBreed">Breed (optional)</label><input type="text" id="qBreed" maxlength="120" placeholder="Malinois mix"></div>
+        <div class="form-group"><label for="qSex">Sex (optional)</label><select id="qSex"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
+        <div class="form-group"><label for="qFixed">Spayed / Neutered (optional)</label><select id="qFixed"><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
+        <div class="form-group"><label for="qGoals">Anything else you would like us to know? (optional)</label><textarea id="qGoals" rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
+        <input type="text" id="qHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+        <p class="q-small" style="text-align:left;margin-top:0">By sending this you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
+      </form>
+
       <p class="q-err" id="qErr" role="alert"></p>
       <div class="q-nav">
         <button type="button" class="q-btn q-ghost" id="backBtn">Back</button>
@@ -232,13 +251,18 @@ footer p{font-size:11px;letter-spacing:0.06em}
     </div>
 
     <div id="quizResult" hidden>
-      <div class="section-eyebrow">Your result</div>
-      <h2 id="rHead"></h2>
-      <p id="rBody"></p>
-      <p class="q-note" id="rNote"></p>
+      <div class="section-eyebrow">Inquiry sent</div>
+      <h2 id="rThanks">Thank you!</h2>
+      <p>We received your inquiry and will reach out within 24 hours to talk about you and your dog.</p>
+      <div class="q-result-box">
+        <div class="q-result-label">Your recommended starting point</div>
+        <div class="q-result-head" id="rHead"></div>
+        <p id="rBody"></p>
+        <p class="q-note" id="rNote"></p>
+      </div>
       <div class="q-actions">
-        <a class="q-btn q-primary" id="rContinue" href="contact.html">Continue to your inquiry</a>
-        <a class="q-btn q-ghost" href="programs.html">View programs</a>
+        <a class="q-btn q-primary" href="programs.html">View programs</a>
+        <a class="q-btn q-ghost" href="index.html">Back to home</a>
       </div>
       <p class="q-small" id="rSaved"></p>
     </div>
@@ -270,6 +294,7 @@ document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => 
 (function(){
 var SB_URL='https://mjgruhbmenjzjcrrwnyl.supabase.co/rest/v1/intake_results';
 var SB_KEY='sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa';
+var FORM_URL='https://formspree.io/f/mrppkvdd';
 var steps=[
 {k:'age',t:"How old is your dog?",o:["Under 6 months","6 to 18 months","Adult","Senior"]},
 {k:'goal',t:"What is your main goal?",o:["Puppy basics","General obedience","A behavior concern","Sport"]},
@@ -277,8 +302,9 @@ var steps=[
 {k:'severity',t:"How serious is it?",o:["No concerns","Mild","Moderate","Serious, including any bite history"]},
 {k:'sport',t:"Any interest in dog sports?",o:["None","Curious","Training or competing"]},
 {k:'support',t:"How much support do you want?",o:["Self-paced videos","Live group sessions","Private coaching"]},
-{k:'good_dog',t:"Describe a \u201cgood dog\u201d in your own words.",hint:"This helps us understand what success looks like to you.",text:true},
-{k:'contact',t:"Where should we send your results?",contact:true}
+{k:'good_dog',t:"Describe a “good dog” in your own words.",hint:"This helps us understand what success looks like to you.",text:true},
+{k:'you',t:"How can we reach you?",form:'qYou'},
+{k:'dog',t:"Tell us about your dog.",form:'qDogForm'}
 ];
 var tiers={
 Bronze:["$29/mo","Self-paced foundations with a pre-recorded library."],
@@ -287,8 +313,9 @@ Gold:["$149/mo","Private one-on-one coaching with behavior foundations."],
 Platinum:["$249/mo","Advanced behavior modification for moderate concerns."],
 Celestial:["$399/mo","Elite sport and high-level behavior coaching."]
 };
-var i=0,a={},saving=false;
+var i=0,a={},saving=false,me={};
 var $=function(id){return document.getElementById(id)};
+var v=function(id){return $(id).value.trim()};
 
 function route(){
   if(a.severity.indexOf('Serious')===0)return null;
@@ -306,11 +333,12 @@ function render(){
   $('qHint').textContent=s.hint||'';
   $('qErr').textContent='';
   var box=$('qOpts');box.innerHTML='';
-  $('qContact').hidden=!s.contact;
+  $('qYou').hidden=s.form!=='qYou';
+  $('qDogForm').hidden=s.form!=='qDogForm';
   $('qText').hidden=!s.text;
-  box.hidden=!!(s.contact||s.text);
+  box.hidden=!!(s.form||s.text);
   if(s.text){$('qGood').value=a.good_dog||'';$('qGoodCount').textContent=$('qGood').value.length+' / 500'}
-  if(!s.contact&&!s.text){
+  if(!s.form&&!s.text){
     s.o.forEach(function(label){
       var b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=label;
       var cur=a[s.k];
@@ -330,74 +358,84 @@ function render(){
       box.appendChild(b);
     });
   }
-  $('nextBtn').textContent=i===steps.length-1?'See my result':'Next';
+  $('nextBtn').textContent=i===steps.length-1?'Send my inquiry':'Next';
   $('backBtn').style.visibility=i===0?'hidden':'visible';
 }
 function go(n){i=n;render();var t=$('qTitle');if(t&&t.focus){t.focus({preventScroll:true})}window.scrollTo({top:0,behavior:'smooth'})}
 
-$('startBtn').onclick=function(){
-  $('quizIntro').hidden=true;$('quizMain').hidden=false;
-  try{var q=JSON.parse(sessionStorage.getItem('cck_quiz')||sessionStorage.getItem('cck_quiz_pre')||'null');if(q){$('qName').value=q.name||'';$('qEmail').value=q.email||'';$('qDog').value=q.dog||''}}catch(e){}
-  go(0);
-};
-$('backBtn').onclick=function(){if(i>0&&!saving){if(steps[i].text){a.good_dog=$('qGood').value.trim().slice(0,500)}go(i-1)}};
+$('startBtn').onclick=function(){$('quizIntro').hidden=true;$('quizMain').hidden=false;go(0)};
 $('qGood').addEventListener('input',function(){$('qGoodCount').textContent=this.value.length+' / 500'});
+$('backBtn').onclick=function(){
+  if(saving||i===0)return;
+  if(steps[i].text){a.good_dog=v('qGood').slice(0,500)}
+  go(i-1);
+};
 $('nextBtn').onclick=function(){
   if(saving)return;
   var s=steps[i];
-  if(s.text){a.good_dog=$('qGood').value.trim().slice(0,500);go(i+1);return}
-  if(!s.contact){
-    var v=a[s.k];
-    if(!v||(s.m&&v.length===0)){$('qErr').textContent='Please choose an answer to continue.';return}
-    go(i+1);return;
+  if(s.text){a.good_dog=v('qGood').slice(0,500);go(i+1);return}
+  if(s.form==='qYou'){
+    var n=v('qName'),em=v('qEmail').toLowerCase();
+    if(!n){$('qErr').textContent='Please enter your name.';return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){$('qErr').textContent='Please enter a valid email address.';return}
+    me={name:n,email:em,location:v('qLoc')};go(i+1);return;
   }
-  var name=$('qName').value.trim(),email=$('qEmail').value.trim().toLowerCase(),dog=$('qDog').value.trim();
-  if(!name||!dog){$('qErr').textContent='Please enter your name and your dog\'s name.';return}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){$('qErr').textContent='Please enter a valid email address.';return}
-  submit(name,email,dog);
+  if(s.form==='qDogForm'){
+    if(!v('qDog')){$('qErr').textContent='Please enter your dog\'s name.';return}
+    submit();return;
+  }
+  var ans=a[s.k];
+  if(!ans||(s.m&&ans.length===0)){$('qErr').textContent='Please choose an answer to continue.';return}
+  go(i+1);
 };
 function summary(){
   return 'Age: '+a.age+' | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support+(a.good_dog?' | Good dog: '+a.good_dog:'');
 }
-function submit(name,email,dog){
-  saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Saving...';
+function submit(){
+  var dogName=v('qDog'),breed=v('qBreed'),sex=$('qSex').value,fixed=$('qFixed').value,goals=v('qGoals').slice(0,600);
   var tier=route();
-  var row={full_name:name,email:email,dog_name:dog,answers:a,recommended_tier:tier||'Consultation first'};
-  try{sessionStorage.setItem('cck_quiz',JSON.stringify({name:name,email:email,dog:dog,tier:tier||'',summary:summary()}))}catch(e){}
-  fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)})
-    .then(function(r){showResult(tier,r.ok)})
-    .catch(function(){showResult(tier,false)});
+  var tierLabel=tier||'Consultation first';
+  // honeypot: bots fill this; pretend success and send nothing
+  if($('qHp').value){showResult(tier,true);return}
+  saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Sending...';$('qErr').textContent='';
+  var all=Object.assign({},a,{location:me.location,breed:breed,sex:sex,fixed:fixed,goals:goals});
+  var row={full_name:me.name,email:me.email,dog_name:dogName,answers:all,recommended_tier:tierLabel};
+  var fd=new FormData();
+  fd.append('_subject','New intake inquiry from '+me.name);
+  fd.append('inquiry_type','Intake quiz and inquiry');
+  fd.append('name',me.name);fd.append('email',me.email);fd.append('location',me.location);
+  fd.append('dog_name',dogName);fd.append('breed',breed);fd.append('dog_sex',sex);fd.append('spayed_neutered',fixed);
+  fd.append('program_interest',tierLabel);fd.append('goals',goals);
+  fd.append('quiz_answers',summary());
+  var saved=fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)}).then(function(r){return r.ok}).catch(function(){return false});
+  var mailed=fetch(FORM_URL,{method:'POST',body:fd,headers:{'Accept':'application/json'}}).then(function(r){return r.ok}).catch(function(){return false});
+  Promise.all([saved,mailed]).then(function(res){
+    saving=false;
+    if(!res[0]&&!res[1]){
+      $('nextBtn').disabled=false;$('nextBtn').textContent='Send my inquiry';
+      $('qErr').textContent='Something went wrong sending your inquiry. Please check your connection and try again, or email admin@cognitivecanines.com.';
+      return;
+    }
+    showResult(tier,res[0],res[1]);
+  });
 }
 function showResult(tier,saved){
   saving=false;
-  try{localStorage.setItem('cck_quiz_done','1')}catch(e){}
   $('quizMain').hidden=true;$('quizResult').hidden=false;
+  var first=(me.name||'').split(' ')[0];
+  $('rThanks').textContent=first?('Thank you, '+first+'!'):'Thank you!';
   if(tier){
-    $('rHead').textContent='Recommended starting point: '+tier;
-    $('rBody').textContent=tiers[tier][1]+' '+tiers[tier][0]+'.';
+    $('rHead').textContent=tier+' ('+tiers[tier][0]+')';
+    $('rBody').textContent=tiers[tier][1];
     $('rNote').textContent='This is a starting point. Your consultation confirms the right fit.';
   }else{
     $('rHead').textContent='Let\'s talk first.';
-    $('rBody').textContent='Based on what you shared, the best next step is a consultation before choosing a program. Send an inquiry and we will reach out within 24 hours.';
+    $('rBody').textContent='Based on what you shared, the best next step is a consultation before choosing a program.';
     $('rNote').textContent='';
   }
-  $('rSaved').textContent=saved?'Your answers have been sent to your trainer. Your details will be filled in on the next page.':'We could not save your answers just now, but your details will carry over to the inquiry form so nothing is lost.';
+  $('rSaved').textContent='';
   window.scrollTo({top:0,behavior:'smooth'});
 }
-})();
-
-(function(){
-  var from=(new URLSearchParams(location.search)).get('from');
-  var dest=from==='programs'?'programs.html':'contact.html';
-  var draft=null;try{draft=JSON.parse(sessionStorage.getItem('cck_draft')||'null')}catch(e){}
-  var cont=document.getElementById('rContinue');if(cont)cont.href=dest;
-  if(draft||from){
-    document.getElementById('introText').textContent='Before we send your inquiry, we ask every new client to complete this quick quiz. It takes about two minutes, and what you already typed is saved, so you will not have to enter it again.';
-    document.getElementById('introSkip').hidden=true;
-    if(cont)cont.textContent='Back to your inquiry';
-  }
-  if(draft){try{var ex=JSON.parse(sessionStorage.getItem('cck_quiz')||'null')||{};
-    sessionStorage.setItem('cck_quiz_pre',JSON.stringify({name:draft.name||'',email:draft.email||'',dog:draft.dog_name||''}))}catch(e){}}
 })();
 
 function toggleMenu() {
