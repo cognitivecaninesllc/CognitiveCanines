@@ -85,6 +85,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     <div id="documentsList"><p class="empty-state">Loading...</p></div>
   </div>
 
+  <div class="dash-section" id="resourcesSection" style="display:none">
+    <h3>Resources</h3>
+    <div id="resourcesList"></div>
+  </div>
+
   <div class="dash-section">
     <h3>My Session Recordings</h3>
     <div id="recordingsList"><p class="empty-state">Loading...</p></div>
@@ -105,11 +110,22 @@ async function checkAdmin() {
   return user;
 }
 
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+const TIER_RANK = { Bronze: 1, Silver: 2, Gold: 3, Platinum: 4, Celestial: 5 };
+async function loadResourcesPreview(client) {
+  const { data } = await supabaseClient.from('resources').select('*').order('title');
+  const mine = (data || []).filter(r => (TIER_RANK[client.program_tier] || 0) >= (TIER_RANK[r.min_tier] || 99));
+  if (!mine.length) return;
+  document.getElementById('resourcesList').innerHTML = mine.map(r => `<div class="doc-item"><div style="font-weight:500;font-size:0.92rem">${esc(r.title)}</div>${r.description ? `<div class="item-date">${esc(r.description)}</div>` : ''}</div>`).join('');
+  document.getElementById('resourcesSection').style.display = 'block';
+}
+
 async function loadPreview() {
   if (!clientId) return;
 
   const { data: client } = await supabaseClient.from('clients').select('*, trainers(*)').eq('id', clientId).single();
   if (!client) return;
+  loadResourcesPreview(client);
 
   if (client.trainers) {
     document.getElementById('trainerInfo').innerHTML = `
