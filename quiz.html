@@ -203,9 +203,9 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div id="quizIntro">
       <div class="section-eyebrow">Intake Quiz</div>
       <h2>Find your starting point.</h2>
-      <p>Answer a few quick questions about you and your dog. It takes about two minutes, and we will point you to the program that fits best. Your answers go straight to your trainer, so you will not have to repeat yourself.</p>
+      <p id="introText">Answer a few quick questions about you and your dog. It takes about two minutes, and we will point you to the program that fits best. Your answers go straight to your trainer, so you will not have to repeat yourself.</p>
       <button type="button" class="q-btn q-primary" id="startBtn">Start the quiz</button>
-      <p class="q-small">Prefer to skip it? <a href="contact.html">Send an inquiry directly</a>.</p>
+      <p class="q-small" id="introSkip">Already have questions? <a href="contact.html">Visit the contact page</a>.</p>
     </div>
 
     <div id="quizMain" hidden>
@@ -214,6 +214,10 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <h2 class="q-title" id="qTitle" tabindex="-1"></h2>
       <p class="q-hint" id="qHint"></p>
       <div id="qOpts" role="group" aria-labelledby="qTitle"></div>
+      <div id="qText" hidden>
+        <div class="form-group"><label for="qGood">Your answer (optional)</label><textarea id="qGood" rows="5" maxlength="500" placeholder="A sentence or two is plenty. There are no wrong answers."></textarea></div>
+        <p class="q-small" id="qGoodCount" style="text-align:right;margin-top:-.4rem">0 / 500</p>
+      </div>
       <form id="qContact" hidden novalidate>
         <div class="form-group"><label for="qName">Your Name</label><input type="text" id="qName" autocomplete="name" maxlength="120" required></div>
         <div class="form-group"><label for="qEmail">Email</label><input type="email" id="qEmail" autocomplete="email" maxlength="254" required></div>
@@ -233,7 +237,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <p id="rBody"></p>
       <p class="q-note" id="rNote"></p>
       <div class="q-actions">
-        <a class="q-btn q-primary" href="contact.html">Continue to your inquiry</a>
+        <a class="q-btn q-primary" id="rContinue" href="contact.html">Continue to your inquiry</a>
         <a class="q-btn q-ghost" href="programs.html">View programs</a>
       </div>
       <p class="q-small" id="rSaved"></p>
@@ -273,6 +277,7 @@ var steps=[
 {k:'severity',t:"How serious is it?",o:["No concerns","Mild","Moderate","Serious, including any bite history"]},
 {k:'sport',t:"Any interest in dog sports?",o:["None","Curious","Training or competing"]},
 {k:'support',t:"How much support do you want?",o:["Self-paced videos","Live group sessions","Private coaching"]},
+{k:'good_dog',t:"Describe a \u201cgood dog\u201d in your own words.",hint:"This helps us understand what success looks like to you.",text:true},
 {k:'contact',t:"Where should we send your results?",contact:true}
 ];
 var tiers={
@@ -302,8 +307,10 @@ function render(){
   $('qErr').textContent='';
   var box=$('qOpts');box.innerHTML='';
   $('qContact').hidden=!s.contact;
-  box.hidden=!!s.contact;
-  if(!s.contact){
+  $('qText').hidden=!s.text;
+  box.hidden=!!(s.contact||s.text);
+  if(s.text){$('qGood').value=a.good_dog||'';$('qGoodCount').textContent=$('qGood').value.length+' / 500'}
+  if(!s.contact&&!s.text){
     s.o.forEach(function(label){
       var b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=label;
       var cur=a[s.k];
@@ -330,13 +337,15 @@ function go(n){i=n;render();var t=$('qTitle');if(t&&t.focus){t.focus({preventScr
 
 $('startBtn').onclick=function(){
   $('quizIntro').hidden=true;$('quizMain').hidden=false;
-  try{var q=JSON.parse(sessionStorage.getItem('cck_quiz')||'null');if(q){$('qName').value=q.name||'';$('qEmail').value=q.email||'';$('qDog').value=q.dog||''}}catch(e){}
+  try{var q=JSON.parse(sessionStorage.getItem('cck_quiz')||sessionStorage.getItem('cck_quiz_pre')||'null');if(q){$('qName').value=q.name||'';$('qEmail').value=q.email||'';$('qDog').value=q.dog||''}}catch(e){}
   go(0);
 };
-$('backBtn').onclick=function(){if(i>0&&!saving)go(i-1)};
+$('backBtn').onclick=function(){if(i>0&&!saving){if(steps[i].text){a.good_dog=$('qGood').value.trim().slice(0,500)}go(i-1)}};
+$('qGood').addEventListener('input',function(){$('qGoodCount').textContent=this.value.length+' / 500'});
 $('nextBtn').onclick=function(){
   if(saving)return;
   var s=steps[i];
+  if(s.text){a.good_dog=$('qGood').value.trim().slice(0,500);go(i+1);return}
   if(!s.contact){
     var v=a[s.k];
     if(!v||(s.m&&v.length===0)){$('qErr').textContent='Please choose an answer to continue.';return}
@@ -348,7 +357,7 @@ $('nextBtn').onclick=function(){
   submit(name,email,dog);
 };
 function summary(){
-  return 'Age: '+a.age+' | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support;
+  return 'Age: '+a.age+' | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support+(a.good_dog?' | Good dog: '+a.good_dog:'');
 }
 function submit(name,email,dog){
   saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Saving...';
@@ -361,6 +370,7 @@ function submit(name,email,dog){
 }
 function showResult(tier,saved){
   saving=false;
+  try{localStorage.setItem('cck_quiz_done','1')}catch(e){}
   $('quizMain').hidden=true;$('quizResult').hidden=false;
   if(tier){
     $('rHead').textContent='Recommended starting point: '+tier;
@@ -374,6 +384,20 @@ function showResult(tier,saved){
   $('rSaved').textContent=saved?'Your answers have been sent to your trainer. Your details will be filled in on the next page.':'We could not save your answers just now, but your details will carry over to the inquiry form so nothing is lost.';
   window.scrollTo({top:0,behavior:'smooth'});
 }
+})();
+
+(function(){
+  var from=(new URLSearchParams(location.search)).get('from');
+  var dest=from==='programs'?'programs.html':'contact.html';
+  var draft=null;try{draft=JSON.parse(sessionStorage.getItem('cck_draft')||'null')}catch(e){}
+  var cont=document.getElementById('rContinue');if(cont)cont.href=dest;
+  if(draft||from){
+    document.getElementById('introText').textContent='Before we send your inquiry, we ask every new client to complete this quick quiz. It takes about two minutes, and what you already typed is saved, so you will not have to enter it again.';
+    document.getElementById('introSkip').hidden=true;
+    if(cont)cont.textContent='Back to your inquiry';
+  }
+  if(draft){try{var ex=JSON.parse(sessionStorage.getItem('cck_quiz')||'null')||{};
+    sessionStorage.setItem('cck_quiz_pre',JSON.stringify({name:draft.name||'',email:draft.email||'',dog:draft.dog_name||''}))}catch(e){}}
 })();
 
 function toggleMenu() {
