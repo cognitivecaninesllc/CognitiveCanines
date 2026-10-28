@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="copyright" content="Cognitive Canines">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta name="description" content="Cognitive Canines: 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -169,6 +169,8 @@ footer p{font-size:11px;letter-spacing:0.06em}
 .quiz-cta-btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.7rem 1.4rem;background:var(--accent);color:#fff;text-decoration:none;font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;border-radius:2px;text-align:center}
 .quiz-cta-btn:hover{background:var(--accent2)}
 @media(min-width:600px){.quiz-cta{flex-direction:row;align-items:center;justify-content:space-between}.quiz-cta-btn{flex-shrink:0}}
+.general-q{margin-top:2.2rem;padding-top:1.8rem;border-top:0.5px solid var(--border)}
+.general-q h3{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:1rem}
 </style>
 </head>
 <body>
@@ -190,9 +192,9 @@ footer p{font-size:11px;letter-spacing:0.06em}
   <a href="shop.html" onclick="closeMenu()">Shop</a>
   <a href="privacy.html" onclick="closeMenu()">Privacy</a>
   <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
-  <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+  <a href="quiz.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
 </div>
-<div class="status-banner">We are now accepting select clients for select programs. <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Send an inquiry</a> to be considered.</div>
+<div class="status-banner">We are now accepting select clients for select programs. <a href="quiz.html" style="color:#1a1c19;text-decoration:underline">Take the intake quiz</a> to be considered.</div>
 
 
 <section class="tiers">
@@ -254,7 +256,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div class="tier-panel" id="tier-platinum">
       <h3>Platinum</h3>
       <div class="tier-level">Behavior Modification</div>
-      <p>Gold access plus advanced content targeting minor to moderate behavior modification. Your trainer will assess your dog's specific needs and ship the appropriate tools for their protocol — which may include a basket muzzle if required.</p>
+      <p>Gold access plus advanced content targeting minor to moderate behavior modification. Your trainer will assess your dog's specific needs and ship the appropriate tools for their protocol, which may include a basket muzzle if required.</p>
       <div class="tier-features-list">
         <div class="tier-feat"><span class="tier-feat-check">+</span>All Gold content and sessions</div>
         <div class="tier-feat"><span class="tier-feat-check">+</span>Advanced behavior modification content</div>
@@ -266,7 +268,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
     <div class="tier-panel" id="tier-celestial">
       <h3>Celestial</h3>
       <div class="tier-level">Elite Sport and Behavior</div>
-      <p>The highest level of coaching at Cognitive Canines. Platinum access plus elite guidance for serious behavior cases and sport dog training. Equipment is fully tailored to your dog — an e-collar will be included only if your trainer determines it is the right tool for your dog's protocol.</p>
+      <p>The highest level of coaching at Cognitive Canines. Platinum access plus elite guidance for serious behavior cases and sport dog training. Equipment is fully tailored to your dog. An e-collar will be included only if your trainer determines it is the right tool for your dog's protocol.</p>
       <div class="tier-features-list">
         <div class="tier-feat"><span class="tier-feat-check">+</span>All Platinum content and sessions</div>
         <div class="tier-feat"><span class="tier-feat-check">+</span>Elite sport dog training</div>
@@ -281,23 +283,23 @@ footer p{font-size:11px;letter-spacing:0.06em}
 
 <section class="booking">
   <div class="booking-left">
-    <div class="quiz-cta">
-      <div class="quiz-cta-text"><strong>New here? Start with our 2 minute intake quiz.</strong><span id="quizCtaSub">It points you to the right program and fills in your details below.</span></div>
-      <a class="quiz-cta-btn" href="quiz.html">Take the quiz</a>
-    </div>
-    <form action="https://formspree.io/f/mrppkvdd" method="POST">
     <div class="section-eyebrow reveal">Get Started</div>
     <h2 class="reveal reveal-delay-1">Book a consultation.</h2>
-    <p class="reveal reveal-delay-2">Tell us about your dog and your goals. We will reach out within 24 hours to find the right program for your team, wherever you are in the world.</p>
-    <div class="form-group reveal reveal-delay-3"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
-    <div class="form-group reveal reveal-delay-3"><label>Email</label><input type="email" name="email" placeholder="jane@example.com" required></div>
-    <div class="form-group reveal reveal-delay-3"><label>Your Location</label><input type="text" name="location" placeholder="City, Country"></div>
-    <div class="form-group reveal reveal-delay-3"><label>Dog's Name</label><input type="text" name="dog_name" placeholder="Biscuit"></div>
-    <div class="form-group reveal reveal-delay-3"><label>Breed and Age</label><input type="text" name="breed_age" placeholder="GSD, 3 yrs"></div>
-    <div class="form-group reveal reveal-delay-4"><label>Program Interest</label><select name="program_interest"><option value="">Select a tier...</option><option>Bronze — Self-paced foundations</option><option>Silver — Live group sessions</option><option>Gold — Private coaching</option><option>Platinum — Behavior modification</option><option>Celestial — Elite sport and behavior</option><option>Not sure — help me choose</option></select></div>
-    <div class="form-group reveal reveal-delay-4"><label>Tell us about your goals</label><textarea name="goals" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
-    <button type="submit" class="form-submit reveal reveal-delay-5">Send Inquiry</button>
-    </form>
+    <p class="reveal reveal-delay-2">Start with our intake quiz. It takes about three minutes, recommends a starting program, and sends your inquiry to us in one step, so there is no separate form. We will reach out within 24 hours.</p>
+    <div class="quiz-cta reveal reveal-delay-3">
+      <div class="quiz-cta-text"><strong>Take the intake quiz and send your inquiry</strong><span>Tell us about you and your dog, and we will recommend where to start.</span></div>
+      <a class="quiz-cta-btn" href="quiz.html">Start the quiz</a>
+    </div>
+    <div class="general-q reveal reveal-delay-4">
+      <h3>Just have a question?</h3>
+      <form action="https://formspree.io/f/mrppkvdd" method="POST">
+        <input type="hidden" name="inquiry_type" value="General question">
+        <div class="form-group"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="jane@example.com" required></div>
+        <div class="form-group"><label>Your Message</label><textarea name="message" placeholder="How can we help?" required></textarea></div>
+        <button type="submit" class="form-submit">Send Message</button>
+      </form>
+    </div>
   </div>
   <div class="booking-right reveal-right">
     <div class="info-box light"><h4>Our Guarantee</h4><p>Not satisfied after your first session? It is on us. We are committed to finding the right approach for you and your dog, no exceptions.</p></div>
@@ -335,7 +337,7 @@ document.querySelectorAll('form[action*="formspree.io"]').forEach(function(form)
     btn.disabled=true;btn.textContent='Sending...';
     var err=form.querySelector('.form-error');if(err)err.remove();
     fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
-      .then(function(r){if(r.ok){try{sessionStorage.removeItem('cck_quiz')}catch(e){}window.location.href='thanks.html';}else{throw new Error('fail');}})
+      .then(function(r){if(r.ok){try{sessionStorage.removeItem('cck_quiz');sessionStorage.removeItem('cck_draft')}catch(e){}window.location.href='thanks.html';}else{throw new Error('fail');}})
       .catch(function(){
         btn.disabled=false;btn.textContent=old;
         var m=document.createElement('p');m.className='form-error';m.style.cssText='color:#b3261e;margin-top:1rem';
@@ -344,20 +346,6 @@ document.querySelectorAll('form[action*="formspree.io"]').forEach(function(form)
       });
   });
 });
-
-(function(){
-  var q=null;try{q=JSON.parse(sessionStorage.getItem('cck_quiz')||'null')}catch(e){}
-  if(!q)return;
-  var f=document.querySelector('form[action*="formspree.io"]');if(!f)return;
-  function set(n,v){var el=f.querySelector('[name="'+n+'"]');if(el&&v&&!el.value)el.value=v}
-  set('name',q.name);set('email',q.email);set('dog_name',q.dog);
-  var sel=f.querySelector('select[name="program_interest"]');
-  if(sel&&q.tier){for(var k=0;k<sel.options.length;k++){if(sel.options[k].text.indexOf(q.tier)===0){sel.selectedIndex=k;break}}}
-  [['quiz_completed','yes'],['quiz_recommended_tier',q.tier||'Consultation first'],['quiz_answers',q.summary]].forEach(function(p){
-    var h=document.createElement('input');h.type='hidden';h.name=p[0];h.value=p[1]||'';f.appendChild(h)});
-  var sub=document.getElementById('quizCtaSub');if(sub)sub.textContent='You already took the quiz. Your details are filled in below.';
-  var btn=document.querySelector('.quiz-cta-btn');if(btn)btn.textContent='Retake quiz';
-})();
 
 function toggleMenu() {
   const nav = document.getElementById('navLinks');
