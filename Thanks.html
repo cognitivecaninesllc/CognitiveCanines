@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="robots" content="index, follow">
+<title>Thank You | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1a18;--ink2:#3a3830;--muted:#7a7568;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#e09558;--gold-light:#f2e8d8;
+  --surface:#f2f0eb;--white:#fff;--border:#ddd9d0;
+  --card-bg:#fff;--card-hover:#f5ede0;
+  --nav-bg:rgba(242,240,235,0.93);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --ink:#e8e4dc;--ink2:#c5bfb4;--muted:#8a8278;
+    --accent:#3d5c3e;--accent2:#5a7d4a;
+    --gold:#d4824a;--gold2:#e8a96a;--gold-light:#2a1f12;
+    --surface:#1a1c19;--white:#222520;--border:#333830;
+    --card-bg:#222520;--card-hover:#2a2f28;
+    --nav-bg:rgba(22,24,20,0.95);
+  }
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);transition:background 0.3s}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
+.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:200;transition:none}
+.nav-links.open{display:flex}
+.nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent2)}
+.nav-links .nav-cta{background:var(--accent);color:#fff !important;padding:0.7rem 2rem;border-radius:2px;font-size:1rem}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:201;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);transition:all 0.3s;border-radius:2px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-close{position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;font-size:2.2rem;line-height:1;color:var(--ink);cursor:pointer;padding:0.3rem 0.6rem}
+
+.status-banner{background:var(--gold);color:#1a1c19;text-align:center;padding:0.7rem 1.5rem;font-size:0.8rem;font-weight:500;letter-spacing:0.02em;margin-top:56px}
+@media(min-width:768px){.status-banner{margin-top:64px}}
+
+
+/* SCROLLING TICKER */
+.ticker-wrap{width:100%;overflow:hidden;background:var(--accent);padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ticker-item{display:flex;align-items:center;gap:0.6rem;padding:0 2.5rem;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:400}
+.ticker-item svg{width:13px;height:13px;stroke:var(--gold2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:0.5;flex-shrink:0}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:var(--white)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s}
+
+.section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+
+footer{background:var(--surface);color:var(--muted);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid var(--border);transition:background 0.3s}
+footer p{font-size:11px;letter-spacing:0.06em}
+.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
+.footer-links{display:flex;gap:1.5rem;margin-top:0.5rem}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .hamburger{display:none}
+  .nav-links{display:flex;position:fixed;top:0;right:0;bottom:auto;left:auto;height:auto;background:transparent;flex-direction:row;align-items:center;gap:1.5rem;padding:1rem 3rem 1rem 0;z-index:150}
+  .menu-close{display:none}
+  .nav-links a[href="index.html"]{display:none}
+  .nav-links a{font-size:12px}
+  .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
+  footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
+  .footer-links{margin-top:0}
+}
+
+
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;border-radius:2px;transition:border-color 0.2s,background 0.3s,color 0.3s;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-submit{width:100%;background:var(--accent);color:#fff;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;transition:background 0.2s;border-radius:2px;margin-top:0.4rem}
+.form-submit:hover{background:var(--accent2)}
+.info-box{padding:1.4rem;border-radius:2px;margin-top:1.2rem;transition:background 0.3s}
+.info-box.light{background:var(--surface);border:0.5px solid var(--border)}
+.info-box.dark{background:var(--accent);border:0.5px solid var(--border)}
+.info-box h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem}
+.info-box.light h4{color:var(--accent2)}
+.info-box.dark h4{color:var(--gold2)}
+.info-box p{font-size:0.83rem;line-height:1.7;font-weight:300}
+.info-box.light p{color:var(--muted)}
+.info-box.dark p{color:var(--ink2)}
+
+.contact-section{padding:4rem 1.5rem;display:flex;flex-direction:column;gap:3rem;background:var(--white);transition:background 0.3s}
+.contact-left h2{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
+.contact-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.contact-block{margin-bottom:1.5rem}
+.contact-block h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem}
+.contact-item{display:flex;align-items:center;gap:12px;padding:0.9rem 0;border-bottom:0.5px solid var(--border)}
+.contact-item:first-of-type{border-top:0.5px solid var(--border)}
+.c-icon{width:34px;height:34px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.3s}
+.c-icon svg{width:14px;height:14px;stroke:var(--accent2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.c-text{font-size:0.88rem;color:var(--ink2)}
+.c-text strong{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;font-weight:400}
+@media(min-width:768px){
+  .contact-section{flex-direction:row;padding:6rem 5rem;gap:5rem}
+  .contact-left,.contact-right{flex:1}
+}
+
+</style>
+<meta name="robots" content="noindex">
+<style>
+.thanks-section{min-height:70vh;display:flex;align-items:center;justify-content:center;padding:4rem 1.5rem}
+.thanks-card{max-width:560px;text-align:center}
+.thanks-icon{width:56px;height:56px;border-radius:50%;background:#1a3a2a;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.thanks-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.thanks-card h2{margin-bottom:1rem}
+.thanks-card p{margin-bottom:2rem;line-height:1.8}
+.thanks-links{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center}
+.thanks-links a{padding:.7rem 1.4rem;border:1px solid currentColor;border-radius:2px;text-decoration:none;color:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.thanks-links a:hover{background:#1a3a2a;color:#fff;border-color:#1a3a2a}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
+    <span>Cognitive Canines</span>
+  </a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-links" id="navLinks">
+  <button class="menu-close" onclick="closeMenu()" aria-label="Close menu">&times;</button>
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="about.html" onclick="closeMenu()">Our Story</a>
+  <a href="programs.html" onclick="closeMenu()">Programs</a>
+  <a href="shop.html" onclick="closeMenu()">Shop</a>
+  <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+  <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
+  <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+</div>
+<div class="status-banner">We are now accepting select clients for select programs. <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Send an inquiry</a> to be considered.</div>
+
+
+<div style="height:90px"></div>
+<section class="thanks-section">
+  <div class="thanks-card">
+    <div class="thanks-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="section-eyebrow">Message received</div>
+    <h2>Thank you!</h2>
+    <p>We got your inquiry and will reach out within 24 hours to talk about you and your dog. In the meantime, feel free to look around.</p>
+    <div class="thanks-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">Our Story</a>
+      <a href="programs.html">Programs</a>
+      <a href="shop.html">Shop</a>
+      <a href="portal/login.html">Client Login</a>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div>
+    <div class="footer-logo">Cognitive Canines</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <p><span id="year"></span> Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
+</footer>
+
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
+
+
+</body>
+</html>
