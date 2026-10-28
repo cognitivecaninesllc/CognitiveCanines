@@ -100,6 +100,16 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
   </div>
 
   <div class="dash-section">
+    <div class="section-head">
+      <h3>Resources</h3>
+      <button class="btn btn-sm" onclick="openResourceModal()">+ Upload Resource</button>
+    </div>
+    <p class="client-meta" style="margin:-0.4rem 0 0.8rem">Upload a file once. Every client at or above the tier you choose sees it in their portal automatically.</p>
+    <div id="resourcesAdminList"><p class="empty-state">Loading...</p></div>
+    <input type="file" id="replaceInput" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" style="display:none">
+  </div>
+
+  <div class="dash-section">
     <div class="section-head"><h3>Intake Quiz Submissions</h3></div>
     <div id="intakeList"><p class="empty-state">Loading...</p></div>
   </div>
@@ -152,6 +162,32 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
   </div>
 </div>
 
+<div id="resourceModal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <h3 id="resModalTitle">Upload a resource</h3>
+    <div id="resMsg" class="msg"></div>
+    <form id="resourceForm">
+      <div class="form-group"><label>Title</label><input type="text" id="resTitle" maxlength="150" required placeholder="Canine Behavior Scale"></div>
+      <div class="form-group"><label>Short description (optional)</label><input type="text" id="resDesc" maxlength="500" placeholder="How to rate and track your dog's behavior"></div>
+      <div class="form-group">
+        <label>Who can see it</label>
+        <select id="resTier">
+          <option value="Bronze">Bronze and above (everyone)</option>
+          <option value="Silver">Silver and above</option>
+          <option value="Gold" selected>Gold and above</option>
+          <option value="Platinum">Platinum and above</option>
+          <option value="Celestial">Celestial only</option>
+        </select>
+      </div>
+      <div class="form-group" id="resFileGroup"><label>File (PDF, PNG or JPG, up to 20 MB)</label><input type="file" id="resFile" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"></div>
+      <div style="display:flex;gap:0.6rem;margin-top:1rem">
+        <button type="submit" class="btn" id="resSaveBtn">Upload</button>
+        <button type="button" class="btn btn-secondary" onclick="closeResourceModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
 const EDGE_FUNCTION_URL = 'https://mjgruhbmenjzjcrrwnyl.supabase.co/functions/v1/create-client';
@@ -171,13 +207,14 @@ async function loadIntakeList(clients) {
   const { data, error } = await supabaseClient.from('intake_results').select('*').order('created_at', { ascending: false }).limit(50);
   if (error) { list.innerHTML = '<p class="empty-state">Could not load quiz submissions.</p>'; return; }
   if (!data || !data.length) { list.innerHTML = '<p class="empty-state">No quiz submissions yet.</p>'; return; }
+  INTAKES = data;
   const have = new Set((clients || []).map(c => String(c.email || '').toLowerCase()));
   list.innerHTML = data.map(r => {
     const a = r.answers || {};
     const sport = (a.sport === 'Curious' || a.sport === 'Training or competing');
     const consult = r.recommended_tier === 'Consultation first';
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
-    const detail = [['Age', a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog]]
+    const detail = [['Age', a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals]]
       .filter(x => x[1]).map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
     return `<details class="intake-item">
       <summary>
@@ -192,7 +229,10 @@ async function loadIntakeList(clients) {
         </div>
       </summary>
       <div class="intake-detail">${detail}
-        <button class="btn btn-sm btn-secondary" style="margin-top:.8rem" onclick="deleteIntake('${esc(r.id)}')">Delete submission</button>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem">
+          ${have.has(String(r.email).toLowerCase()) ? '' : `<button class="btn btn-sm" onclick="addFromIntake('${esc(r.id)}')">Add as client</button>`}
+          <button class="btn btn-sm btn-secondary" onclick="deleteIntake('${esc(r.id)}')">Delete submission</button>
+        </div>
       </div>
     </details>`;
   }).join('');
@@ -202,6 +242,150 @@ async function deleteIntake(id) {
   if (!confirm('Delete this quiz submission? This cannot be undone.')) return;
   await supabaseClient.from('intake_results').delete().eq('id', id);
   loadClients();
+}
+
+
+// ---------------- RESOURCES ----------------
+const MAX_BYTES = 20 * 1024 * 1024;
+const OK_TYPES = ['application/pdf', 'image/png', 'image/jpeg'];
+let RES = [];
+let editingId = null;
+
+function tierLabel(t) { return t === 'Celestial' ? 'Celestial only' : t + ' and above'; }
+function safeName(n) { return String(n || 'file').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-80); }
+function checkFile(f) {
+  if (!f) return 'Please choose a file.';
+  if (OK_TYPES.indexOf(f.type) === -1) return 'Only PDF, PNG or JPG files are allowed.';
+  if (f.size > MAX_BYTES) return 'That file is over 20 MB. Please make it smaller.';
+  return null;
+}
+function resMsg(text, ok) {
+  const m = document.getElementById('resMsg');
+  m.textContent = text; m.className = 'msg ' + (ok ? 'success' : 'error'); m.style.display = text ? 'block' : 'none';
+}
+
+async function loadResources() {
+  const list = document.getElementById('resourcesAdminList');
+  const { data, error } = await supabaseClient.from('resources').select('*').order('title');
+  if (error) { list.innerHTML = '<p class="empty-state">Could not load resources. Run update_2.sql in Supabase first.</p>'; return; }
+  RES = data || [];
+  if (!RES.length) { list.innerHTML = '<p class="empty-state">No resources yet. Click Upload Resource to add your first one.</p>'; return; }
+  list.innerHTML = RES.map(r => `
+    <div class="client-row" style="align-items:flex-start;flex-wrap:wrap;gap:0.6rem">
+      <div style="min-width:0;flex:1 1 220px">
+        <div class="client-name">${esc(r.title)}</div>
+        <div class="client-meta">${esc(r.file_name || '')} &middot; Updated ${new Date(r.updated_at || r.created_at).toLocaleDateString()}</div>
+        <div style="margin-top:0.4rem"><span class="badge badge-green">${esc(tierLabel(r.min_tier))}</span></div>
+      </div>
+      <div class="client-actions" style="flex-wrap:wrap">
+        <button class="btn btn-sm btn-secondary" onclick="viewResource('${esc(r.id)}')">View</button>
+        <button class="btn btn-sm btn-secondary" onclick="startReplace('${esc(r.id)}')">Replace file</button>
+        <button class="btn btn-sm btn-secondary" onclick="openResourceModal('${esc(r.id)}')">Edit</button>
+        <button class="btn btn-sm btn-secondary" onclick="deleteResource('${esc(r.id)}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function openResourceModal(id) {
+  editingId = id || null;
+  resMsg('');
+  document.getElementById('resourceForm').reset();
+  const r = id ? RES.find(x => x.id === id) : null;
+  document.getElementById('resModalTitle').textContent = r ? 'Edit resource' : 'Upload a resource';
+  document.getElementById('resSaveBtn').textContent = r ? 'Save changes' : 'Upload';
+  document.getElementById('resFileGroup').style.display = r ? 'none' : 'block';
+  if (r) {
+    document.getElementById('resTitle').value = r.title;
+    document.getElementById('resDesc').value = r.description || '';
+    document.getElementById('resTier').value = r.min_tier;
+  }
+  document.getElementById('resourceModal').style.display = 'flex';
+}
+function closeResourceModal() { document.getElementById('resourceModal').style.display = 'none'; }
+
+document.getElementById('resourceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('resSaveBtn');
+  const title = document.getElementById('resTitle').value.trim();
+  const description = document.getElementById('resDesc').value.trim() || null;
+  const min_tier = document.getElementById('resTier').value;
+  if (!title) { resMsg('Please enter a title.'); return; }
+  btn.disabled = true;
+  try {
+    if (editingId) {
+      const { error } = await supabaseClient.from('resources').update({ title, description, min_tier, updated_at: new Date().toISOString() }).eq('id', editingId);
+      if (error) throw error;
+    } else {
+      const f = document.getElementById('resFile').files[0];
+      const bad = checkFile(f);
+      if (bad) { resMsg(bad); btn.disabled = false; return; }
+      btn.textContent = 'Uploading...';
+      const path = crypto.randomUUID() + '-' + safeName(f.name);
+      const up = await supabaseClient.storage.from('resources').upload(path, f, { contentType: f.type, upsert: false });
+      if (up.error) throw up.error;
+      const ins = await supabaseClient.from('resources').insert({ title, description, min_tier, file_path: path, file_name: f.name });
+      if (ins.error) { await supabaseClient.storage.from('resources').remove([path]); throw ins.error; }
+    }
+    closeResourceModal();
+    await loadResources();
+  } catch (err) {
+    resMsg('Could not save: ' + (err.message || 'unknown error'));
+  }
+  btn.disabled = false;
+  btn.textContent = editingId ? 'Save changes' : 'Upload';
+});
+
+async function viewResource(id) {
+  const r = RES.find(x => x.id === id); if (!r) return;
+  const w = window.open('', '_blank');
+  const { data, error } = await supabaseClient.storage.from('resources').createSignedUrl(r.file_path, 300);
+  if (error || !data) { if (w) w.close(); alert('Could not open that file.'); return; }
+  if (w) w.location.href = data.signedUrl; else window.location.href = data.signedUrl;
+}
+
+function startReplace(id) {
+  const input = document.getElementById('replaceInput');
+  input.value = '';
+  input.onchange = async () => {
+    const f = input.files[0]; if (!f) return;
+    const bad = checkFile(f); if (bad) { alert(bad); return; }
+    const r = RES.find(x => x.id === id); if (!r) return;
+    const oldPath = r.file_path;
+    if (!confirm('Replace "' + r.title + '" with ' + f.name + '? Clients will see the new file right away.')) return;
+    const path = crypto.randomUUID() + '-' + safeName(f.name);
+    const up = await supabaseClient.storage.from('resources').upload(path, f, { contentType: f.type, upsert: false });
+    if (up.error) { alert('Upload failed: ' + up.error.message); return; }
+    const upd = await supabaseClient.from('resources').update({ file_path: path, file_name: f.name, updated_at: new Date().toISOString() }).eq('id', id);
+    if (upd.error) { await supabaseClient.storage.from('resources').remove([path]); alert('Could not update: ' + upd.error.message); return; }
+    await supabaseClient.storage.from('resources').remove([oldPath]);
+    loadResources();
+  };
+  input.click();
+}
+
+async function deleteResource(id) {
+  const r = RES.find(x => x.id === id); if (!r) return;
+  if (!confirm('Delete "' + r.title + '"? Clients will no longer see it. This cannot be undone.')) return;
+  const del = await supabaseClient.from('resources').delete().eq('id', id);
+  if (del.error) { alert('Could not delete: ' + del.error.message); return; }
+  await supabaseClient.storage.from('resources').remove([r.file_path]);
+  loadResources();
+}
+
+// ---------------- ADD CLIENT FROM A QUIZ SUBMISSION ----------------
+let INTAKES = [];
+function addFromIntake(id) {
+  const r = INTAKES.find(x => x.id === id); if (!r) return;
+  const a = r.answers || {};
+  openAddClientModal();
+  document.getElementById('newName').value = r.full_name || '';
+  document.getElementById('newEmail').value = r.email || '';
+  document.getElementById('newDog').value = r.dog_name || '';
+  document.getElementById('newBreed').value = a.breed || '';
+  document.getElementById('newSex').value = a.sex || '';
+  document.getElementById('newFixed').value = a.fixed || '';
+  const t = r.recommended_tier;
+  document.getElementById('newTier').value = (['Bronze','Silver','Gold','Platinum','Celestial'].indexOf(t) > -1) ? t : '';
 }
 
 async function loadClients() {
@@ -315,7 +499,7 @@ async function logout() {
 
 (async () => {
   const user = await checkAdmin();
-  if (user) loadClients();
+  if (user) { loadClients(); loadResources(); }
 })();
 </script>
 </body>
