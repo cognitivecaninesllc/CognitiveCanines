@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cognitive Canines — 100% virtual, relationship-first dog training. No geographic limits. Train from anywhere in the world.">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="robots" content="index, follow">
+<title>Intake Quiz | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1a18;--ink2:#3a3830;--muted:#7a7568;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#e09558;--gold-light:#f2e8d8;
+  --surface:#f2f0eb;--white:#fff;--border:#ddd9d0;
+  --card-bg:#fff;--card-hover:#f5ede0;
+  --nav-bg:rgba(242,240,235,0.93);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --ink:#e8e4dc;--ink2:#c5bfb4;--muted:#8a8278;
+    --accent:#3d5c3e;--accent2:#5a7d4a;
+    --gold:#d4824a;--gold2:#e8a96a;--gold-light:#2a1f12;
+    --surface:#1a1c19;--white:#222520;--border:#333830;
+    --card-bg:#222520;--card-hover:#2a2f28;
+    --nav-bg:rgba(22,24,20,0.95);
+  }
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--white);font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.5rem;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);transition:background 0.3s}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo .mark{width:30px;height:30px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0}
+.nav-logo .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.nav-logo span{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink)}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:200;transition:none}
+.nav-links.open{display:flex}
+.nav-links a{font-size:1.2rem;text-decoration:none;color:var(--ink);letter-spacing:0.06em;text-transform:uppercase;font-weight:400;transition:color 0.2s}
+.nav-links a:hover{color:var(--accent2)}
+.nav-links .nav-cta{background:var(--accent);color:#fff !important;padding:0.7rem 2rem;border-radius:2px;font-size:1rem}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;z-index:201;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);transition:all 0.3s;border-radius:2px}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-close{position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;font-size:2.2rem;line-height:1;color:var(--ink);cursor:pointer;padding:0.3rem 0.6rem}
+
+.status-banner{background:var(--gold);color:#1a1c19;text-align:center;padding:0.7rem 1.5rem;font-size:0.8rem;font-weight:500;letter-spacing:0.02em;margin-top:56px}
+@media(min-width:768px){.status-banner{margin-top:64px}}
+
+
+/* SCROLLING TICKER */
+.ticker-wrap{width:100%;overflow:hidden;background:var(--accent);padding:0.7rem 0;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ticker-item{display:flex;align-items:center;gap:0.6rem;padding:0 2.5rem;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);white-space:nowrap;font-weight:400}
+.ticker-item svg{width:13px;height:13px;stroke:var(--gold2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:0.5;flex-shrink:0}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.btn-primary{background:var(--accent);color:#fff;padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s;border-radius:2px;display:inline-block}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:transparent;color:var(--ink);padding:0.82rem 1.8rem;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;border-radius:2px;display:inline-block}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:var(--white)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s}
+
+.section-eyebrow{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+
+footer{background:var(--surface);color:var(--muted);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;align-items:center;text-align:center;border-top:0.5px solid var(--border);transition:background 0.3s}
+footer p{font-size:11px;letter-spacing:0.06em}
+.footer-logo{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2)}
+.footer-links{display:flex;gap:1.5rem;margin-top:0.5rem}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+
+@media(min-width:768px){
+  nav{padding:1rem 3rem}
+  .hamburger{display:none}
+  .nav-links{display:flex;position:fixed;top:0;right:0;bottom:auto;left:auto;height:auto;background:transparent;flex-direction:row;align-items:center;gap:1.5rem;padding:1rem 3rem 1rem 0;z-index:150}
+  .menu-close{display:none}
+  .nav-links a[href="index.html"]{display:none}
+  .nav-links a{font-size:12px}
+  .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
+  footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
+  .footer-links{margin-top:0}
+}
+
+
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;border-radius:2px;transition:border-color 0.2s,background 0.3s,color 0.3s;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent2)}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-submit{width:100%;background:var(--accent);color:#fff;padding:0.85rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;transition:background 0.2s;border-radius:2px;margin-top:0.4rem}
+.form-submit:hover{background:var(--accent2)}
+.info-box{padding:1.4rem;border-radius:2px;margin-top:1.2rem;transition:background 0.3s}
+.info-box.light{background:var(--surface);border:0.5px solid var(--border)}
+.info-box.dark{background:var(--accent);border:0.5px solid var(--border)}
+.info-box h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem}
+.info-box.light h4{color:var(--accent2)}
+.info-box.dark h4{color:var(--gold2)}
+.info-box p{font-size:0.83rem;line-height:1.7;font-weight:300}
+.info-box.light p{color:var(--muted)}
+.info-box.dark p{color:var(--ink2)}
+
+.contact-section{padding:4rem 1.5rem;display:flex;flex-direction:column;gap:3rem;background:var(--white);transition:background 0.3s}
+.contact-left h2{font-family:var(--serif);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;margin-bottom:0.7rem}
+.contact-left p{color:var(--muted);font-size:0.93rem;line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.contact-block{margin-bottom:1.5rem}
+.contact-block h4{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem}
+.contact-item{display:flex;align-items:center;gap:12px;padding:0.9rem 0;border-bottom:0.5px solid var(--border)}
+.contact-item:first-of-type{border-top:0.5px solid var(--border)}
+.c-icon{width:34px;height:34px;background:var(--surface);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.3s}
+.c-icon svg{width:14px;height:14px;stroke:var(--accent2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.c-text{font-size:0.88rem;color:var(--ink2)}
+.c-text strong{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;font-weight:400}
+@media(min-width:768px){
+  .contact-section{flex-direction:row;padding:6rem 5rem;gap:5rem}
+  .contact-left,.contact-right{flex:1}
+}
+
+</style>
+
+<style>
+.quiz-section{min-height:70vh;display:flex;justify-content:center;padding:2.5rem 1.25rem 4rem;background:var(--white)}
+.quiz-card{width:100%;max-width:640px}
+.quiz-card h2{font-family:var(--serif);font-size:clamp(1.7rem,6vw,2.6rem);font-weight:400;line-height:1.2;margin-bottom:.9rem}
+.quiz-card p{color:var(--muted);font-size:.95rem;line-height:1.8;font-weight:300;margin-bottom:1.4rem}
+.q-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.8rem 1.6rem;border-radius:2px;border:1px solid var(--accent);font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.q-primary{background:var(--accent);color:#fff}
+.q-primary:hover{background:var(--accent2);border-color:var(--accent2)}
+.q-ghost{background:transparent;color:var(--ink);border-color:var(--border)}
+.q-ghost:hover{border-color:var(--accent2)}
+.q-btn:disabled{opacity:.5;cursor:not-allowed}
+.q-small{font-size:.8rem !important;margin-top:1.2rem;margin-bottom:0 !important}
+.q-small a{color:var(--gold)}
+.q-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:1rem}
+.q-bar{height:100%;width:0;background:var(--accent2);transition:width .3s}
+.q-count{font-size:11px !important;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem !important}
+.q-title{outline:none}
+.q-hint{font-size:.82rem !important;margin-bottom:1rem !important;min-height:1px}
+.q-opt{display:block;width:100%;text-align:left;min-height:52px;padding:.85rem 1.1rem;margin:0 0 .6rem;font-family:var(--sans);font-size:.95rem;line-height:1.4;color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:border-color .15s,background .15s}
+.q-opt:focus-visible,.q-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.q-opt.sel{border-color:var(--accent2);background:var(--card-hover);box-shadow:inset 0 0 0 1px var(--accent2)}
+.q-err{color:#b3261e;min-height:1.4rem;font-size:.85rem !important;margin:.4rem 0 .8rem !important}
+@media(prefers-color-scheme:dark){.q-err{color:#f2a29a}}
+.q-nav{display:flex;gap:.7rem;justify-content:space-between}
+.q-nav .q-btn{flex:1}
+.q-note{font-size:.85rem !important}
+.q-actions{display:flex;flex-direction:column;gap:.7rem;margin-top:1.4rem}
+#qContact{margin-bottom:.5rem}
+@media(min-width:600px){.q-actions{flex-direction:row}.q-nav .q-btn{flex:0 0 auto;min-width:140px}.q-nav{justify-content:space-between}.quiz-section{padding-top:4rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="mark"><img src="https://i.imgur.com/Oght24y.jpg" alt="Kingston"></div>
+    <span>Cognitive Canines</span>
+  </a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-links" id="navLinks">
+  <button class="menu-close" onclick="closeMenu()" aria-label="Close menu">&times;</button>
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="about.html" onclick="closeMenu()">Our Story</a>
+  <a href="programs.html" onclick="closeMenu()">Programs</a>
+  <a href="shop.html" onclick="closeMenu()">Shop</a>
+  <a href="privacy.html" onclick="closeMenu()">Privacy</a>
+  <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
+  <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
+</div>
+<div class="status-banner">We are now accepting select clients for select programs. <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Send an inquiry</a> to be considered.</div>
+
+
+<section class="quiz-section">
+  <div class="quiz-card">
+    <div id="quizIntro">
+      <div class="section-eyebrow">Intake Quiz</div>
+      <h2>Find your starting point.</h2>
+      <p>Answer a few quick questions about you and your dog. It takes about two minutes, and we will point you to the program that fits best. Your answers go straight to your trainer, so you will not have to repeat yourself.</p>
+      <button type="button" class="q-btn q-primary" id="startBtn">Start the quiz</button>
+      <p class="q-small">Prefer to skip it? <a href="contact.html">Send an inquiry directly</a>.</p>
+    </div>
+
+    <div id="quizMain" hidden>
+      <div class="q-progress" aria-hidden="true"><div class="q-bar" id="qBar"></div></div>
+      <p class="q-count" id="qCount"></p>
+      <h2 class="q-title" id="qTitle" tabindex="-1"></h2>
+      <p class="q-hint" id="qHint"></p>
+      <div id="qOpts" role="group" aria-labelledby="qTitle"></div>
+      <form id="qContact" hidden novalidate>
+        <div class="form-group"><label for="qName">Your Name</label><input type="text" id="qName" autocomplete="name" maxlength="120" required></div>
+        <div class="form-group"><label for="qEmail">Email</label><input type="email" id="qEmail" autocomplete="email" maxlength="254" required></div>
+        <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
+        <p class="q-small" style="text-align:left;margin-top:0">By continuing you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
+      </form>
+      <p class="q-err" id="qErr" role="alert"></p>
+      <div class="q-nav">
+        <button type="button" class="q-btn q-ghost" id="backBtn">Back</button>
+        <button type="button" class="q-btn q-primary" id="nextBtn">Next</button>
+      </div>
+    </div>
+
+    <div id="quizResult" hidden>
+      <div class="section-eyebrow">Your result</div>
+      <h2 id="rHead"></h2>
+      <p id="rBody"></p>
+      <p class="q-note" id="rNote"></p>
+      <div class="q-actions">
+        <a class="q-btn q-primary" href="contact.html">Continue to your inquiry</a>
+        <a class="q-btn q-ghost" href="programs.html">View programs</a>
+      </div>
+      <p class="q-small" id="rSaved"></p>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div>
+    <div class="footer-logo">Cognitive Canines</div>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="quiz.html">Intake Quiz</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+  <p><span id="year"></span> Cognitive Canines. All rights reserved. Virtual, worldwide.</p>
+</footer>
+
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+(function(){
+var SB_URL='https://mjgruhbmenjzjcrrwnyl.supabase.co/rest/v1/intake_results';
+var SB_KEY='sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa';
+var steps=[
+{k:'age',t:"How old is your dog?",o:["Under 6 months","6 to 18 months","Adult","Senior"]},
+{k:'goal',t:"What is your main goal?",o:["Puppy basics","General obedience","A behavior concern","Sport"]},
+{k:'concerns',t:"Which behaviors are you seeing?",hint:"Pick any that apply.",m:true,o:["Leash reactivity","Aggression toward dogs or people","Separation anxiety","Resource guarding","Fear","Jumping or mouthing","Recall","None of these"]},
+{k:'severity',t:"How serious is it?",o:["No concerns","Mild","Moderate","Serious, including any bite history"]},
+{k:'sport',t:"Any interest in dog sports?",o:["None","Curious","Training or competing"]},
+{k:'support',t:"How much support do you want?",o:["Self-paced videos","Live group sessions","Private coaching"]},
+{k:'contact',t:"Where should we send your results?",contact:true}
+];
+var tiers={
+Bronze:["$29/mo","Self-paced foundations with a pre-recorded library."],
+Silver:["$59/mo","Everything in Bronze plus live group video sessions."],
+Gold:["$149/mo","Private one-on-one coaching with behavior foundations."],
+Platinum:["$249/mo","Advanced behavior modification for moderate concerns."],
+Celestial:["$399/mo","Elite sport and high-level behavior coaching."]
+};
+var i=0,a={},saving=false;
+var $=function(id){return document.getElementById(id)};
+
+function route(){
+  if(a.severity.indexOf('Serious')===0)return null;
+  if(a.sport==='Training or competing'||a.goal==='Sport')return 'Celestial';
+  if(a.severity==='Moderate')return 'Platinum';
+  if(a.support==='Private coaching')return 'Gold';
+  if(a.support==='Live group sessions')return 'Silver';
+  return 'Bronze';
+}
+function render(){
+  var s=steps[i];
+  $('qCount').textContent='Question '+(i+1)+' of '+steps.length;
+  $('qBar').style.width=((i)/steps.length*100)+'%';
+  $('qTitle').textContent=s.t;
+  $('qHint').textContent=s.hint||'';
+  $('qErr').textContent='';
+  var box=$('qOpts');box.innerHTML='';
+  $('qContact').hidden=!s.contact;
+  box.hidden=!!s.contact;
+  if(!s.contact){
+    s.o.forEach(function(label){
+      var b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=label;
+      var cur=a[s.k];
+      var on=s.m?(cur&&cur.indexOf(label)>-1):cur===label;
+      if(on){b.className='q-opt sel'}
+      b.setAttribute('aria-pressed',on?'true':'false');
+      b.onclick=function(){
+        $('qErr').textContent='';
+        if(s.m){
+          var list=(a[s.k]||[]).slice();
+          if(label==='None of these'){list=list.indexOf(label)>-1?[]:[label]}
+          else{list=list.filter(function(x){return x!=='None of these'});var p=list.indexOf(label);if(p>-1)list.splice(p,1);else list.push(label)}
+          a[s.k]=list;
+        }else{a[s.k]=label}
+        render();
+      };
+      box.appendChild(b);
+    });
+  }
+  $('nextBtn').textContent=i===steps.length-1?'See my result':'Next';
+  $('backBtn').style.visibility=i===0?'hidden':'visible';
+}
+function go(n){i=n;render();var t=$('qTitle');if(t&&t.focus){t.focus({preventScroll:true})}window.scrollTo({top:0,behavior:'smooth'})}
+
+$('startBtn').onclick=function(){
+  $('quizIntro').hidden=true;$('quizMain').hidden=false;
+  try{var q=JSON.parse(sessionStorage.getItem('cck_quiz')||'null');if(q){$('qName').value=q.name||'';$('qEmail').value=q.email||'';$('qDog').value=q.dog||''}}catch(e){}
+  go(0);
+};
+$('backBtn').onclick=function(){if(i>0&&!saving)go(i-1)};
+$('nextBtn').onclick=function(){
+  if(saving)return;
+  var s=steps[i];
+  if(!s.contact){
+    var v=a[s.k];
+    if(!v||(s.m&&v.length===0)){$('qErr').textContent='Please choose an answer to continue.';return}
+    go(i+1);return;
+  }
+  var name=$('qName').value.trim(),email=$('qEmail').value.trim().toLowerCase(),dog=$('qDog').value.trim();
+  if(!name||!dog){$('qErr').textContent='Please enter your name and your dog\'s name.';return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){$('qErr').textContent='Please enter a valid email address.';return}
+  submit(name,email,dog);
+};
+function summary(){
+  return 'Age: '+a.age+' | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support;
+}
+function submit(name,email,dog){
+  saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Saving...';
+  var tier=route();
+  var row={full_name:name,email:email,dog_name:dog,answers:a,recommended_tier:tier||'Consultation first'};
+  try{sessionStorage.setItem('cck_quiz',JSON.stringify({name:name,email:email,dog:dog,tier:tier||'',summary:summary()}))}catch(e){}
+  fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)})
+    .then(function(r){showResult(tier,r.ok)})
+    .catch(function(){showResult(tier,false)});
+}
+function showResult(tier,saved){
+  saving=false;
+  $('quizMain').hidden=true;$('quizResult').hidden=false;
+  if(tier){
+    $('rHead').textContent='Recommended starting point: '+tier;
+    $('rBody').textContent=tiers[tier][1]+' '+tiers[tier][0]+'.';
+    $('rNote').textContent='This is a starting point. Your consultation confirms the right fit.';
+  }else{
+    $('rHead').textContent='Let\'s talk first.';
+    $('rBody').textContent='Based on what you shared, the best next step is a consultation before choosing a program. Send an inquiry and we will reach out within 24 hours.';
+    $('rNote').textContent='';
+  }
+  $('rSaved').textContent=saved?'Your answers have been sent to your trainer. Your details will be filled in on the next page.':'We could not save your answers just now, but your details will carry over to the inquiry form so nothing is lost.';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+})();
+
+function toggleMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  const nav = document.getElementById('navLinks');
+  const btn = document.getElementById('hamburger');
+  nav.classList.remove('open');
+  btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
+
+
+</body>
+</html>
