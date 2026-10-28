@@ -52,6 +52,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-close{position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;font-size:2.2rem;line-height:1;color:var(--ink);cursor:pointer;padding:0.3rem 0.6rem}
 
 .status-banner{background:var(--gold);color:#1a1c19;text-align:center;padding:0.7rem 1.5rem;font-size:0.8rem;font-weight:500;letter-spacing:0.02em;margin-top:56px}
 @media(min-width:768px){.status-banner{margin-top:64px}}
@@ -96,6 +97,8 @@ footer p{font-size:11px;letter-spacing:0.06em}
   nav{padding:1rem 3rem}
   .hamburger{display:none}
   .nav-links{display:flex;position:fixed;top:0;right:0;bottom:auto;left:auto;height:auto;background:transparent;flex-direction:row;align-items:center;gap:1.5rem;padding:1rem 3rem 1rem 0;z-index:150}
+  .menu-close{display:none}
+  .nav-links a[href="index.html"]{display:none}
   .nav-links a{font-size:12px}
   .nav-links .nav-cta{padding:0.4rem 0.9rem;font-size:11px}
   footer{flex-direction:row;justify-content:space-between;padding:2rem 5rem;text-align:left}
@@ -150,6 +153,8 @@ footer p{font-size:11px;letter-spacing:0.06em}
   </button>
 </nav>
 <div class="nav-links" id="navLinks">
+  <button class="menu-close" onclick="closeMenu()" aria-label="Close menu">&times;</button>
+  <a href="index.html" onclick="closeMenu()">Home</a>
   <a href="about.html" onclick="closeMenu()">Our Story</a>
   <a href="programs.html" onclick="closeMenu()">Programs</a>
   <a href="shop.html" onclick="closeMenu()">Shop</a>
@@ -157,13 +162,13 @@ footer p{font-size:11px;letter-spacing:0.06em}
   <a href="portal/login.html" onclick="closeMenu()">Client Login</a>
   <a href="contact.html" class="nav-cta" onclick="closeMenu()">Book a Session</a>
 </div>
-<div class="status-banner">We are not currently accepting new clients, but we are active every day and opening our doors again very soon. Check back soon or join our list at <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Contact</a>.</div>
+<div class="status-banner">We are now accepting select clients for select programs. <a href="contact.html" style="color:#1a1c19;text-decoration:underline">Send an inquiry</a> to be considered.</div>
 
 
 <div style="height:90px"></div>
 <section class="contact-section">
   <div class="contact-left">
-    <form action="https://formspree.io/f/mrerdppl" method="POST">
+    <form action="https://formspree.io/f/mrppkvdd" method="POST">
     <div class="section-eyebrow reveal">Get Started</div>
     <h2 class="reveal reveal-delay-1">Book a consultation.</h2>
     <p class="reveal reveal-delay-2">Tell us about your dog and your goals. We will reach out within 24 hours to find the right program for your team, wherever you are in the world.</p>
@@ -180,7 +185,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
   <div class="contact-right reveal-right">
     <div class="contact-block">
       <h4>Contact</h4>
-      <div class="contact-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div class="c-text"><strong>Email</strong>cognitivecaninesllc@gmail.com</div></div>
+      <div class="contact-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div class="c-text"><strong>Email</strong>admin@cognitivecanines.com</div></div>
       <div class="contact-item"><div class="c-icon"><svg viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="c-text"><strong>Message Us</strong>Via the form on this page</div></div>
       <div class="contact-item"><div class="c-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div><div class="c-text"><strong>Serving</strong>Clients worldwide</div></div>
     </div>
@@ -209,6 +214,24 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+document.querySelectorAll('form[action*="formspree.io"]').forEach(function(form){
+  var hp=document.createElement('input');hp.type='text';hp.name='_gotcha';hp.tabIndex=-1;hp.autocomplete='off';hp.style.cssText='position:absolute;left:-9999px;opacity:0';hp.setAttribute('aria-hidden','true');form.appendChild(hp);
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=form.querySelector('button[type="submit"]');var old=btn.textContent;
+    btn.disabled=true;btn.textContent='Sending...';
+    var err=form.querySelector('.form-error');if(err)err.remove();
+    fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+      .then(function(r){if(r.ok){window.location.href='thanks.html';}else{throw new Error('fail');}})
+      .catch(function(){
+        btn.disabled=false;btn.textContent=old;
+        var m=document.createElement('p');m.className='form-error';m.style.cssText='color:#b3261e;margin-top:1rem';
+        m.textContent='Something went wrong sending your message. Please try again or email admin@cognitivecanines.com.';
+        form.appendChild(m);
+      });
+  });
+});
 
 function toggleMenu() {
   const nav = document.getElementById('navLinks');
