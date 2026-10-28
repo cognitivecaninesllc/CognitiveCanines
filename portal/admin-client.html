@@ -149,7 +149,7 @@ async function loadIntake(email) {
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
     const rows = [
       ['Dog\'s age', a.age], ['Main goal', a.goal], ['Behaviors', concerns],
-      ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog],
+      ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals],
       ['Recommended', r.recommended_tier], ['Submitted', new Date(r.created_at).toLocaleString()]
     ].filter(x => x[1]);
     document.getElementById('intakeInfo').innerHTML = rows.map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
