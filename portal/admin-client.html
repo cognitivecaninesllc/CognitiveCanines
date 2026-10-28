@@ -59,6 +59,12 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .empty-state{font-size:0.85rem;color:var(--muted);font-style:italic;padding:1rem 0}
 .view-as-btn{display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.2rem;border-radius:4px;text-decoration:none;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;margin-top:0.5rem}
 .view-as-btn:hover{background:var(--accent2)}
+.badge{display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:3px;font-weight:500}
+.badge-gold{background:#3a2a14;color:#e8a96a}
+.badge-red{background:#3a2020;color:#e8a8a8}
+.info-row{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:.5px solid var(--border);font-size:.9rem}
+.info-row:last-child{border-bottom:none}
+.info-row span:first-child{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -81,6 +87,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
       </div>
     </div>
     <a id="viewAsBtn" href="#" class="view-as-btn" target="_blank">View portal as this client &rarr;</a>
+  </div>
+
+  <div class="dash-section" id="intakeSection" style="display:none">
+    <div class="section-head"><h3>Intake Quiz</h3><span id="intakeFlags"></span></div>
+    <div id="intakeInfo"></div>
   </div>
 
   <div class="dash-section">
@@ -125,6 +136,30 @@ async function checkAdmin() {
   return user;
 }
 
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+async function loadIntake(email) {
+  try {
+    const { data } = await supabaseClient.from('intake_results').select('*').eq('email', String(email || '').toLowerCase()).order('created_at', { ascending: false }).limit(1);
+    if (!data || !data.length) return;
+    const r = data[0], a = r.answers || {};
+    // Sport upsell flag is computed here for admin only. It is never stored or shown to clients.
+    const sport = (a.sport === 'Curious' || a.sport === 'Training or competing');
+    const consult = (r.recommended_tier === 'Consultation first');
+    const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
+    const rows = [
+      ['Dog\'s age', a.age], ['Main goal', a.goal], ['Behaviors', concerns],
+      ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog],
+      ['Recommended', r.recommended_tier], ['Submitted', new Date(r.created_at).toLocaleString()]
+    ].filter(x => x[1]);
+    document.getElementById('intakeInfo').innerHTML = rows.map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
+    document.getElementById('intakeFlags').innerHTML =
+      (sport ? '<span class="badge badge-gold">Sport upsell</span> ' : '') +
+      (consult ? '<span class="badge badge-red">Consult first</span>' : '');
+    document.getElementById('intakeSection').style.display = 'block';
+  } catch (e) {}
+}
+
 async function loadClient() {
   if (!clientId) { document.getElementById('clientName').textContent = 'No client selected'; return; }
 
@@ -132,7 +167,8 @@ async function loadClient() {
   if (!client) { document.getElementById('clientName').textContent = 'Client not found'; return; }
 
   document.getElementById('clientName').textContent = client.full_name;
-  document.getElementById('clientMeta').textContent = `${client.email} · ${client.dog_name || 'No dog listed'} · ${client.program_tier || 'No tier'}`;
+  loadIntake(client.email);
+  document.getElementById('clientMeta').textContent = `${client.email} · ${client.dog_name || 'No dog listed'}${client.dog_age ? ' · ' + client.dog_age : ''}${client.dog_sex ? ' · ' + client.dog_sex : ''}${client.dog_fixed ? ' · Fixed: ' + client.dog_fixed : ''} · ${client.program_tier || 'No tier'}`;
   document.getElementById('viewAsBtn').href = `admin-preview.html?id=${clientId}`;
 
   loadDocuments();
