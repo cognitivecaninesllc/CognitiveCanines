@@ -69,6 +69,10 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .trainer-name-big{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--ink)}
 .trainer-title{font-size:0.75rem;color:var(--muted);letter-spacing:0.04em}
 .trainer-bio{font-size:0.85rem;color:var(--ink2);line-height:1.7;margin-top:0.8rem;padding-top:0.8rem;border-top:0.5px solid var(--border)}
+.res-btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1rem;border-radius:4px;font-family:var(--sans);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;min-height:40px}
+.res-btn:hover{background:var(--accent2)}
+.res-btn-alt{background:transparent;color:var(--ink2);border:0.5px solid var(--border)}
+.res-btn-alt:hover{background:transparent;border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body class="dash-body">
@@ -108,6 +112,12 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     <div id="documentsList"><p class="empty-state">Loading...</p></div>
   </div>
 
+  <div class="dash-section" id="resourcesSection" style="display:none">
+    <h3>Resources</h3>
+    <div id="resourcesList"></div>
+    <p class="empty-state" style="padding-bottom:0">To print, tap Open / Print and use the print option in the page that opens. To save a copy, tap Download.</p>
+  </div>
+
   <div class="dash-section">
     <h3>My Session Recordings</h3>
     <div id="recordingsList"><p class="empty-state">Loading...</p></div>
@@ -128,13 +138,48 @@ async function loadIntake() {
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
     const rows = [
       ['Dog\'s age', a.age], ['Main goal', a.goal], ['Behaviors', concerns],
-      ['Seriousness', a.severity], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog],
+      ['Seriousness', a.severity], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals],
       ['Starting point', r.recommended_tier],
       ['Submitted', new Date(r.created_at).toLocaleDateString()]
     ].filter(x => x[1]);
     document.getElementById('intakeInfo').innerHTML = rows.map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
     document.getElementById('intakeSection').style.display = 'block';
   } catch (e) { /* intake is optional, ignore errors */ }
+}
+
+let RESOURCES = [];
+async function loadResources() {
+  try {
+    const { data } = await supabaseClient.from('resources').select('*').order('title');
+    RESOURCES = data || [];
+    if (!RESOURCES.length) return;
+    document.getElementById('resourcesList').innerHTML = RESOURCES.map(r => `
+      <div class="doc-item">
+        <div style="font-weight:500;font-size:0.92rem">${esc(r.title)}</div>
+        ${r.description ? `<div class="item-date" style="font-size:0.82rem;line-height:1.5">${esc(r.description)}</div>` : ''}
+        <div class="item-date">Updated ${new Date(r.updated_at || r.created_at).toLocaleDateString()}</div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.6rem">
+          <button class="res-btn" onclick="openResource('${esc(r.id)}','open')">Open / Print</button>
+          <button class="res-btn res-btn-alt" onclick="openResource('${esc(r.id)}','download')">Download</button>
+        </div>
+      </div>`).join('');
+    document.getElementById('resourcesSection').style.display = 'block';
+  } catch (e) { /* resources are optional, ignore errors */ }
+}
+async function openResource(id, mode) {
+  const r = RESOURCES.find(x => x.id === id);
+  if (!r) return;
+  // open the tab right away so phone browsers do not block it
+  const w = mode === 'open' ? window.open('', '_blank') : null;
+  const opts = mode === 'download' ? { download: r.file_name || true } : undefined;
+  const { data, error } = await supabaseClient.storage.from('resources').createSignedUrl(r.file_path, 300, opts);
+  if (error || !data) {
+    if (w) w.close();
+    alert('Sorry, we could not open that file. Please try again or contact us.');
+    return;
+  }
+  if (mode === 'open') { if (w) { w.location.href = data.signedUrl; } else { window.location.href = data.signedUrl; } }
+  else { window.location.href = data.signedUrl; }
 }
 
 async function loadDashboard() {
@@ -169,6 +214,7 @@ async function loadDashboard() {
   `;
 
   loadIntake();
+  loadResources();
 
   if (client.trainers) {
     document.getElementById('trainerInfo').innerHTML = `
