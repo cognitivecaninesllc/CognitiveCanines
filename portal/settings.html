@@ -52,6 +52,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .photo-wrap{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem}
 .photo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--surface);flex-shrink:0}
 .photo-ph{width:110px;height:110px;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2.4rem;color:var(--muted);flex-shrink:0}
+.dogp{padding:1rem 0;border-top:1px solid var(--border)}
+.dogp:first-of-type{border-top:none;padding-top:0}
+.dogp .top{display:flex;align-items:center;gap:1rem;margin-bottom:.7rem}
+.dogp .nm{font-family:var(--serif);font-size:1.15rem;overflow-wrap:anywhere}
+.dogp .photo,.dogp .photo-ph{width:84px;height:84px;font-size:2rem}
 .cur-email{font-size:0.9rem;color:var(--ink);margin-bottom:1rem;overflow-wrap:anywhere}
 input[type=file]{width:100%;font-size:0.85rem;color:var(--ink2);margin-bottom:1rem}
 </style>
@@ -69,18 +74,9 @@ input[type=file]{width:100%;font-size:0.85rem;color:var(--ink2);margin-bottom:1r
   <a href="dashboard.html" class="back-link">&larr; Back to my portal</a>
 
   <div class="dash-section">
-    <h3>Dog Photo</h3>
-    <div class="photo-wrap">
-      <img id="photo" class="photo" alt="" hidden>
-      <div id="photoPh" class="photo-ph">?</div>
-      <p class="help" style="margin:0">Add a clear photo of your dog. Only you and your trainer can see it.</p>
-    </div>
-    <input type="file" id="photoFile" accept="image/jpeg,image/png,image/*">
-    <div class="row">
-      <button type="button" class="btn" id="photoBtn">Upload photo</button>
-      <button type="button" class="btn btn-secondary" id="photoRemove" hidden>Remove photo</button>
-    </div>
-    <div id="photoMsg" class="msg" role="status"></div>
+    <h3>Dog Photos</h3>
+    <p class="help">Add a clear photo of each dog. Only you and your trainer can see them.</p>
+    <div id="dogPhotos"></div>
   </div>
 
   <div class="dash-section">
@@ -121,19 +117,51 @@ function say(id, text, ok) {
 }
 async function logout() { await supabaseClient.auth.signOut(); window.location.href = 'login.html'; }
 
-// ---------------- DOG PHOTO ----------------
-const PHOTO_PATH = () => USER.id + '/dog.jpg';
-
-async function showPhoto() {
+// ---------------- DOG PHOTOS ----------------
+let DOGS = [];
+async function signedDog(path) {
+  try { const { data } = await supabaseClient.storage.from('dog-photos').createSignedUrl(path, 3600); return data && data.signedUrl ? data.signedUrl : null; } catch (e) { return null; }
+}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+async function renderDogs() {
+  const urls = await Promise.all(DOGS.map(d => signedDog(d.path)));
+  $('dogPhotos').innerHTML = DOGS.map((d, i) => `
+    <div class="dogp" data-i="${i}">
+      <div class="top">
+        ${urls[i] ? `<img class="photo" src="${esc(urls[i])}&t=${Date.now()}" alt="">` : `<div class="photo-ph">${esc((d.name || '?').charAt(0).toUpperCase())}</div>`}
+        <div class="nm">${esc(d.name)}</div>
+      </div>
+      <input type="file" accept="image/jpeg,image/png,image/*" id="file${i}">
+      <div class="row">
+        <button type="button" class="btn" onclick="uploadDog(${i})" id="up${i}">Upload photo</button>
+        ${urls[i] ? `<button type="button" class="btn btn-secondary" onclick="removeDog(${i})">Remove photo</button>` : ''}
+      </div>
+      <div class="msg" id="msg${i}" role="status"></div>
+    </div>`).join('');
+}
+async function uploadDog(i) {
+  const d = DOGS[i], f = $('file' + i).files[0], m = 'msg' + i;
+  if (!f) { say(m, 'Please choose a photo first.', false); return; }
+  if (f.type && f.type.indexOf('image/') !== 0) { say(m, 'Please choose a picture file (JPG or PNG).', false); return; }
+  if (f.size > 25 * 1024 * 1024) { say(m, 'That picture is very large. Please choose one under 25 MB.', false); return; }
+  $('up' + i).disabled = true; $('up' + i).textContent = 'Uploading...'; say(m, '', true);
   try {
-    const { data } = await supabaseClient.storage.from('dog-photos').createSignedUrl(PHOTO_PATH(), 3600);
-    if (data && data.signedUrl) {
-      $('photo').src = data.signedUrl + '&t=' + Date.now();
-      $('photo').hidden = false; $('photoPh').hidden = true; $('photoRemove').hidden = false;
-      return;
-    }
-  } catch (e) {}
-  $('photo').hidden = true; $('photoPh').hidden = false; $('photoRemove').hidden = true;
+    const blob = await toJpeg(f, 900);
+    const { error } = await supabaseClient.storage.from('dog-photos').upload(d.path, blob, { contentType: 'image/jpeg', upsert: true });
+    if (error) throw error;
+    await renderDogs();
+    say(m, 'Photo saved.', true);
+  } catch (e) {
+    $('up' + i).disabled = false; $('up' + i).textContent = 'Upload photo';
+    say(m, 'Could not save the photo: ' + (e.message || 'please try again.'), false);
+  }
+}
+async function removeDog(i) {
+  const d = DOGS[i];
+  if (!confirm('Remove the photo of ' + d.name + '?')) return;
+  const { error } = await supabaseClient.storage.from('dog-photos').remove([d.path]);
+  await renderDogs();
+  say('msg' + i, error ? 'Could not remove the photo: ' + error.message : 'Photo removed.', !error);
 }
 
 // Shrinks the photo (also strips hidden location data) before it is uploaded
@@ -155,33 +183,6 @@ async function toJpeg(file, maxSide) {
   c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
   return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('Could not process that picture.')), 'image/jpeg', 0.85));
 }
-
-$('photoBtn').addEventListener('click', async () => {
-  const f = $('photoFile').files[0];
-  if (!f) { say('photoMsg', 'Please choose a photo first.', false); return; }
-  if (f.type && f.type.indexOf('image/') !== 0) { say('photoMsg', 'Please choose a picture file (JPG or PNG).', false); return; }
-  if (f.size > 25 * 1024 * 1024) { say('photoMsg', 'That picture is very large. Please choose one under 25 MB.', false); return; }
-  $('photoBtn').disabled = true; $('photoBtn').textContent = 'Uploading...'; say('photoMsg', '', true);
-  try {
-    const blob = await toJpeg(f, 900);
-    const { error } = await supabaseClient.storage.from('dog-photos').upload(PHOTO_PATH(), blob, { contentType: 'image/jpeg', upsert: true });
-    if (error) throw error;
-    $('photoFile').value = '';
-    await showPhoto();
-    say('photoMsg', 'Photo saved.', true);
-  } catch (e) {
-    say('photoMsg', 'Could not save the photo: ' + (e.message || 'please try again.'), false);
-  }
-  $('photoBtn').disabled = false; $('photoBtn').textContent = 'Upload photo';
-});
-
-$('photoRemove').addEventListener('click', async () => {
-  if (!confirm('Remove your dog\'s photo?')) return;
-  const { error } = await supabaseClient.storage.from('dog-photos').remove([PHOTO_PATH()]);
-  if (error) { say('photoMsg', 'Could not remove the photo: ' + error.message, false); return; }
-  await showPhoto();
-  say('photoMsg', 'Photo removed.', true);
-});
 
 // ---------------- PASSWORD ----------------
 async function checkCurrentPassword(pw) {
@@ -229,11 +230,16 @@ $('emailForm').addEventListener('submit', async (e) => {
   if (!user) { window.location.href = 'login.html'; return; }
   USER = user;
   $('curEmail').textContent = user.email;
+  DOGS = [{ name: 'Your dog', path: user.id + '/dog.jpg' }];
   try {
-    const { data: client } = await supabaseClient.from('clients').select('dog_name').eq('auth_id', user.id).single();
-    if (client && client.dog_name) $('photoPh').textContent = client.dog_name.charAt(0).toUpperCase();
+    const { data: client } = await supabaseClient.from('clients').select('id, dog_name').eq('auth_id', user.id).single();
+    if (client) {
+      if (client.dog_name) DOGS[0].name = client.dog_name;
+      const { data: extra } = await supabaseClient.from('client_dogs').select('id, name').eq('client_id', client.id).order('created_at');
+      (extra || []).forEach(d => DOGS.push({ name: d.name, path: user.id + '/' + d.id + '.jpg' }));
+    }
   } catch (e) {}
-  showPhoto();
+  renderDogs();
 })();
 </script>
 </body>
