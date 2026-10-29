@@ -65,6 +65,14 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 .info-row{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:.5px solid var(--border);font-size:.9rem}
 .info-row:last-child{border-bottom:none}
 .info-row span:first-child{color:var(--muted)}
+.dog-row{display:flex;align-items:center;gap:.9rem;padding:.7rem 0;border-bottom:.5px solid var(--border)}
+.dog-row:last-child{border-bottom:none}
+.dog-row img,.dog-row .dph{width:52px;height:52px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold);flex-shrink:0}
+.dog-row .dph{border-style:dashed;border-color:var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--serif);font-size:1.3rem}
+.dog-row .dn{flex:1;min-width:0}
+.dog-row .dn b{font-weight:500;overflow-wrap:anywhere}
+.dog-row .ds{font-size:.78rem;color:var(--muted);overflow-wrap:anywhere}
+.dog-row .dact{display:flex;gap:.4rem;flex-wrap:wrap}
 .dog-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0}
 </style>
 </head>
@@ -72,13 +80,13 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
 <div class="dash-nav">
   <div class="dash-nav-brand">
     <div class="mark"><img src="https://i.imgur.com/Lnrlh9e.jpg" alt="Silas"></div>
-    <h2>Manage Client</h2>
+    <h2 id="navTitle">Manage Client</h2>
   </div>
   <button class="logout-btn" onclick="logout()">Log Out</button>
 </div>
 
 <div class="dash-content">
-  <a href="admin-dashboard.html" class="back-link">&larr; Back to all clients</a>
+  <a href="admin-dashboard.html" id="backLink" class="back-link">&larr; Back to all clients</a>
 
   <div class="dash-section">
     <div class="client-header">
@@ -90,8 +98,8 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
       </div>
       </div>
     </div>
-    <a id="viewAsBtn" href="#" class="view-as-btn" target="_blank">View portal as this client &rarr;</a>
-    <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
+    <a id="viewAsBtn" data-admin-only href="#" class="view-as-btn" target="_blank">View portal as this client &rarr;</a>
+    <div id="accessRow" data-admin-only style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
       <span id="accessBadge" class="badge badge-gold">Access: Active</span>
       <button id="accessBtn" class="logout-btn" onclick="toggleAccess()" style="cursor:pointer">Pause access</button>
       <span class="meta" style="font-size:.78rem;color:var(--muted)">A paused client can still log in, but sees a kind note instead of their files.</span>
@@ -107,10 +115,26 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
       <div class="form-group"><label>Dog birthday</label><input type="date" id="eBirth"></div>
       <div class="form-group"><label>Sex</label><select id="eSex"><option value="">Not selected</option><option>Male</option><option>Female</option></select></div>
       <div class="form-group"><label>Spayed / neutered</label><select id="eFixed"><option value="">Not selected</option><option>Yes</option><option>No (intact)</option></select></div>
-      <div class="form-group"><label>Program tier</label><select id="eTier"><option value="">Not selected</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option>Celestial</option></select></div>
-      <p class="meta" style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">The login email can only be changed by the client in their Settings. Changing the tier changes which resources they can see right away.</p>
+      <div class="form-group" data-admin-only><label>Trainer</label><select id="eTrainer"></select></div>
+      <div class="form-group" data-admin-only><label>Program tier</label><select id="eTier"><option value="">Not selected</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option>Celestial</option></select></div>
+      <p class="meta" style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">The login email can only be changed by the client in their Settings.<span data-admin-only> Changing the tier changes which resources they can see right away.</span></p>
       <div style="display:flex;gap:.6rem"><button type="submit" class="btn" id="eSave">Save changes</button><button type="button" class="btn btn-secondary" onclick="toggleEdit()">Cancel</button></div>
       <div id="eMsg" style="font-size:.85rem;margin-top:.8rem"></div>
+    </form>
+  </div>
+
+  <div class="dash-section" id="dogsSection">
+    <div class="section-head"><h3>Dogs</h3><button class="btn btn-sm" id="addDogBtn" onclick="openDogForm()">+ Add Dog</button></div>
+    <p class="meta" style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">Up to 4 dogs per client. The first dog is edited under Client Details. Documents and recordings are shared across all of the client's dogs.</p>
+    <div id="dogsList"></div>
+    <form id="dogForm" style="display:none;margin-top:1rem" onsubmit="saveDog(event)">
+      <div class="form-group"><label>Dog's name</label><input type="text" id="dgName" required maxlength="80"></div>
+      <div class="form-group"><label>Breed</label><input type="text" id="dgBreed" maxlength="80"></div>
+      <div class="form-group"><label>Birthday (or best estimate)</label><input type="date" id="dgBirth"></div>
+      <div class="form-group"><label>Sex</label><select id="dgSex"><option value="">Not selected</option><option>Male</option><option>Female</option></select></div>
+      <div class="form-group"><label>Spayed / neutered</label><select id="dgFixed"><option value="">Not selected</option><option>Yes</option><option>No (intact)</option></select></div>
+      <div style="display:flex;gap:.6rem"><button type="submit" class="btn" id="dgSave">Save dog</button><button type="button" class="btn btn-secondary" onclick="closeDogForm()">Cancel</button></div>
+      <div id="dgMsg" style="font-size:.85rem;margin-top:.8rem"></div>
     </form>
   </div>
 
@@ -146,6 +170,13 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     </div>
     <div id="recordingsList"><p class="empty-state">Loading...</p></div>
   </div>
+  <div class="dash-section" data-admin-only style="border-color:#7a3030">
+    <div class="section-head"><h3 style="color:#e8a8a8">Delete Client</h3></div>
+    <p class="meta" style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">This permanently removes the client, their login, documents, recordings and dog photo. It cannot be undone. If it is a payment issue, use Pause access instead.</p>
+    <div class="form-group"><label>Type DELETE to confirm</label><input type="text" id="delConfirm" autocomplete="off" autocapitalize="characters"></div>
+    <button class="btn btn-danger" id="delBtn" onclick="deleteClient()" disabled>Delete this client</button>
+    <div id="delMsg" style="font-size:.85rem;margin-top:.8rem"></div>
+  </div>
 </div>
 
 <script>
@@ -153,13 +184,25 @@ const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supab
 const urlParams = new URLSearchParams(window.location.search);
 const clientId = urlParams.get('id');
 
+let ROLE = 'admin';
+let TRAINER_LIST = [];
 async function checkAdmin() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) { window.location.href = 'admin-login.html'; return null; }
-  const { data: adminCheck } = await supabaseClient.from('admins').select('id').eq('auth_id', user.id).single();
-  if (!adminCheck) { window.location.href = 'admin-login.html'; return null; }
-  return user;
+  const { data: adminCheck } = await supabaseClient.from('admins').select('id').eq('auth_id', user.id).maybeSingle();
+  if (adminCheck) { ROLE = 'admin'; return user; }
+  const { data: tr } = await supabaseClient.from('trainers').select('id').eq('auth_id', user.id).maybeSingle();
+  if (tr) {
+    ROLE = 'trainer';
+    document.querySelectorAll('[data-admin-only]').forEach(el => el.remove());
+    document.getElementById('backLink').href = 'trainer-dashboard.html';
+    document.getElementById('backLink').textContent = '\u2190 Back to my clients';
+    document.getElementById('navTitle').textContent = 'My Client';
+    return user;
+  }
+  window.location.href = 'admin-login.html'; return null;
 }
+function safeUrl(u){ try { const x = new URL(u, location.href); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : '#'; } catch (e) { return '#'; } }
 
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
@@ -214,7 +257,12 @@ function toggleEdit() {
   const open = f.style.display === 'none';
   if (open && c) {
     eName.value = c.full_name || ''; eDog.value = c.dog_name || ''; eBreed.value = c.breed || '';
-    eBirth.value = c.dog_birthdate || ''; eSex.value = c.dog_sex || ''; eFixed.value = c.dog_fixed || ''; eTier.value = c.program_tier || '';
+    eBirth.value = c.dog_birthdate || ''; eSex.value = c.dog_sex || ''; eFixed.value = c.dog_fixed || '';
+    if (ROLE === 'admin') {
+      eTier.value = c.program_tier || '';
+      eTrainer.innerHTML = '<option value="">No trainer</option>' + TRAINER_LIST.map(t => `<option value="${esc(t.id)}">${esc(t.full_name)}${t.is_owner ? ' (you)' : ''}</option>`).join('');
+      eTrainer.value = c.trainer_id || '';
+    }
     document.getElementById('eMsg').textContent = '';
   }
   f.style.display = open ? 'block' : 'none';
@@ -226,18 +274,20 @@ async function saveClient(e) {
   const upd = {
     full_name: eName.value.trim(), dog_name: eDog.value.trim() || null, breed: eBreed.value.trim() || null,
     dog_birthdate: /^\d{4}-\d{2}-\d{2}$/.test(eBirth.value) ? eBirth.value : null,
-    dog_sex: eSex.value || null, dog_fixed: eFixed.value || null, program_tier: eTier.value || null
+    dog_sex: eSex.value || null, dog_fixed: eFixed.value || null
   };
+  if (ROLE === 'admin') { upd.program_tier = eTier.value || null; upd.trainer_id = eTrainer.value || null; }
   if (!upd.full_name) { msg.style.color = '#e8a8a8'; msg.textContent = 'Owner name is required.'; return; }
   btn.disabled = true;
   const { data, error } = await supabaseClient.from('clients').update(upd).eq('id', clientId).select().single();
   btn.disabled = false;
   if (error || !data) { msg.style.color = '#e8a8a8'; msg.textContent = 'Could not save: ' + (error ? error.message : 'no permission'); return; }
   window.CUR = data; renderHeader(data);
-  toggleEdit();
+  toggleEdit(); loadDogs();
 }
 
 async function loadClient() {
+  if (ROLE === 'admin') { const { data: tl } = await supabaseClient.from('trainers').select('id, full_name, is_owner').order('created_at'); TRAINER_LIST = tl || []; }
   if (!clientId) { document.getElementById('clientName').textContent = 'No client selected'; return; }
 
   const { data: client } = await supabaseClient.from('clients').select('*').eq('id', clientId).single();
@@ -247,12 +297,35 @@ async function loadClient() {
   renderHeader(client);
   loadIntake(client.email);
   loadDogPhoto(client.auth_id);
-  document.getElementById('viewAsBtn').href = `admin-preview.html?id=${clientId}`;
+  if (ROLE === 'admin') document.getElementById('viewAsBtn').href = `admin-preview.html?id=${clientId}`;
 
   currentStatus = client.access_status === 'paused' ? 'paused' : 'active';
-  renderAccess();
+  if (ROLE === 'admin') renderAccess();
+  loadDogs();
   loadDocuments();
   loadRecordings();
+}
+
+
+document.addEventListener('input', function (e) {
+  if (e.target && e.target.id === 'delConfirm') document.getElementById('delBtn').disabled = e.target.value.trim() !== 'DELETE';
+});
+async function deleteClient() {
+  const btn = document.getElementById('delBtn'), msg = document.getElementById('delMsg');
+  if (document.getElementById('delConfirm').value.trim() !== 'DELETE') return;
+  if (!confirm('Last check: permanently delete this client and their login?')) return;
+  btn.disabled = true; msg.style.color = 'var(--muted)'; msg.textContent = 'Deleting...';
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const res = await fetch('https://mjgruhbmenjzjcrrwnyl.supabase.co/functions/v1/delete-client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ client_id: clientId })
+    });
+    const result = await res.json();
+    if (!res.ok) { msg.style.color = '#e8a8a8'; msg.textContent = result.error || 'Something went wrong.'; btn.disabled = false; return; }
+    window.location.href = 'admin-dashboard.html';
+  } catch (err) { msg.style.color = '#e8a8a8'; msg.textContent = 'Could not reach the server. Please try again.'; btn.disabled = false; }
 }
 
 let currentStatus = 'active';
@@ -272,6 +345,69 @@ async function toggleAccess() {
   renderAccess();
 }
 
+let EXTRA_DOGS = [], EDIT_DOG = null;
+async function dogUrl(path) {
+  try { const { data } = await supabaseClient.storage.from('dog-photos').createSignedUrl(path, 3600); return data && data.signedUrl ? data.signedUrl : null; } catch (e) { return null; }
+}
+function dogDesc(d) {
+  const bits = [];
+  if (d.breed) bits.push(d.breed);
+  const a = d.dog_birthdate ? ageText(d.dog_birthdate) : (d.dog_age || '');
+  if (a) bits.push(a);
+  if (d.dog_sex) bits.push(d.dog_sex);
+  if (d.dog_fixed) bits.push('Fixed: ' + d.dog_fixed);
+  return bits.join(' \u00b7 ');
+}
+async function loadDogs() {
+  const c = window.CUR; if (!c) return;
+  const { data } = await supabaseClient.from('client_dogs').select('*').eq('client_id', clientId).order('created_at');
+  EXTRA_DOGS = data || [];
+  const all = [{ main: true, name: c.dog_name || 'Main dog', obj: c, path: c.auth_id ? c.auth_id + '/dog.jpg' : null }]
+    .concat(EXTRA_DOGS.map(d => ({ main: false, name: d.name, obj: d, path: c.auth_id ? c.auth_id + '/' + d.id + '.jpg' : null, id: d.id })));
+  const urls = await Promise.all(all.map(d => d.path ? dogUrl(d.path) : null));
+  document.getElementById('dogsList').innerHTML = all.map((d, i) => `
+    <div class="dog-row">
+      ${urls[i] ? `<img src="${esc(urls[i])}" alt="">` : `<div class="dph">${esc((d.name || '?').charAt(0).toUpperCase())}</div>`}
+      <div class="dn"><b>${esc(d.name)}</b>${d.main ? ' <span class="badge badge-gold">Main</span>' : ''}<div class="ds">${esc(dogDesc(d.obj)) || 'No details yet'}</div></div>
+      ${d.main ? '' : `<div class="dact"><button class="btn btn-sm btn-secondary" onclick="openDogForm('${esc(d.id)}')">Edit</button>${ROLE === 'admin' ? `<button class="btn btn-sm btn-danger" onclick="removeDog('${esc(d.id)}')">Remove</button>` : ''}</div>`}
+    </div>`).join('');
+  document.getElementById('addDogBtn').style.display = all.length >= 4 ? 'none' : '';
+}
+function openDogForm(id) {
+  EDIT_DOG = id || null;
+  const d = id ? EXTRA_DOGS.find(x => x.id === id) : null;
+  dgName.value = d ? d.name : ''; dgBreed.value = d ? (d.breed || '') : ''; dgBirth.value = d ? (d.dog_birthdate || '') : '';
+  dgSex.value = d ? (d.dog_sex || '') : ''; dgFixed.value = d ? (d.dog_fixed || '') : '';
+  document.getElementById('dgMsg').textContent = '';
+  document.getElementById('dogForm').style.display = 'block';
+}
+function closeDogForm() { document.getElementById('dogForm').style.display = 'none'; EDIT_DOG = null; }
+async function saveDog(e) {
+  e.preventDefault();
+  const msg = document.getElementById('dgMsg'), btn = document.getElementById('dgSave');
+  const row = {
+    name: dgName.value.trim(), breed: dgBreed.value.trim() || null,
+    dog_birthdate: /^\d{4}-\d{2}-\d{2}$/.test(dgBirth.value) ? dgBirth.value : null,
+    dog_sex: dgSex.value || null, dog_fixed: dgFixed.value || null
+  };
+  if (!row.name) { msg.style.color = '#e8a8a8'; msg.textContent = 'Dog name is required.'; return; }
+  btn.disabled = true;
+  const res = EDIT_DOG
+    ? await supabaseClient.from('client_dogs').update(row).eq('id', EDIT_DOG)
+    : await supabaseClient.from('client_dogs').insert(Object.assign({ client_id: clientId }, row));
+  btn.disabled = false;
+  if (res.error) { msg.style.color = '#e8a8a8'; msg.textContent = 'Could not save: ' + res.error.message; return; }
+  closeDogForm(); loadDogs();
+}
+async function removeDog(id) {
+  if (!confirm('Remove this dog from the account? Their photo is removed too.')) return;
+  const c = window.CUR;
+  if (c && c.auth_id) await supabaseClient.storage.from('dog-photos').remove([c.auth_id + '/' + id + '.jpg']);
+  const { error } = await supabaseClient.from('client_dogs').delete().eq('id', id);
+  if (error) { alert('Could not remove: ' + error.message); return; }
+  loadDogs();
+}
+
 function toggleDocForm() {
   const f = document.getElementById('docForm');
   f.style.display = f.style.display === 'none' ? 'block' : 'none';
@@ -287,8 +423,8 @@ async function loadDocuments() {
   if (!docs || docs.length === 0) { list.innerHTML = '<p class="empty-state">No documents yet.</p>'; return; }
   list.innerHTML = docs.map(d => `
     <div class="doc-item">
-      <div><a href="${d.file_url}" target="_blank">${d.title}</a><div class="item-date">${new Date(d.created_at).toLocaleDateString()}</div></div>
-      <button class="btn btn-sm btn-danger" onclick="deleteDocument('${d.id}')">Remove</button>
+      <div><a href="${esc(safeUrl(d.file_url))}" target="_blank" rel="noopener">${esc(d.title)}</a><div class="item-date">${new Date(d.created_at).toLocaleDateString()}</div></div>
+      ${ROLE === 'admin' ? `<button class="btn btn-sm btn-danger" onclick="deleteDocument('${esc(d.id)}')">Remove</button>` : ''}
     </div>
   `).join('');
 }
@@ -297,7 +433,8 @@ async function addDocument() {
   const title = document.getElementById('docTitle').value;
   const url = document.getElementById('docUrl').value;
   if (!title || !url) return;
-  await supabaseClient.from('documents').insert({ client_id: clientId, title, file_url: url });
+  const { error: dErr } = await supabaseClient.from('documents').insert({ client_id: clientId, title, file_url: url, uploaded_by: ROLE });
+  if (dErr) { alert('Could not save: ' + dErr.message); return; }
   document.getElementById('docTitle').value = '';
   document.getElementById('docUrl').value = '';
   toggleDocForm();
@@ -315,8 +452,8 @@ async function loadRecordings() {
   if (!recs || recs.length === 0) { list.innerHTML = '<p class="empty-state">No recordings yet.</p>'; return; }
   list.innerHTML = recs.map(r => `
     <div class="rec-item">
-      <div><a href="${r.zoom_link}" target="_blank">${r.title}</a><div class="item-date">${r.session_date ? new Date(r.session_date).toLocaleDateString() : ''}${r.notes ? ' · ' + r.notes : ''}</div></div>
-      <button class="btn btn-sm btn-danger" onclick="deleteRecording('${r.id}')">Remove</button>
+      <div><a href="${esc(safeUrl(r.zoom_link))}" target="_blank" rel="noopener">${esc(r.title)}</a><div class="item-date">${r.session_date ? new Date(r.session_date).toLocaleDateString() : ''}${r.notes ? ' · ' + esc(r.notes) : ''}</div></div>
+      ${ROLE === 'admin' ? `<button class="btn btn-sm btn-danger" onclick="deleteRecording('${esc(r.id)}')">Remove</button>` : ''}
     </div>
   `).join('');
 }
@@ -327,7 +464,8 @@ async function addRecording() {
   const date = document.getElementById('recDate').value;
   const notes = document.getElementById('recNotes').value;
   if (!title || !url) return;
-  await supabaseClient.from('recordings').insert({ client_id: clientId, title, zoom_link: url, session_date: date || null, notes: notes || null });
+  const { error: rErr } = await supabaseClient.from('recordings').insert({ client_id: clientId, title, zoom_link: url, session_date: date || null, notes: notes || null });
+  if (rErr) { alert('Could not save: ' + rErr.message); return; }
   document.getElementById('recTitle').value = '';
   document.getElementById('recUrl').value = '';
   document.getElementById('recDate').value = '';
@@ -343,7 +481,7 @@ async function deleteRecording(id) {
 
 async function logout() {
   await supabaseClient.auth.signOut();
-  window.location.href = 'admin-login.html';
+  window.location.href = ROLE === 'trainer' ? 'login.html' : 'admin-login.html';
 }
 
 (async () => {
