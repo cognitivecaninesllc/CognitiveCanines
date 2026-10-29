@@ -75,6 +75,14 @@ a{color:var(--terra)}
 .btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
 .trainer{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem}
 .trainer img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center 30%;border:2px solid var(--terra);flex-shrink:0}
+.trainer .initial{width:64px;height:64px;border-radius:50%;border:2px solid var(--terra);background:var(--blush);color:var(--terra);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.7rem;flex-shrink:0}
+.bio{font-size:.9rem;color:var(--ink2);line-height:1.65;margin:.2rem 0 .8rem;overflow-wrap:anywhere}
+.gal-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1rem 0 .6rem}
+.gal{display:flex;flex-wrap:wrap;gap:1rem}
+.gal figure{width:84px;text-align:center}
+.gal img,.gal .gph{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--terra);display:block;background:var(--blush)}
+.gal .gph{display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.8rem;color:var(--terra)}
+.gal figcaption{font-size:.8rem;color:var(--ink2);margin-top:.35rem;overflow-wrap:anywhere}
 .trainer .n{font-family:var(--serif);font-size:1.25rem}
 .trainer .r{font-size:.8rem;color:var(--muted)}
 details.card>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.7rem}
@@ -126,6 +134,11 @@ details.card[open]>summary::after{transform:rotate(180deg)}
       <summary><span class="ico"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4"/></svg></span><h2>My intake <span class="hint">tap to view</span></h2></summary>
       <div id="intakeInfo" style="margin-top:.9rem"></div>
     </details>
+
+    <div class="card" id="dogsSection" style="display:none">
+      <div class="card-head"><span class="ico" id="dogsIco"></span><h2>Your dogs</h2></div>
+      <div id="dogsList" class="gal"></div>
+    </div>
 
     <div class="card">
       <div class="card-head"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><h2>Your trainer</h2></div>
@@ -235,6 +248,41 @@ async function loadDogPhoto(uid, dogName) {
   else { hp.innerHTML = ''; hp.style.display = 'none'; }
 }
 
+async function signed(bucket, path) {
+  if (!path) return null;
+  try { const { data } = await supabaseClient.storage.from(bucket).createSignedUrl(path, 3600); return data && data.signedUrl ? data.signedUrl : null; } catch (e) { return null; }
+}
+async function loadDogs(client, uid) {
+  try {
+    const { data } = await supabaseClient.from('client_dogs').select('*').eq('client_id', client.id).order('created_at');
+    if (!data || !data.length) return;
+    const all = [{ name: client.dog_name || 'Your dog', path: uid + '/dog.jpg', sub: client.dog_birthdate ? ageText(client.dog_birthdate) : (client.dog_age || '') }]
+      .concat(data.map(d => ({ name: d.name, path: uid + '/' + d.id + '.jpg', sub: d.dog_birthdate ? ageText(d.dog_birthdate) : '' })));
+    const urls = await Promise.all(all.map(d => signed('dog-photos', d.path)));
+    $('dogsList').innerHTML = all.map((d, i) => `<figure>${urls[i] ? `<img src="${esc(urls[i])}" alt="">` : `<div class="gph">${esc((d.name || '?').charAt(0).toUpperCase())}</div>`}<figcaption>${esc(d.name)}${d.sub ? `<br><span class="hint">${esc(d.sub)}</span>` : ''}</figcaption></figure>`).join('');
+    $('dogsIco').innerHTML = PAW;
+    $('dogsSection').style.display = 'block';
+  } catch (e) { /* extra dogs are optional */ }
+}
+async function renderTrainer(t) {
+  if (!t) { $('trainerInfo').innerHTML = '<p class="empty">Your trainer will be assigned shortly.</p>'; return; }
+  let photo = await signed('trainer-photos', t.photo_path);
+  if (!photo && t.is_owner) photo = 'https://i.imgur.com/qKj1rK5.jpg';
+  let dogs = [];
+  try { const { data } = await supabaseClient.from('trainer_dogs').select('*').eq('trainer_id', t.id).order('created_at'); dogs = data || []; } catch (e) {}
+  const dUrls = await Promise.all(dogs.map(d => signed('trainer-photos', d.photo_path)));
+  const first = (t.full_name || '').split(' ')[0];
+  $('trainerInfo').innerHTML = `
+    <div class="trainer">
+      ${photo ? `<img src="${esc(photo)}" alt="${esc(t.full_name)}">` : `<div class="initial">${esc((t.full_name || '?').charAt(0).toUpperCase())}</div>`}
+      <div><div class="n">${esc(t.full_name)}</div><div class="r">${t.is_owner ? 'Owner &amp; Operator' : 'Your trainer'}</div></div>
+    </div>
+    ${t.bio ? `<p class="bio">${esc(t.bio)}</p>` : ''}
+    ${t.email ? `<div class="row"><span>Email</span><span><a href="mailto:${esc(t.email)}">${esc(t.email)}</a></span></div>` : ''}
+    ${t.phone ? `<div class="row"><span>Phone</span><span>${esc(t.phone)}</span></div>` : ''}
+    ${dogs.length ? `<div class="gal-title">Meet ${esc(first)}'s dogs</div><div class="gal">${dogs.map((d, i) => `<figure>${dUrls[i] ? `<img src="${esc(dUrls[i])}" alt="">` : `<div class="gph">${esc((d.name || '?').charAt(0).toUpperCase())}</div>`}<figcaption>${esc(d.name)}</figcaption></figure>`).join('')}</div>` : ''}`;
+}
+
 async function loadDashboard() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) { window.location.href = 'login.html'; return; }
@@ -246,6 +294,11 @@ async function loadDashboard() {
     .single();
 
   if (clientError || !client) {
+    // Not a client: send trainers and admins to their own dashboards
+    const { data: tr } = await supabaseClient.from('trainers').select('id').eq('auth_id', user.id).maybeSingle();
+    if (tr) { window.location.href = 'trainer-dashboard.html'; return; }
+    const { data: ad } = await supabaseClient.from('admins').select('id').eq('auth_id', user.id).maybeSingle();
+    if (ad) { window.location.href = 'admin-dashboard.html'; return; }
     $('heroTitle').textContent = 'Welcome';
     $('heroSub').textContent = 'We could not find your client profile yet. Please email admin@cognitivecanines.com and we will sort it out.';
     $('content').style.display = 'none';
@@ -283,18 +336,8 @@ async function loadDashboard() {
   loadIntake();
   loadResources();
 
-  const t = client.trainers;
-  if (t) {
-    $('trainerInfo').innerHTML = `
-      <div class="trainer">
-        <img src="https://i.imgur.com/qKj1rK5.jpg" alt="${esc(t.full_name)}">
-        <div><div class="n">${esc(t.full_name)}</div><div class="r">Owner &amp; Operator</div></div>
-      </div>
-      ${t.email ? `<div class="row"><span>Email</span><span><a href="mailto:${esc(t.email)}">${esc(t.email)}</a></span></div>` : ''}
-      ${t.phone ? `<div class="row"><span>Phone</span><span>${esc(t.phone)}</span></div>` : ''}`;
-  } else {
-    $('trainerInfo').innerHTML = '<p class="empty">Your trainer will be assigned shortly.</p>';
-  }
+  loadDogs(client, user.id);
+  renderTrainer(client.trainers);
 
   const { data: docs } = await supabaseClient.from('documents').select('*').eq('client_id', client.id).order('created_at', { ascending: false });
   $('documentsList').innerHTML = (docs && docs.length)
