@@ -235,12 +235,14 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <form id="qYou" hidden novalidate>
         <div class="form-group"><label for="qName">Your Name</label><input type="text" id="qName" autocomplete="name" maxlength="120" required></div>
         <div class="form-group"><label for="qEmail">Email</label><input type="email" id="qEmail" autocomplete="email" maxlength="254" required></div>
-        <div class="form-group"><label for="qLoc">Your Location</label><input type="text" id="qLoc" required autocomplete="address-level2" maxlength="120" placeholder="City, Country"></div>
+        <div class="form-group"><label for="qLoc">Your Location</label><input type="text" id="qLoc" required autocomplete="address-level2" maxlength="120" placeholder="City, State"></div>
       </form>
 
       <form id="qDogForm" hidden novalidate>
         <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
-        <div class="form-group"><label for="qBreed">Breed</label><input type="text" id="qBreed" required maxlength="120" placeholder="Malinois mix"></div>
+        <div class="form-group"><label for="qBreedType">Purebred or mix?</label><select id="qBreedType" required><option value="">Select...</option><option>Purebred</option><option>Mixed breed</option></select></div>
+        <div class="form-group"><label for="qBreed" id="qBreedLbl">Breed</label><select id="qBreed" required><option value="">Select a breed...</option></select></div>
+        <div class="form-group" id="qBreed2Wrap" hidden><label for="qBreed2">Another breed in the mix (optional)</label><select id="qBreed2"><option value="">None or not sure</option></select></div>
         <div class="form-group"><label for="qSex">Sex</label><select id="qSex" required><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
         <div class="form-group"><label for="qFixed">Spayed / Neutered</label><select id="qFixed" required><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
         <div class="form-group"><label for="qGoals">Tell us more about your goals and any concerns</label><textarea id="qGoals" required rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
@@ -299,6 +301,27 @@ document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => 
 (function(){
 var SB_URL='https://mjgruhbmenjzjcrrwnyl.supabase.co/rest/v1/intake_results';
 var SB_KEY='sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa';
+var BREEDS=["Affenpinscher", "Afghan Hound", "Aidi", "Airedale Terrier", "Akbash Dog", "Akita", "Alaskan Klee Kai", "Alaskan Malamute", "Alentejo Mastiff", "Alpine Dachsbracke", "American Bulldog", "American Bully", "American English Coonhound", "American Eskimo Dog", "American Feist", "American Foxhound", "American Hairless Terrier", "American Leopard Hound", "American Pit Bull Terrier", "American Staffordshire Terrier", "American Water Spaniel", "Anatolian Shepherd", "Anglo-Francais de Petite Venerie", "Appenzeller", "Ariegeois", "Australian Cattle Dog", "Australian Kelpie", "Australian Shepherd", "Australian Terrier", "Austrian Black and Tan Hound", "Austrian Pinscher", "Azawakh", "Barak", "Barbet", "Basenji", "Basset Artesien Normand", "Basset Bleu de Gascogne", "Basset Fauve de Bretagne", "Basset Hound", "Bavarian Mountain Hound", "Beagle", "Beagle Harrier", "Bearded Collie", "Beauceron", "Bedlington Terrier", "Belgian Laekenois", "Belgian Malinois", "Belgian Sheepdog (Groenendael)", "Belgian Tervuren", "Bergamasco", "Berger Picard", "Bernese Mountain Dog", "Bichon Frise", "Biewer Terrier", "Billy", "Black and Tan Coonhound", "Black Forest Hound", "Black Mouth Cur", "Black Russian Terrier", "Bloodhound", "Bluetick Coonhound", "Bolognese", "Border Collie", "Border Terrier", "Borzoi", "Boston Terrier", "Bouvier des Ardennes", "Bouvier des Flandres", "Boxer", "Boykin Spaniel", "Bracco Italiano", "Braque D'Auvergne", "Braque de l'Ariege", "Braque du Bourbonnais", "Braque Francais, de Grande Taille", "Braque Francais, de Petite Taille", "Braque Saint Germain", "Briard", "Briquet Griffon Vendeen", "Brittany", "Brussels Griffon", "Bullmastiff", "Bull Terrier", "Ca de Bestiar", "Cairn Terrier", "Canaan Dog", "Canadian Eskimo Dog", "Cane Corso Italiano", "Cao de Castro Laboreiro", "Cardigan Welsh Corgi", "Carolina Dog", "Catalan Sheepdog", "Caucasian Ovcharka", "Cavalier King Charles Spaniel", "Central Asian Shepherd Dog", "Cesky Fousek", "Cesky Terrier", "Chart Polski", "Chesapeake Bay Retriever", "Chien d'Artois", "Chien Francais Blanc et Noir", "Chien Francais Tricolore", "Chihuahua", "Chinese Crested", "Chinese Shar-Pei", "Chinook", "Chow Chow", "Cimarron Uruguayo", "Ciobanesc Romanesc Carpatin", "Ciobanesc Romanesc Mioritic", "Cirneco dell'Etna", "Clumber Spaniel", "Cocker Spaniel", "Collie", "Coton de Tulear", "Croatian Sheepdog", "Curly-Coated Retriever", "Czechoslovakian Wolfdog", "Dachshund", "Dalmatian", "Dandie Dinmont Terrier", "Danish Broholmer", "Danish-Swedish Farmdog", "Deutsche Bracke", "Deutscher Wachtelhund", "Doberman Pinscher", "Dogo Argentino", "Dogue de Bordeaux", "Drentse Patrijshond", "Drever", "Dunker", "Dutch Shepherd", "Dutch Smoushond", "East Siberian Laika", "English Bulldog", "English Cocker Spaniel", "English Foxhound", "English Pointer", "English Setter", "English Shepherd", "English Springer Spaniel", "English Toy Spaniel", "Entlebucher Mountain Dog", "Epagneul Bleu de Picardie", "Epagneul Breton", "Epagneul de Pont-Audemer", "Epagneul Francais", "Epagneul Picard", "Estrela Mountain Dog", "Eurasier", "Field Spaniel", "Finnish Hound", "Finnish Lapphund", "Finnish Spitz", "Flat-Coated Retriever", "Francais Blanc et Orange", "French Bulldog", "Frisian Water Dog", "German Drahthaar", "German Long Haired Pointer", "German Pinscher", "German Rough Haired Pointer", "German Shepherd Dog", "German Shorthaired Pointer", "German Spitz", "German Wirehaired Pointer", "Giant Schnauzer", "Glen of Imaal Terrier", "Golden Retriever", "Gordon Setter", "Grand Basset Griffon Vendéen", "Grand Bleu de Gascogne", "Grand Gascon-Saintongeois", "Grand Griffon Vendeen", "Great Anglo-Francais Tricolor Hound", "Great Anglo-Francais White and Black Hound", "Great Anglo-Francais White and Orange Hound", "Great Dane", "Greater Swiss Mountain Dog", "Great Pyrenees", "Greenland Dog", "Greyhound", "Griffon Bleu de Gascogne", "Griffon Fauve de Bretagne", "Griffon Nivernais", "Haldenstover", "Hamiltonstovare", "Hanoverian Hound", "Harrier", "Havanese", "Hellenic Hound", "Hokkaido", "Hovawart", "Hungarian Greyhound", "Hygen Hound", "Ibizan Hound", "Icelandic Sheepdog", "Irish Red & White Setter", "Irish Setter", "Irish Terrier", "Irish Water Spaniel", "Irish Wolfhound", "Istrian Coarse-Haired Hound", "Istrian Short-Haired Hound", "Italian Greyhound", "Italian Hound", "Jack Russell Terrier", "Jagdterrier", "Japanese Akita", "Japanese Chin", "Japanese Spitz", "Japanese Terrier", "Jindo", "Kai", "Kangal Dog", "Karelian Bear Dog", "Karst Shepherd Dog", "Keeshond", "Kerry Blue Terrier", "Kishu", "Komondor", "Kooikerhondje", "Kromfohrlander", "Kuvasz", "Labrador Retriever", "Lagotto Romagnolo", "Lakeland Terrier", "Lancashire Heeler", "Lapinporokoira", "Large Munsterlander", "Leonberger", "Lhasa Apso", "Llewellin Setter", "Louisiana Catahoula Leopard Dog", "Löwchen", "Majorca Mastiff", "Maltese", "Manchester Terrier", "Maremma Sheepdog", "Mastiff", "Mi-Ki", "Miniature American Shepherd", "Miniature Bull Terrier", "Miniature Pinscher", "Miniature Schnauzer", "Montenegrin Mountain Hound", "Mountain Cur", "Mountain Feist", "Mudi", "Neapolitan Mastiff", "Newfoundland", "Norfolk Terrier", "Norrbottenspetz", "Norwegian Buhund", "Norwegian Elkhound", "Norwegian Lundehund", "Norwich Terrier", "Nova Scotia Duck Tolling Retriever", "Old Danish Pointing Dog", "Olde English Bulldogge", "Old English Sheepdog", "Otterhound", "Owczarek Podhalanski", "Papillon", "Parson Russell Terrier", "Patterdale Terrier", "Pekingese", "Pembroke Welsh Corgi", "Perdiguero de Burgos", "Perro de Presa Canario", "Peruvian Inca Orchid", "Petit Basset Griffon Vendéen", "Petit Bleu de Gascogne", "Petit Gascon-Saintongeois", "Pharaoh Hound", "Plott Hound", "Podenco Canario", "Poitevin", "Polish Hound", "Polish Lowland Sheepdog", "Polski Owczarek Nizinny", "Pomeranian", "Poodle (Miniature)", "Poodle (Standard)", "Poodle (Toy)", "Porcelaine", "Portuguese Podengo", "Portuguese Pointer", "Portuguese Sheepdog", "Portuguese Water Dog", "Posavaz Hound", "Pudelpointer", "Pug", "Puli", "Pumi", "Pyrenean Mastiff", "Pyrenean Shepherd", "Rat Terrier", "Redbone Coonhound", "Rhodesian Ridgeback", "Rottweiler", "Russell Terrier", "Russian-European Laika", "Russian Toy", "Russian Tsvetnaya Bolonka", "Saarloosewolfdog", "Saint Bernard", "Saluki", "Samoyed", "Sarplaninac", "Schapendoes", "Schiller Hound", "Schipperke", "Scottish Deerhound", "Scottish Terrier", "Sealyham Terrier", "Serbian Hound", "Serbian Tricolor Hound", "Shetland Sheepdog", "Shiba Inu", "Shih Tzu", "Shikoku", "Siberian Husky", "Silken Windhound", "Silky Terrier", "Skye Terrier", "Sloughi", "Slovak Cuvac", "Slovakian Wire-Haired Pointing Dog", "Smaland Hound", "Small Munsterlander", "Small Swiss Hound", "Smooth Fox Terrier", "Soft-Coated Wheaten Terrier", "South African Boerboel", "South Russian Shepherd Dog", "Spanish Greyhound", "Spanish Hound", "Spanish Mastiff", "Spanish Water Dog", "Spinone Italiano", "Sporting Lucas Terrier", "Stabyhoun", "Staffordshire Bull Terrier", "Standard Schnauzer", "Stephens' Cur", "Stumpy Tail Cattle Dog", "Styrian Coarse Haired Hound", "Sussex Spaniel", "Swedish Elkhound", "Swedish Lapphund", "Swedish Vallhund", "Swiss Hound", "Teddy Roosevelt Terrier", "Thai Ridgeback", "Tibetan Mastiff", "Tibetan Spaniel", "Tibetan Terrier", "Tornjak", "Tosa Ken", "Toy Fox Terrier", "Transylvanian Hound", "Treeing Cur", "Treeing Feist", "Treeing Tennessee Brindle", "Treeing Walker Coonhound", "Tyrolean Hound", "Vizsla", "Volpino Italiano", "Weimaraner", "Welsh Hound", "Welsh Springer Spaniel", "Welsh Terrier", "West Highland White Terrier", "Westphalian Dachsbracke", "West Siberian Laika", "Whippet", "White Shepherd", "Wire Fox Terrier", "Wirehaired Pointing Griffon", "Wirehaired Vizsla", "Xoloitzcuintli", "Yorkshire Terrier"];
+function fillBreeds(){
+  ['qBreed','qBreed2'].forEach(function(id){
+    var sel=document.getElementById(id);
+    if(id==='qBreed'){var o=document.createElement('option');o.value='Not sure';o.textContent='Not sure';sel.appendChild(o)}
+    BREEDS.forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;sel.appendChild(o)});
+  });
+  document.getElementById('qBreedType').addEventListener('change',function(){
+    var mix=this.value==='Mixed breed';
+    document.getElementById('qBreed2Wrap').hidden=!mix;
+    document.getElementById('qBreedLbl').textContent=mix?'Main breed (your best guess)':'Breed';
+    if(!mix)document.getElementById('qBreed2').value='';
+  });
+}
+function breedText(){
+  var main=document.getElementById('qBreed').value,other=document.getElementById('qBreed2').value;
+  if(document.getElementById('qBreedType').value!=='Mixed breed')return main;
+  if(main==='Not sure')return other?('Mixed breed (includes '+other+')'):'Mixed breed (unknown)';
+  return other?(main+' x '+other+' mix'):(main+' mix');
+}
+fillBreeds();
 var FORM_URL='https://formspree.io/f/mrppkvdd';
 var steps=[
 {k:'dog_birthdate',t:"When was your dog born?",hint:"Your best estimate is fine if you are not sure.",date:true},
@@ -405,12 +428,14 @@ $('nextBtn').onclick=function(){
     var n=v('qName'),em=v('qEmail').toLowerCase();
     if(!n){$('qErr').textContent='Please enter your name.';return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){$('qErr').textContent='Please enter a valid email address.';return}
-    if(!v('qLoc')){$('qErr').textContent='Please enter your location (city and country).';return}
+    if(!v('qLoc')){$('qErr').textContent='Please enter your city and state.';return}
     me={name:n,email:em,location:v('qLoc')};go(i+1);return;
   }
   if(s.form==='qDogForm'){
     if(!v('qDog')){$('qErr').textContent='Please enter your dog\'s name.';return}
-    if(!v('qBreed')){$('qErr').textContent='Please enter your dog\'s breed (a best guess or "mix" is fine).';return}
+    if(!$('qBreedType').value){$('qErr').textContent='Please choose whether your dog is purebred or a mix.';return}
+    if(!$('qBreed').value){$('qErr').textContent='Please choose your dog\'s breed (your best guess is fine).';return}
+    if($('qBreedType').value==='Purebred'&&$('qBreed').value==='Not sure'){$('qErr').textContent='If you are not sure of the breed, choose "Mixed breed" above.';return}
     if(!$('qSex').value){$('qErr').textContent='Please select your dog\'s sex.';return}
     if(!$('qFixed').value){$('qErr').textContent='Please select whether your dog is spayed or neutered.';return}
     if(!v('qGoals')){$('qErr').textContent='Please tell us a little about your goals and any concerns.';return}
@@ -424,13 +449,13 @@ function summary(){
   return 'Age: '+ageText(a.dog_birthdate)+' (born '+a.dog_birthdate+') | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support+(a.good_dog?' | Good dog: '+a.good_dog:'');
 }
 function submit(){
-  var dogName=v('qDog'),breed=v('qBreed'),sex=$('qSex').value,fixed=$('qFixed').value,goals=v('qGoals').slice(0,600);
+  var dogName=v('qDog'),breed=breedText(),sex=$('qSex').value,fixed=$('qFixed').value,goals=v('qGoals').slice(0,600);
   var tier=route();
   var tierLabel=tier||'Consultation first';
   // honeypot: bots fill this; pretend success and send nothing
   if($('qHp').value){showResult(tier,true);return}
   saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Sending...';$('qErr').textContent='';
-  var all=Object.assign({},a,{location:me.location,breed:breed,sex:sex,fixed:fixed,goals:goals});
+  var all=Object.assign({},a,{location:me.location,breed:breed,breed_type:$('qBreedType').value,sex:sex,fixed:fixed,goals:goals});
   var row={full_name:me.name,email:me.email,dog_name:dogName,answers:all,recommended_tier:tierLabel};
   var fd=new FormData();
   fd.append('_subject','New intake inquiry from '+me.name);
