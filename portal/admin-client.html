@@ -102,6 +102,7 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     <div id="accessRow" data-admin-only style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
       <span id="accessBadge" class="badge badge-gold">Access: Active</span>
       <button id="accessBtn" class="logout-btn" onclick="toggleAccess()" style="cursor:pointer">Pause access</button>
+      <button id="resetBtn" class="logout-btn" onclick="resetPassword()" style="cursor:pointer">Reset password</button>
       <span class="meta" style="font-size:.78rem;color:var(--muted)">A paused client can still log in, but sees a kind note instead of their files.</span>
     </div>
   </div>
@@ -310,6 +311,24 @@ async function loadClient() {
 document.addEventListener('input', function (e) {
   if (e.target && e.target.id === 'delConfirm') document.getElementById('delBtn').disabled = e.target.value.trim() !== 'DELETE';
 });
+async function resetPassword() {
+  if (!window.CUR) return;
+  if (!confirm('Create a new temporary password for ' + (window.CUR.full_name || 'this client') + '? Their old password will stop working.')) return;
+  const btn = document.getElementById('resetBtn'); btn.disabled = true;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const res = await fetch('https://mjgruhbmenjzjcrrwnyl.supabase.co/functions/v1/manage-trainer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ action: 'reset_password', kind: 'client', id: clientId })
+    });
+    const result = await res.json();
+    if (!res.ok) { alert(result.error || 'Something went wrong.'); }
+    else { alert('New temporary password for ' + result.email + ':\n\n' + result.tempPassword + '\n\nThey log in at the client login page using "Set your password" and choose their own.'); }
+  } catch (err) { alert('Could not reach the server. Please try again.'); }
+  btn.disabled = false;
+}
+
 async function deleteClient() {
   const btn = document.getElementById('delBtn'), msg = document.getElementById('delMsg');
   if (document.getElementById('delConfirm').value.trim() !== 'DELETE') return;
