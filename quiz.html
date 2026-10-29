@@ -222,6 +222,11 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <p class="q-hint" id="qHint"></p>
       <div id="qOpts" role="group" aria-labelledby="qTitle"></div>
 
+      <div id="qDate" hidden>
+        <div class="form-group"><label for="qBirth">Your dog's birthday (or best estimate)</label><input type="date" id="qBirth"></div>
+        <p class="q-small" id="qAgeShow" style="text-align:left;margin-top:-.4rem"></p>
+      </div>
+
       <div id="qText" hidden>
         <div class="form-group"><label for="qGood">Your answer (optional)</label><textarea id="qGood" rows="5" maxlength="500" placeholder="A sentence or two is plenty. There are no wrong answers."></textarea></div>
         <p class="q-small q-count-line" id="qGoodCount">0 / 500</p>
@@ -230,15 +235,15 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <form id="qYou" hidden novalidate>
         <div class="form-group"><label for="qName">Your Name</label><input type="text" id="qName" autocomplete="name" maxlength="120" required></div>
         <div class="form-group"><label for="qEmail">Email</label><input type="email" id="qEmail" autocomplete="email" maxlength="254" required></div>
-        <div class="form-group"><label for="qLoc">Your Location (optional)</label><input type="text" id="qLoc" autocomplete="address-level2" maxlength="120" placeholder="City, Country"></div>
+        <div class="form-group"><label for="qLoc">Your Location</label><input type="text" id="qLoc" required autocomplete="address-level2" maxlength="120" placeholder="City, Country"></div>
       </form>
 
       <form id="qDogForm" hidden novalidate>
         <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
-        <div class="form-group"><label for="qBreed">Breed (optional)</label><input type="text" id="qBreed" maxlength="120" placeholder="Malinois mix"></div>
-        <div class="form-group"><label for="qSex">Sex (optional)</label><select id="qSex"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
-        <div class="form-group"><label for="qFixed">Spayed / Neutered (optional)</label><select id="qFixed"><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
-        <div class="form-group"><label for="qGoals">Anything else you would like us to know? (optional)</label><textarea id="qGoals" rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
+        <div class="form-group"><label for="qBreed">Breed</label><input type="text" id="qBreed" required maxlength="120" placeholder="Malinois mix"></div>
+        <div class="form-group"><label for="qSex">Sex</label><select id="qSex" required><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
+        <div class="form-group"><label for="qFixed">Spayed / Neutered</label><select id="qFixed" required><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
+        <div class="form-group"><label for="qGoals">Tell us more about your goals and any concerns</label><textarea id="qGoals" required rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
         <input type="text" id="qHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
         <p class="q-small" style="text-align:left;margin-top:0">By sending this you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
       </form>
@@ -296,7 +301,7 @@ var SB_URL='https://mjgruhbmenjzjcrrwnyl.supabase.co/rest/v1/intake_results';
 var SB_KEY='sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa';
 var FORM_URL='https://formspree.io/f/mrppkvdd';
 var steps=[
-{k:'age',t:"How old is your dog?",o:["Under 6 months","6 to 18 months","Adult","Senior"]},
+{k:'dog_birthdate',t:"When was your dog born?",hint:"Your best estimate is fine if you are not sure.",date:true},
 {k:'goal',t:"What is your main goal?",o:["Puppy basics","General obedience","A behavior concern","Sport"]},
 {k:'concerns',t:"Which behaviors are you seeing?",hint:"Pick any that apply.",m:true,o:["Leash reactivity","Aggression toward dogs or people","Separation anxiety","Resource guarding","Fear","Jumping or mouthing","Recall","None of these"]},
 {k:'severity',t:"How serious is it?",o:["No concerns","Mild","Moderate","Serious, including any bite history"]},
@@ -314,6 +319,18 @@ Platinum:["$249/mo","Advanced behavior modification for moderate concerns."],
 Celestial:["$399/mo","Elite sport and high-level behavior coaching."]
 };
 var i=0,a={},saving=false,me={};
+function ageText(iso){
+  if(!iso)return '';
+  var b=new Date(iso+'T00:00:00');if(isNaN(b))return '';
+  var n=new Date();var m=(n.getFullYear()-b.getFullYear())*12+(n.getMonth()-b.getMonth());
+  if(n.getDate()<b.getDate())m--;
+  if(m<0)return '';
+  var y=Math.floor(m/12),mo=m%12;
+  if(y===0&&mo===0)return 'Under 1 month';
+  var p=[];if(y)p.push(y+(y===1?' year':' years'));if(mo)p.push(mo+(mo===1?' month':' months'));
+  return p.join(', ');
+}
+
 var $=function(id){return document.getElementById(id)};
 var v=function(id){return $(id).value.trim()};
 
@@ -336,9 +353,11 @@ function render(){
   $('qYou').hidden=s.form!=='qYou';
   $('qDogForm').hidden=s.form!=='qDogForm';
   $('qText').hidden=!s.text;
-  box.hidden=!!(s.form||s.text);
+  $('qDate').hidden=!s.date;
+  box.hidden=!!(s.form||s.text||s.date);
+  if(s.date){var t0=new Date(),mx=t0.toISOString().slice(0,10),mn=new Date(t0.getFullYear()-30,t0.getMonth(),t0.getDate()).toISOString().slice(0,10);$('qBirth').max=mx;$('qBirth').min=mn;$('qBirth').value=a.dog_birthdate||'';$('qAgeShow').textContent=a.dog_birthdate?('That makes your dog '+ageText(a.dog_birthdate)+' old.'):''}
   if(s.text){$('qGood').value=a.good_dog||'';$('qGoodCount').textContent=$('qGood').value.length+' / 500'}
-  if(!s.form&&!s.text){
+  if(!s.form&&!s.text&&!s.date){
     s.o.forEach(function(label){
       var b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=label;
       var cur=a[s.k];
@@ -364,24 +383,37 @@ function render(){
 function go(n){i=n;render();var t=$('qTitle');if(t&&t.focus){t.focus({preventScroll:true})}window.scrollTo({top:0,behavior:'smooth'})}
 
 $('startBtn').onclick=function(){$('quizIntro').hidden=true;$('quizMain').hidden=false;go(0)};
+$('qBirth').addEventListener('input',function(){$('qAgeShow').textContent=this.value&&ageText(this.value)?('That makes your dog '+ageText(this.value)+' old.'):''});
 $('qGood').addEventListener('input',function(){$('qGoodCount').textContent=this.value.length+' / 500'});
 $('backBtn').onclick=function(){
   if(saving||i===0)return;
   if(steps[i].text){a.good_dog=v('qGood').slice(0,500)}
+  if(steps[i].date&&$('qBirth').value){a.dog_birthdate=$('qBirth').value}
   go(i-1);
 };
 $('nextBtn').onclick=function(){
   if(saving)return;
   var s=steps[i];
+  if(s.date){
+    var bd=$('qBirth').value;
+    if(!bd||!ageText(bd)){$('qErr').textContent='Please enter your dog\'s birthday (a best estimate is fine).';return}
+    if(bd<$('qBirth').min){$('qErr').textContent='That date looks too far back. Please check it.';return}
+    a.dog_birthdate=bd;a.age=ageText(bd);go(i+1);return;
+  }
   if(s.text){a.good_dog=v('qGood').slice(0,500);go(i+1);return}
   if(s.form==='qYou'){
     var n=v('qName'),em=v('qEmail').toLowerCase();
     if(!n){$('qErr').textContent='Please enter your name.';return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){$('qErr').textContent='Please enter a valid email address.';return}
+    if(!v('qLoc')){$('qErr').textContent='Please enter your location (city and country).';return}
     me={name:n,email:em,location:v('qLoc')};go(i+1);return;
   }
   if(s.form==='qDogForm'){
     if(!v('qDog')){$('qErr').textContent='Please enter your dog\'s name.';return}
+    if(!v('qBreed')){$('qErr').textContent='Please enter your dog\'s breed (a best guess or "mix" is fine).';return}
+    if(!$('qSex').value){$('qErr').textContent='Please select your dog\'s sex.';return}
+    if(!$('qFixed').value){$('qErr').textContent='Please select whether your dog is spayed or neutered.';return}
+    if(!v('qGoals')){$('qErr').textContent='Please tell us a little about your goals and any concerns.';return}
     submit();return;
   }
   var ans=a[s.k];
@@ -389,7 +421,7 @@ $('nextBtn').onclick=function(){
   go(i+1);
 };
 function summary(){
-  return 'Age: '+a.age+' | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support+(a.good_dog?' | Good dog: '+a.good_dog:'');
+  return 'Age: '+ageText(a.dog_birthdate)+' (born '+a.dog_birthdate+') | Goal: '+a.goal+' | Concerns: '+a.concerns.join(', ')+' | Severity: '+a.severity+' | Support: '+a.support+(a.good_dog?' | Good dog: '+a.good_dog:'');
 }
 function submit(){
   var dogName=v('qDog'),breed=v('qBreed'),sex=$('qSex').value,fixed=$('qFixed').value,goals=v('qGoals').slice(0,600);
