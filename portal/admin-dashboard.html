@@ -595,6 +595,7 @@ async function loadTrainers() {
       </div>
       <div class="client-actions" style="display:flex;gap:.4rem;flex-wrap:wrap">
         <button class="btn btn-sm btn-secondary" onclick="openProfile('${esc(t.id)}')">Edit profile</button>
+        ${t.auth_id ? `<button class="btn btn-sm btn-secondary" onclick="resetTrainerPassword('${esc(t.id)}')">Reset password</button>` : ''}
         ${t.is_owner ? '' : `<button class="btn btn-sm btn-danger" onclick="removeTrainer('${esc(t.id)}')">Remove</button>`}
       </div>
     </div>`).join('');
@@ -645,6 +646,25 @@ document.getElementById('trainerForm').addEventListener('submit', async (e) => {
     msg.textContent = 'Network error. Please try again.'; msg.className = 'msg error'; msg.style.display = 'block';
   } finally { btn.disabled = false; btn.textContent = 'Create Trainer'; }
 });
+async function resetTrainerPassword(id) {
+  const t = TRAINERS.find(x => x.id === id);
+  if (!t) return;
+  if (!confirm('Create a new temporary password for ' + t.full_name + '? Their old password will stop working.')) return;
+  const { ok, result } = await callTrainerFn({ action: 'reset_password', kind: 'trainer', id });
+  if (!ok) { alert(result.error || 'Something went wrong.'); return; }
+  openTrainerModal();
+  document.getElementById('trainerForm').style.display = 'none';
+  const box = document.getElementById('trResult');
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="msg success" style="display:block">New temporary password created.</div>
+    <div class="temp-pass-box">
+      Send these to your trainer. They log in at the client login page (cognitivecanines.com/portal/login.html) using "Set your password" and choose their own:<br><br>
+      <strong>Email:</strong> ${esc(result.email)}<br>
+      <strong>Temporary Password:</strong> ${esc(result.tempPassword)}
+    </div>
+    <button class="btn btn-full" style="margin-top:1rem" onclick="closeTrainerModal()">Done</button>`;
+}
 async function removeTrainer(id) {
   const t = TRAINERS.find(x => x.id === id);
   if (!t) return;
