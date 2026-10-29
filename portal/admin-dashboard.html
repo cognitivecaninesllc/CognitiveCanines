@@ -126,7 +126,7 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
       <div class="form-group"><label>Email</label><input type="email" id="newEmail" required></div>
       <div class="form-group"><label>Dog's Name</label><input type="text" id="newDog"></div>
       <div class="form-group"><label>Breed</label><input type="text" id="newBreed"></div>
-      <div class="form-group"><label>Dog's Age</label><input type="text" id="newAge" placeholder="e.g. 3 years, 8 months"></div>
+      <div class="form-group"><label>Dog's Birthday (or best estimate)</label><input type="date" id="newBirth"></div>
       <div class="form-group">
         <label>Dog's Sex</label>
         <select id="newSex">
@@ -214,7 +214,7 @@ async function loadIntakeList(clients) {
     const sport = (a.sport === 'Curious' || a.sport === 'Training or competing');
     const consult = r.recommended_tier === 'Consultation first';
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
-    const detail = [['Age', a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals]]
+    const detail = [['Age', a.dog_birthdate ? ageText(a.dog_birthdate) : a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals]]
       .filter(x => x[1]).map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
     return `<details class="intake-item">
       <summary>
@@ -382,10 +382,23 @@ function addFromIntake(id) {
   document.getElementById('newEmail').value = r.email || '';
   document.getElementById('newDog').value = r.dog_name || '';
   document.getElementById('newBreed').value = a.breed || '';
+  document.getElementById('newBirth').value = a.dog_birthdate || '';
   document.getElementById('newSex').value = a.sex || '';
   document.getElementById('newFixed').value = a.fixed || '';
   const t = r.recommended_tier;
   document.getElementById('newTier').value = (['Bronze','Silver','Gold','Platinum','Celestial'].indexOf(t) > -1) ? t : '';
+}
+
+function ageText(iso){
+  if(!iso)return '';
+  const b=new Date(iso+'T00:00:00');if(isNaN(b))return '';
+  const n=new Date();const m=(n.getFullYear()-b.getFullYear())*12+(n.getMonth()-b.getMonth());
+  if(n.getDate()<b.getDate())m--;
+  if(m<0)return '';
+  const y=Math.floor(m/12),mo=m%12;
+  if(y===0&&mo===0)return 'Under 1 month';
+  const p=[];if(y)p.push(y+(y===1?' year':' years'));if(mo)p.push(mo+(mo===1?' month':' months'));
+  return p.join(', ');
 }
 
 async function loadClients() {
@@ -404,7 +417,7 @@ async function loadClients() {
   list.innerHTML = clients.map(c => `
     <div class="client-row">
       <div>
-        <div class="client-name">${esc(c.full_name)}</div>
+        <div class="client-name">${esc(c.full_name)} ${c.access_status === 'paused' ? '<span class="badge badge-red">Paused</span>' : ''}</div>
         <div class="client-meta">${esc(c.email)} &middot; ${esc(c.dog_name || 'No dog listed')} &middot; ${esc(c.program_tier || 'No tier')}</div>
       </div>
       <div class="client-actions">
@@ -442,7 +455,7 @@ document.getElementById('addClientForm').addEventListener('submit', async (e) =>
     email: document.getElementById('newEmail').value,
     dog_name: document.getElementById('newDog').value,
     breed: document.getElementById('newBreed').value,
-    dog_age: document.getElementById('newAge').value,
+    dog_birthdate: document.getElementById('newBirth').value,
     dog_sex: document.getElementById('newSex').value,
     dog_fixed: document.getElementById('newFixed').value,
     program_tier: document.getElementById('newTier').value,
