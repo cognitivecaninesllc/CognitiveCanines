@@ -439,9 +439,15 @@ function submit(){
   fd.append('dog_name',dogName);fd.append('breed',breed);fd.append('dog_sex',sex);fd.append('spayed_neutered',fixed);
   fd.append('program_interest',tierLabel);fd.append('goals',goals);
   fd.append('quiz_answers',summary());
-  var saved=fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)}).then(function(r){return r.ok}).catch(function(){return false});
-  var mailed=fetch(FORM_URL,{method:'POST',body:fd,headers:{'Accept':'application/json'}}).then(function(r){return r.ok}).catch(function(){return false});
-  Promise.all([saved,mailed]).then(function(res){
+  // Send the email first so Formspree's exact answer can be saved with the submission
+  var mailed=fetch(FORM_URL,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
+    .then(function(r){return r.text().then(function(t){return {ok:r.ok,status:r.status,text:String(t).slice(0,300)}})})
+    .catch(function(e){return {ok:false,status:0,text:String(e&&e.message||e).slice(0,200)}});
+  mailed.then(function(m){
+    all.mail_status=m.ok?'ok':('failed '+m.status+': '+m.text);
+    return fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)})
+      .then(function(r){return [r.ok,m.ok]}).catch(function(){return [false,m.ok]});
+  }).then(function(res){
     saving=false;
     if(!res[0]&&!res[1]){
       $('nextBtn').disabled=false;$('nextBtn').textContent='Send my inquiry';
