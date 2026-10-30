@@ -273,26 +273,42 @@ async function checkAdmin() {
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
 async function loadIntakeList(clients) {
+  try { await loadIntakeListInner(clients); }
+  catch (e) {
+    console.error('intake list failed', e);
+    const list = document.getElementById('intakeList');
+    if (list) list.innerHTML = '<p class="empty-state">Could not show quiz submissions: ' + esc(e && e.message ? e.message : e) + '</p>';
+  }
+}
+
+async function loadIntakeListInner(clients) {
   const list = document.getElementById('intakeList');
   const { data, error } = await supabaseClient.from('intake_results').select('*').order('created_at', { ascending: false }).limit(50);
   if (error) { list.innerHTML = '<p class="empty-state">Could not load quiz submissions.</p>'; return; }
   if (!data || !data.length) { list.innerHTML = '<p class="empty-state">No quiz submissions yet.</p>'; return; }
   INTAKES = data;
+  const seen = getSeenIntakes();
+  const newCount = data.filter(r => !seen.has(String(r.id))).length;
+  const head = document.querySelector('#intakeList').previousElementSibling.querySelector('h3');
+  if (head) head.textContent = 'Intake Quiz Submissions' + (newCount ? ' (' + newCount + ' new)' : '');
+  document.title = (newCount ? '(' + newCount + ') ' : '') + 'Admin Dashboard | Cognitive Canines';
   const have = new Set((clients || []).map(c => String(c.email || '').toLowerCase()));
-  list.innerHTML = data.map(r => {
+  list.innerHTML = data.map(r => { try {
     const a = r.answers || {};
     const sport = (a.sport === 'Curious' || a.sport === 'Training or competing');
     const consult = r.recommended_tier === 'Consultation first';
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
     const detail = [['Age', a.dog_birthdate ? ageText(a.dog_birthdate) : a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals], ['Email to you', a.mail_status ? (a.mail_status === 'ok' ? 'Sent' : a.mail_status) : '']]
       .filter(x => x[1]).map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
-    return `<details class="intake-item">
+    const isNew = !seen.has(String(r.id));
+    return `<details class="intake-item" ontoggle="if(this.open)markIntakeSeen('${esc(r.id)}',this)">
       <summary>
         <div>
           <div class="client-name">${esc(r.full_name)} &middot; ${esc(r.dog_name || 'No dog listed')}</div>
-          <div class="client-meta">${esc(r.email)} &middot; ${new Date(r.created_at).toLocaleDateString()} &middot; ${esc(r.recommended_tier || '')}</div>
+          <div class="client-meta">${esc(r.email)} &middot; ${new Date(r.created_at).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})} &middot; ${esc(r.recommended_tier || '')}</div>
         </div>
         <div class="badges">
+          ${isNew ? '<span class="badge badge-green">New</span>' : ''}
           ${sport ? '<span class="badge badge-gold">Sport upsell</span>' : ''}
           ${consult ? '<span class="badge badge-red">Consult first</span>' : ''}
           ${a.mail_status && a.mail_status !== 'ok' ? '<span class="badge badge-red">Email not sent</span>' : ''}
@@ -306,7 +322,23 @@ async function loadIntakeList(clients) {
         </div>
       </div>
     </details>`;
-  }).join('');
+  } catch (e) { console.error('intake row failed', r && r.id, e); return `<div class="client-row"><div class="client-meta">${esc((r && r.full_name) || 'A submission')} could not be displayed (${esc(e.message)}).</div></div>`; } }).join('');
+}
+
+function getSeenIntakes() {
+  try { return new Set(JSON.parse(localStorage.getItem('cc_seen_intakes') || '[]')); } catch (e) { return new Set(); }
+}
+function markIntakeSeen(id, el) {
+  const seen = getSeenIntakes();
+  if (seen.has(id)) return;
+  seen.add(id);
+  try { localStorage.setItem('cc_seen_intakes', JSON.stringify(Array.from(seen).slice(-500))); } catch (e) {}
+  const b = el.querySelector('.badge-green');
+  if (b && b.textContent === 'New') b.remove();
+  const n = (INTAKES || []).filter(r => !seen.has(String(r.id))).length;
+  const head = document.querySelector('#intakeList').previousElementSibling.querySelector('h3');
+  if (head) head.textContent = 'Intake Quiz Submissions' + (n ? ' (' + n + ' new)' : '');
+  document.title = (n ? '(' + n + ') ' : '') + 'Admin Dashboard | Cognitive Canines';
 }
 
 async function deleteIntake(id) {
