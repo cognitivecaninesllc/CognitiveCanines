@@ -246,7 +246,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
         <div class="form-group"><label for="qSex">Sex</label><select id="qSex" required><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
         <div class="form-group"><label for="qFixed">Spayed / Neutered</label><select id="qFixed" required><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
         <div class="form-group"><label for="qGoals">Tell us more about your goals and any concerns</label><textarea id="qGoals" required rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
-        <input type="text" id="qHp" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+        <input type="checkbox" id="qHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
         <p class="q-small" style="text-align:left;margin-top:0">By sending this you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
       </form>
 
@@ -455,7 +455,7 @@ function submit(){
   var tier=route();
   var tierLabel=tier||'Consultation first';
   // honeypot: bots fill this; pretend success and send nothing
-  if($('qHp').value){showResult(tier,true);return}
+  if($('qHp').checked){window.__mailStatus='not sent: spam trap was ticked';showResult(tier,true);return}
   saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Sending...';$('qErr').textContent='';
   var all=Object.assign({},a,{location:me.location,breed:breed,breed_type:$('qBreedType').value,sex:sex,fixed:fixed,goals:goals});
   var row={full_name:me.name,email:me.email,dog_name:dogName,answers:all,recommended_tier:tierLabel};
@@ -472,6 +472,7 @@ function submit(){
     .catch(function(e){return {ok:false,status:0,text:String(e&&e.message||e).slice(0,200)}});
   mailed.then(function(m){
     all.mail_status=m.ok?'ok':('failed '+m.status+': '+m.text);
+    window.__mailStatus=all.mail_status;
     return fetch(SB_URL,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)})
       .then(function(r){return [r.ok,m.ok]}).catch(function(){return [false,m.ok]});
   }).then(function(res){
@@ -498,7 +499,7 @@ function showResult(tier,saved){
     $('rBody').textContent='Based on what you shared, the best next step is a consultation before choosing a program.';
     $('rNote').textContent='';
   }
-  $('rSaved').textContent='';
+  $('rSaved').textContent=/[?&]debug/.test(location.search)?('Formspree reply: '+(window.__mailStatus||'none')):'';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 })();
