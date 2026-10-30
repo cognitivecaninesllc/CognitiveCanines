@@ -258,6 +258,16 @@ footer p{font-size:11px;letter-spacing:0.06em}
         <p class="q-small" style="text-align:left;margin-top:0;margin-bottom:1.6rem !important">By sending this you confirm you are 18 or older and agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>, which explains how your answers are used.</p>
       </form>
 
+      <form id="qDogX" hidden novalidate>
+        <div class="form-group"><label for="qxName">Dog's Name</label><input type="text" id="qxName" maxlength="80"></div>
+        <div class="form-group"><label for="qxBirth">Birthday (or best estimate)</label><input type="date" id="qxBirth"></div>
+        <div class="form-group"><label for="qxType">Purebred or mix?</label><select id="qxType"><option value="">Select...</option><option>Purebred</option><option>Mixed breed</option></select></div>
+        <div class="form-group"><label for="qxBreed" id="qxBreedLbl">Breed</label><input type="text" id="qxBreed" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
+        <div class="form-group" id="qxBreed2Wrap" hidden><label for="qxBreed2">Another breed in the mix (optional)</label><input type="text" id="qxBreed2" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
+        <div class="form-group"><label for="qxSex">Sex</label><select id="qxSex"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
+        <div class="form-group"><label for="qxFixed">Spayed / Neutered</label><select id="qxFixed"><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
+      </form>
+
       <p class="q-err" id="qErr" role="alert"></p>
       <div class="q-nav">
         <button type="button" class="q-btn q-ghost" id="backBtn">Back</button>
@@ -372,27 +382,34 @@ function makeCombo(id){
   });
   document.addEventListener('click',function(e){if(!inp.parentNode.contains(e.target))close()});
 }
-function fillBreeds(){
-  makeCombo('qBreed');makeCombo('qBreed2');
-  document.getElementById('qBreedType').addEventListener('change',function(){
+function wireBreedType(typeId,wrapId,lblId,b2Id){
+  document.getElementById(typeId).addEventListener('change',function(){
     var mix=this.value==='Mixed breed';
-    document.getElementById('qBreed2Wrap').hidden=!mix;
-    document.getElementById('qBreedLbl').textContent=mix?'Main breed (your best guess, or leave blank)':'Breed';
-    if(!mix)document.getElementById('qBreed2').value='';
+    document.getElementById(wrapId).hidden=!mix;
+    document.getElementById(lblId).textContent=mix?'Main breed (your best guess, or leave blank)':'Breed';
+    if(!mix)document.getElementById(b2Id).value='';
   });
 }
-function breedText(){
-  var main=document.getElementById('qBreed').value.trim(),other=document.getElementById('qBreed2').value.trim();
-  if(document.getElementById('qBreedType').value!=='Mixed breed')return main;
+function fillBreeds(){
+  makeCombo('qBreed');makeCombo('qBreed2');makeCombo('qxBreed');makeCombo('qxBreed2');
+  wireBreedType('qBreedType','qBreed2Wrap','qBreedLbl','qBreed2');
+  wireBreedType('qxType','qxBreed2Wrap','qxBreedLbl','qxBreed2');
+}
+function canon(t){var l=String(t).trim().toLowerCase();for(var k=0;k<BREEDS.length;k++){if(BREEDS[k].toLowerCase()===l)return BREEDS[k]}return String(t).trim()}
+function breedFrom(typeId,b1Id,b2Id){
+  var main=canon(document.getElementById(b1Id).value),other=canon(document.getElementById(b2Id).value);
+  if(document.getElementById(typeId).value!=='Mixed breed')return main;
   if(!main)return other?('Mixed breed (includes '+other+')'):'Mixed breed (unknown)';
   return other?(main+' x '+other+' mix'):(main+' mix');
 }
+function breedText(){return breedFrom('qBreedType','qBreed','qBreed2')}
 fillBreeds();
 var FORM_URL='https://formspree.io/f/mrppkvdd';
-var steps=[
+var BASE=[
+{k:'dog_count',t:"How many dogs would you like help with?",hint:"Answer the next questions about the dog who needs the most help. We will ask a few quick details about any others at the end.",o:["1 dog","2 dogs","3 dogs","4 dogs"]},
 {k:'dog_birthdate',t:"When was your dog born?",hint:"Your best estimate is fine if you are not sure.",date:true},
 {k:'goal',t:"What is your main goal?",o:["Puppy basics","General obedience","A behavior concern","Sport"]},
-{k:'concerns',t:"Which behaviors are you seeing?",hint:"Pick any that apply.",m:true,o:["Leash reactivity","Aggression toward dogs or people","Separation anxiety","Resource guarding","Fear","Jumping or mouthing","Recall","None of these"]},
+{k:'concerns',t:"Which behaviors are you seeing?",hint:"Pick any that apply.",m:true,o:["Leash reactivity","Aggression toward dogs or people","Separation anxiety","Resource guarding","Fear","Jumping or mouthing","Recall","Littermate syndrome","None of these"]},
 {k:'severity',t:"How serious is it?",o:["No concerns","Mild","Moderate","Serious, including any bite history"]},
 {k:'sport',t:"Any interest in dog sports?",o:["None","Curious","Training or competing"]},
 {k:'support',t:"How much support do you want?",o:["Self-paced videos","Live group sessions","Private coaching"]},
@@ -400,6 +417,13 @@ var steps=[
 {k:'you',t:"How can we reach you?",form:'qYou'},
 {k:'dog',t:"Tell us about your dog.",form:'qDogForm'}
 ];
+var steps=BASE.slice(),extras=[];
+function dogCount(){var m=String(a.dog_count||'1 dog').match(/\d/);return m?parseInt(m[0],10):1}
+function buildSteps(){
+  var n=dogCount();steps=BASE.slice();
+  for(var d=2;d<=n;d++)steps.push({k:'dogx'+d,t:'Tell us about dog '+d+'.',form:'qDogX',n:d});
+  extras.length=Math.min(extras.length,n-1);
+}
 var tiers={
 Bronze:["$29/mo","Self-paced foundations with a pre-recorded library."],
 Silver:["$59/mo","Everything in Bronze plus live group video sessions."],
@@ -423,6 +447,25 @@ function ageText(iso){
 var $=function(id){return document.getElementById(id)};
 var v=function(id){return $(id).value.trim()};
 
+function readX(){
+  return {name:v('qxName'),dog_birthdate:$('qxBirth').value,breed_type:$('qxType').value,breed_main:v('qxBreed'),breed_other:v('qxBreed2'),breed:breedFrom('qxType','qxBreed','qxBreed2'),sex:$('qxSex').value,fixed:$('qxFixed').value};
+}
+function fillX(o){
+  $('qxName').value=o.name||'';$('qxBirth').value=o.dog_birthdate||'';$('qxType').value=o.breed_type||'';
+  $('qxBreed').value=o.breed_main||'';$('qxBreed2').value=o.breed_other||'';
+  $('qxSex').value=o.sex||'';$('qxFixed').value=o.fixed||'';
+  var mix=o.breed_type==='Mixed breed';
+  $('qxBreed2Wrap').hidden=!mix;
+  $('qxBreedLbl').textContent=mix?'Main breed (your best guess, or leave blank)':'Breed';
+}
+function extraFinal(o){
+  return {name:o.name,dog_birthdate:o.dog_birthdate,age:ageText(o.dog_birthdate),breed:o.breed,breed_type:o.breed_type,sex:o.sex,fixed:o.fixed};
+}
+function extrasSummary(list){
+  return list.map(function(e,k){
+    return 'Dog '+(k+2)+': '+e.name+' | born '+e.dog_birthdate+' ('+e.age+') | '+e.breed+' | '+e.sex+' | Spayed/neutered: '+e.fixed;
+  }).join(' || ');
+}
 function route(){
   if(a.severity.indexOf('Serious')===0)return null;
   if(a.sport==='Training or competing'||a.goal==='Sport')return 'Celestial';
@@ -441,10 +484,16 @@ function render(){
   var box=$('qOpts');box.innerHTML='';
   $('qYou').hidden=s.form!=='qYou';
   $('qDogForm').hidden=s.form!=='qDogForm';
+  $('qDogX').hidden=s.form!=='qDogX';
   $('qText').hidden=!s.text;
   $('qDate').hidden=!s.date;
   box.hidden=!!(s.form||s.text||s.date);
   if(s.date){var t0=new Date(),mx=t0.toISOString().slice(0,10),mn=new Date(t0.getFullYear()-30,t0.getMonth(),t0.getDate()).toISOString().slice(0,10);$('qBirth').max=mx;$('qBirth').min=mn;$('qBirth').value=a.dog_birthdate||'';$('qAgeShow').textContent=a.dog_birthdate?('That makes your dog '+ageText(a.dog_birthdate)+' old.'):''}
+  if(s.form==='qDogX'){
+    var mn2=new Date(new Date().getFullYear()-30,new Date().getMonth(),new Date().getDate()).toISOString().slice(0,10);
+    $('qxBirth').max=new Date().toISOString().slice(0,10);$('qxBirth').min=mn2;
+    fillX(extras[s.n-2]||{});
+  }
   if(s.text){$('qGood').value=a.good_dog||'';$('qGoodCount').textContent=$('qGood').value.length+' / 500'}
   if(!s.form&&!s.text&&!s.date){
     s.o.forEach(function(label){
@@ -460,7 +509,7 @@ function render(){
           if(label==='None of these'){list=list.indexOf(label)>-1?[]:[label]}
           else{list=list.filter(function(x){return x!=='None of these'});var p=list.indexOf(label);if(p>-1)list.splice(p,1);else list.push(label)}
           a[s.k]=list;
-        }else{a[s.k]=label}
+        }else{a[s.k]=label;if(s.k==='dog_count')buildSteps()}
         render();
       };
       box.appendChild(b);
@@ -478,6 +527,7 @@ $('backBtn').onclick=function(){
   if(saving||i===0)return;
   if(steps[i].text){a.good_dog=v('qGood').slice(0,500)}
   if(steps[i].date&&$('qBirth').value){a.dog_birthdate=$('qBirth').value}
+  if(steps[i].form==='qDogX'){extras[steps[i].n-2]=readX()}
   go(i-1);
 };
 $('nextBtn').onclick=function(){
@@ -507,7 +557,25 @@ $('nextBtn').onclick=function(){
     if(!$('qSex').value){$('qErr').textContent='Please select your dog\'s sex.';return}
     if(!$('qFixed').value){$('qErr').textContent='Please select whether your dog is spayed or neutered.';return}
     if(!v('qGoals')){$('qErr').textContent='Please tell us a little about your goals and any concerns.';return}
-    submit();return;
+    if(i===steps.length-1){submit();return}
+    go(i+1);return;
+  }
+  if(s.form==='qDogX'){
+    var o=readX();
+    var tag='dog '+s.n;
+    if(!o.name){$('qErr').textContent='Please enter the name of '+tag+'.';return}
+    if(!o.dog_birthdate||!ageText(o.dog_birthdate)){$('qErr').textContent='Please enter '+o.name+'\'s birthday (a best estimate is fine).';return}
+    if(o.dog_birthdate<$('qxBirth').min){$('qErr').textContent='That date looks too far back. Please check it.';return}
+    if(!o.breed_type){$('qErr').textContent='Please choose whether '+o.name+' is purebred or a mix.';return}
+    if(o.breed_type==='Purebred'){
+      if(!o.breed_main){$('qErr').textContent='Please enter '+o.name+'\'s breed. Start typing and pick from the list.';return}
+      if(/^(not sure|unsure|unknown|idk|mix|mixed|mutt)/i.test(o.breed_main)){$('qErr').textContent='If '+o.name+' is not purebred or you are not sure, choose "Mixed breed" above.';return}
+    }
+    if(!o.sex){$('qErr').textContent='Please select '+o.name+'\'s sex.';return}
+    if(!o.fixed){$('qErr').textContent='Please select whether '+o.name+' is spayed or neutered.';return}
+    extras[s.n-2]=o;
+    if(i===steps.length-1){submit();return}
+    go(i+1);return;
   }
   var ans=a[s.k];
   if(!ans||(s.m&&ans.length===0)){$('qErr').textContent='Please choose an answer to continue.';return}
@@ -523,7 +591,10 @@ function submit(){
   // honeypot: bots fill this; pretend success and send nothing
   if($('qHp').checked){window.__mailStatus='not sent: spam trap was ticked';showResult(tier,true);return}
   saving=true;$('nextBtn').disabled=true;$('nextBtn').textContent='Sending...';$('qErr').textContent='';
-  var all=Object.assign({},a,{location:me.location,breed:breed,breed_type:$('qBreedType').value,sex:sex,fixed:fixed,goals:goals});
+  var finalExtras=[];
+  for(var q=0;q<dogCount()-1;q++){if(extras[q])finalExtras.push(extraFinal(extras[q]))}
+  var all=Object.assign({},a,{dog_count:dogCount(),location:me.location,breed:breed,breed_type:$('qBreedType').value,sex:sex,fixed:fixed,goals:goals});
+  if(finalExtras.length)all.extra_dogs=finalExtras;
   var row={full_name:me.name,email:me.email,dog_name:dogName,answers:all,recommended_tier:tierLabel};
   var fd=new FormData();
   fd.append('_subject','New intake inquiry from '+me.name);
@@ -532,6 +603,8 @@ function submit(){
   fd.append('dog_name',dogName);fd.append('breed',breed);fd.append('dog_sex',sex);fd.append('spayed_neutered',fixed);
   fd.append('program_interest',tierLabel);fd.append('goals',goals);
   fd.append('quiz_answers',summary());
+  fd.append('dog_count',String(dogCount()));
+  if(finalExtras.length)fd.append('additional_dogs',extrasSummary(finalExtras));
   // Send the email first so Formspree's exact answer can be saved with the submission
   var mailed=fetch(FORM_URL,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
     .then(function(r){return r.text().then(function(t){return {ok:r.ok,status:r.status,text:String(t).slice(0,300)}})})
