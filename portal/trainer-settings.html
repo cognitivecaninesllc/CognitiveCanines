@@ -1,101 +1,230 @@
--- Update 7: trainers edit their own bio, phone, password and email + a suggestion box
--- Run AFTER update_6. Safe to run more than once.
--- (Supabase will show a "destructive operations" warning because of the "drop ... if exists" lines.
---  They only replace rules this file recreates. No data is removed.)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Trainer Settings | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#2b2a26;--ink2:#4d4a42;--muted:#7d776a;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#a85a22;--btntext:#fff;
+  --surface:#f6f1e9;--white:#fffdf9;--border:#e8e0d0;
+  --errbg:#f8e3e0;--errtx:#8a2b22;--okbg:#e3efdc;--oktx:#2f5a26;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{--ink:#efeae0;--ink2:#cfc9bc;--muted:#a39d90;--gold:#e09558;--gold2:#f0b27a;--btntext:#1c1d19;
+    --surface:#1c1d19;--white:#262922;--border:#3a3d34;--errbg:#3a2020;--errtx:#e8a8a8;--okbg:#1e3320;--oktx:#a8e8b8}
+}
+body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-height:100vh}
+.dash-nav{background:var(--white);border-bottom:0.5px solid var(--border);padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.dash-nav-brand{display:flex;align-items:center;gap:10px}
+.dash-nav-brand .mark{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid var(--gold)}
+.dash-nav-brand .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.dash-nav h2{font-family:var(--serif);font-size:1.1rem;font-weight:400}
+.logout-btn{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:none;border:0.5px solid var(--border);padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;transition:all 0.2s}
+.logout-btn:hover{color:var(--gold);border-color:var(--gold)}
+.dash-content{max-width:600px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.back-link{display:inline-block;margin-bottom:1.5rem;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.05em}
+.back-link:hover{color:var(--gold)}
+.dash-section{background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 14px rgba(70,55,30,.07);padding:1.5rem;margin-bottom:1.5rem}
+.dash-section h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;color:var(--ink);margin-bottom:1rem}
+.help{font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.form-group input[type=password],.form-group input[type=email],.form-group input[type=text]{width:100%;padding:0.8rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:16px;color:var(--ink);outline:none;border-radius:4px}
+.form-group input:focus{border-color:var(--gold)}
+.btn{border-radius:22px;background:var(--gold);color:var(--btntext);padding:0.8rem 1.4rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;min-height:44px}
+.btn:hover{background:var(--gold2)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-secondary{background:transparent;border:0.5px solid var(--border);color:var(--ink2)}
+.btn-secondary:hover{background:transparent;border-color:var(--gold);color:var(--gold)}
+.row{display:flex;gap:0.6rem;flex-wrap:wrap}
+.msg{font-size:0.85rem;padding:0.7rem 1rem;border-radius:4px;margin-top:1rem;display:none;line-height:1.5}
+.msg.error{background:var(--errbg);color:var(--errtx);display:block}
+.msg.success{background:var(--okbg);color:var(--oktx);display:block}
+.photo-wrap{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem}
+.photo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--surface);flex-shrink:0}
+.photo-ph{width:110px;height:110px;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2.4rem;color:var(--muted);flex-shrink:0}
+.dogp{padding:1rem 0;border-top:1px solid var(--border)}
+.dogp:first-of-type{border-top:none;padding-top:0}
+.dogp .top{display:flex;align-items:center;gap:1rem;margin-bottom:.7rem}
+.dogp .nm{font-family:var(--serif);font-size:1.15rem;overflow-wrap:anywhere}
+.dogp .photo,.dogp .photo-ph{width:84px;height:84px;font-size:2rem}
+.cur-email{font-size:0.9rem;color:var(--ink);margin-bottom:1rem;overflow-wrap:anywhere}
+textarea{width:100%;padding:0.8rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:16px;color:var(--ink);outline:none;border-radius:4px;resize:vertical;min-height:120px;line-height:1.5}
+textarea:focus{border-color:var(--gold)}
+.count{font-size:.75rem;color:var(--muted);text-align:right;margin-top:.3rem}
+.sug{padding:.8rem 0;border-top:1px solid var(--border);font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}
+.sug:first-of-type{border-top:none}
+.sug .meta{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.ro{font-size:.95rem;color:var(--ink);margin-bottom:1rem;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="dash-nav">
+  <div class="dash-nav-brand">
+    <div class="mark"><img src="https://i.imgur.com/Lnrlh9e.jpg" alt=""></div>
+    <h2>Trainer Settings</h2>
+  </div>
+  <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+<div class="dash-content">
+  <a href="trainer-dashboard.html" class="back-link">&larr; Back to my dashboard</a>
 
--- 1. Trainers can update their own row, but a guard blocks every column except bio and phone.
---    Their email can only change to match their confirmed login email (see step 2).
-drop policy if exists "Trainers edit own profile" on trainers;
-create policy "Trainers edit own profile"
-  on trainers for update to authenticated
-  using (auth_id is not null and auth_id = auth.uid())
-  with check (auth_id is not null and auth_id = auth.uid());
+  <div class="dash-section">
+    <h3>About You</h3>
+    <p class="help">Clients you train see your bio on their portal. Your name, photo and demo dogs are set by the owner. Email <a href="mailto:admin@cognitivecanines.com" style="color:var(--gold2)">admin@cognitivecanines.com</a> to change those.</p>
+    <p class="ro" id="myName"></p>
+    <form id="bioForm" autocomplete="off">
+      <div class="form-group"><label for="phone">Phone (optional)</label><input type="text" id="phone" maxlength="40" autocomplete="tel"></div>
+      <div class="form-group"><label for="bio">Your bio</label><textarea id="bio" maxlength="1500" placeholder="A few sentences about your training style and background."></textarea><div class="count" id="bioCount">0 / 1500</div></div>
+      <button type="submit" class="btn" id="bioBtn">Save</button>
+    </form>
+    <div id="bioMsg" class="msg" role="status"></div>
+  </div>
 
-grant update on trainers to authenticated;
+  <div class="dash-section">
+    <h3>Change Password</h3>
+    <form id="pwForm" autocomplete="off">
+      <div class="form-group"><label for="curPw">Current password</label><input type="password" id="curPw" autocomplete="current-password" required></div>
+      <div class="form-group"><label for="newPw">New password (at least 8 characters)</label><input type="password" id="newPw" autocomplete="new-password" minlength="8" required></div>
+      <div class="form-group"><label for="newPw2">Confirm new password</label><input type="password" id="newPw2" autocomplete="new-password" minlength="8" required></div>
+      <button type="submit" class="btn" id="pwBtn">Update password</button>
+    </form>
+    <div id="pwMsg" class="msg" role="status"></div>
+  </div>
 
-create or replace function public.guard_trainer_profile_edit()
-returns trigger language plpgsql security definer set search_path = public as $$
-declare login_email text;
-begin
-  if auth.uid() is not null and not public.is_admin() then
-    -- everything except bio, phone and email must stay exactly as it was
-    if (to_jsonb(new) - 'bio' - 'phone' - 'email') is distinct from (to_jsonb(old) - 'bio' - 'phone' - 'email') then
-      raise exception 'Trainers can only edit their bio and phone number.';
-    end if;
-    -- email may only change to the trainer''s own confirmed login email
-    if new.email is distinct from old.email then
-      select lower(email) into login_email from auth.users where id = auth.uid();
-      if login_email is null or lower(new.email) is distinct from login_email then
-        raise exception 'Change your email from your settings page.';
-      end if;
-    end if;
-    if char_length(coalesce(new.bio, '')) > 1500 then
-      raise exception 'Your bio is too long. Please keep it under 1500 characters.';
-    end if;
-  end if;
-  return new;
-end;
-$$;
-drop trigger if exists guard_trainer_profile_edit_trg on trainers;
-create trigger guard_trainer_profile_edit_trg
-  before update on trainers
-  for each row execute function public.guard_trainer_profile_edit();
+  <div class="dash-section">
+    <h3>Change Email</h3>
+    <p class="help">Your current login email:</p>
+    <p class="cur-email" id="curEmail">Loading...</p>
+    <form id="emailForm" autocomplete="off">
+      <div class="form-group"><label for="newEmail">New email address</label><input type="email" id="newEmail" autocomplete="email" required></div>
+      <div class="form-group"><label for="emailPw">Your password (to confirm it is you)</label><input type="password" id="emailPw" autocomplete="current-password" required></div>
+      <button type="submit" class="btn" id="emailBtn">Change email</button>
+    </form>
+    <p class="help" style="margin-top:1rem">We will email a confirmation link. Your login email changes only after you confirm it, so keep using your current email until then.</p>
+    <div id="emailMsg" class="msg" role="status"></div>
+  </div>
 
--- 2. When a trainer confirms a new login email, keep the trainers table in step
-create or replace function public.sync_trainer_email()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  if new.email is distinct from old.email then
-    update public.trainers set email = lower(new.email) where auth_id = new.id;
-  end if;
-  return new;
-end;
-$$;
-drop trigger if exists sync_trainer_email_trg on auth.users;
-create trigger sync_trainer_email_trg
-  after update of email on auth.users
-  for each row execute function public.sync_trainer_email();
+  <div class="dash-section">
+    <h3>Suggestion Box</h3>
+    <p class="help">Ideas for the website, the portal or how we work? Send them here and the owner will read them.</p>
+    <form id="sugForm" autocomplete="off">
+      <div class="form-group"><label for="sugText">Your suggestion</label><textarea id="sugText" maxlength="2000" required></textarea><div class="count" id="sugCount">0 / 2000</div></div>
+      <button type="submit" class="btn" id="sugBtn">Send suggestion</button>
+    </form>
+    <div id="sugMsg" class="msg" role="status"></div>
+    <div id="sugList" style="margin-top:1.2rem"></div>
+  </div>
+</div>
+<script>
+const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
+let USER = null, TRAINER = null;
+const $ = (id) => document.getElementById(id);
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function say(id, text, ok) {
+  const m = $(id);
+  m.textContent = text;
+  m.className = 'msg ' + (ok ? 'success' : 'error');
+  m.style.display = text ? 'block' : 'none';
+}
+async function logout() { await supabaseClient.auth.signOut(); window.location.href = 'login.html'; }
 
--- 3. Suggestion box: trainers send, you read
-create table if not exists suggestions (
-  id uuid primary key default gen_random_uuid(),
-  trainer_id uuid references trainers(id) on delete set null,
-  from_name text,
-  message text not null check (char_length(message) between 1 and 2000),
-  status text not null default 'new' check (status in ('new', 'read')),
-  created_at timestamp with time zone not null default now()
-);
-alter table suggestions enable row level security;
-grant select, insert, update, delete on suggestions to authenticated;
+// ---------------- BIO ----------------
+$('bio').addEventListener('input', () => { $('bioCount').textContent = $('bio').value.length + ' / 1500'; });
+$('bioForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const bio = $('bio').value.trim().slice(0, 1500), phone = $('phone').value.trim().slice(0, 40);
+  $('bioBtn').disabled = true; $('bioBtn').textContent = 'Saving...'; say('bioMsg', '', true);
+  const { data, error } = await supabaseClient.from('trainers').update({ bio: bio || null, phone: phone || null }).eq('id', TRAINER.id).select('id');
+  if (error) say('bioMsg', 'Could not save: ' + error.message, false);
+  else if (!data || !data.length) say('bioMsg', 'Could not save. Please log out, log back in and try again.', false);
+  else say('bioMsg', 'Saved. Your clients will see the new bio.', true);
+  $('bioBtn').disabled = false; $('bioBtn').textContent = 'Save';
+});
 
--- the sender's name and link are filled in by the database, so they cannot be faked
-create or replace function public.set_suggestion_sender()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  if not public.is_admin() then
-    new.trainer_id := public.my_trainer_id();
-    new.status := 'new';
-  end if;
-  select full_name into new.from_name from public.trainers where id = new.trainer_id;
-  return new;
-end;
-$$;
-drop trigger if exists set_suggestion_sender_trg on suggestions;
-create trigger set_suggestion_sender_trg
-  before insert on suggestions
-  for each row execute function public.set_suggestion_sender();
+// ---------------- PASSWORD ----------------
+async function checkCurrentPassword(pw) {
+  const { error } = await supabaseClient.auth.signInWithPassword({ email: USER.email, password: pw });
+  return !error;
+}
+$('pwForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const cur = $('curPw').value, n1 = $('newPw').value, n2 = $('newPw2').value;
+  if (n1.length < 8) { say('pwMsg', 'Your new password must be at least 8 characters.', false); return; }
+  if (n1 !== n2) { say('pwMsg', 'The two new passwords do not match.', false); return; }
+  if (n1 === cur) { say('pwMsg', 'Your new password must be different from your current one.', false); return; }
+  $('pwBtn').disabled = true; $('pwBtn').textContent = 'Updating...';
+  if (!(await checkCurrentPassword(cur))) {
+    say('pwMsg', 'Your current password is not correct.', false);
+  } else {
+    const { error } = await supabaseClient.auth.updateUser({ password: n1 });
+    if (error) say('pwMsg', error.message, false);
+    else { $('pwForm').reset(); say('pwMsg', 'Your password has been updated. Use it the next time you log in.', true); }
+  }
+  $('pwBtn').disabled = false; $('pwBtn').textContent = 'Update password';
+});
 
-drop policy if exists "Trainers send suggestions" on suggestions;
-create policy "Trainers send suggestions"
-  on suggestions for insert to authenticated
-  with check (public.my_trainer_id() is not null);
+// ---------------- EMAIL ----------------
+$('emailForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const ne = $('newEmail').value.trim().toLowerCase(), pw = $('emailPw').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ne)) { say('emailMsg', 'Please enter a valid email address.', false); return; }
+  if (ne === (USER.email || '').toLowerCase()) { say('emailMsg', 'That is already your email address.', false); return; }
+  $('emailBtn').disabled = true; $('emailBtn').textContent = 'Sending...';
+  if (!(await checkCurrentPassword(pw))) {
+    say('emailMsg', 'Your password is not correct.', false);
+  } else {
+    const { error } = await supabaseClient.auth.updateUser({ email: ne }, { emailRedirectTo: window.location.origin + '/portal/dashboard.html' });
+    if (error) say('emailMsg', error.message, false);
+    else { $('emailForm').reset(); say('emailMsg', 'Almost done. We sent a confirmation link to ' + ne + ' (and to your current email). Click it to finish the change.', true); }
+  }
+  $('emailBtn').disabled = false; $('emailBtn').textContent = 'Change email';
+});
 
-drop policy if exists "Trainers see own suggestions" on suggestions;
-create policy "Trainers see own suggestions"
-  on suggestions for select to authenticated
-  using (trainer_id is not null and trainer_id = public.my_trainer_id());
+// ---------------- SUGGESTIONS ----------------
+$('sugText').addEventListener('input', () => { $('sugCount').textContent = $('sugText').value.length + ' / 2000'; });
+async function loadSuggestions() {
+  const { data } = await supabaseClient.from('suggestions').select('id, message, status, created_at').order('created_at', { ascending: false }).limit(20);
+  $('sugList').innerHTML = (data && data.length)
+    ? '<p class="help" style="margin-bottom:.4rem">Your earlier suggestions</p>' + data.map(s =>
+        `<div class="sug">${esc(s.message)}<div class="meta">${esc(new Date(s.created_at).toLocaleDateString())} &middot; ${s.status === 'read' ? 'Read' : 'Sent'}</div></div>`).join('')
+    : '';
+}
+$('sugForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = $('sugText').value.trim();
+  if (!msg) { say('sugMsg', 'Please write your suggestion first.', false); return; }
+  $('sugBtn').disabled = true; $('sugBtn').textContent = 'Sending...'; say('sugMsg', '', true);
+  const { error } = await supabaseClient.from('suggestions').insert({ message: msg.slice(0, 2000) });
+  if (error) say('sugMsg', 'Could not send: ' + error.message, false);
+  else { $('sugForm').reset(); $('sugCount').textContent = '0 / 2000'; say('sugMsg', 'Sent. Thank you!', true); loadSuggestions(); }
+  $('sugBtn').disabled = false; $('sugBtn').textContent = 'Send suggestion';
+});
 
-drop policy if exists "Admins manage suggestions" on suggestions;
-create policy "Admins manage suggestions"
-  on suggestions for all to authenticated
-  using (public.is_admin()) with check (public.is_admin());
+// ---------------- START ----------------
+(async () => {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) { window.location.href = 'login.html'; return; }
+  USER = user;
+  const { data: trainer } = await supabaseClient.from('trainers').select('*').eq('auth_id', user.id).maybeSingle();
+  if (!trainer) { window.location.href = 'dashboard.html'; return; }
+  TRAINER = trainer;
+  $('myName').textContent = trainer.full_name || '';
+  $('curEmail').textContent = user.email;
+  $('bio').value = trainer.bio || '';
+  $('phone').value = trainer.phone || '';
+  $('bioCount').textContent = $('bio').value.length + ' / 1500';
+  loadSuggestions();
+})();
+</script>
+</body>
+</html>
