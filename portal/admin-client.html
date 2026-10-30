@@ -98,7 +98,7 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
       </div>
       </div>
     </div>
-    <a id="viewAsBtn" data-admin-only href="#" class="view-as-btn" target="_blank">View portal as this client &rarr;</a>
+    <a id="viewAsBtn" href="#" class="view-as-btn">View portal as this client &rarr;</a>
     <div id="accessRow" data-admin-only style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
       <span id="accessBadge" class="badge badge-gold">Access: Active</span>
       <button id="accessBtn" class="logout-btn" onclick="toggleAccess()" style="cursor:pointer">Pause access</button>
@@ -298,7 +298,7 @@ async function loadClient() {
   renderHeader(client);
   loadIntake(client.email);
   loadDogPhoto(client.auth_id);
-  if (ROLE === 'admin') document.getElementById('viewAsBtn').href = `admin-preview.html?id=${clientId}`;
+  document.getElementById('viewAsBtn').href = `dashboard.html?preview=${encodeURIComponent(clientId)}`;
 
   currentStatus = client.access_status === 'paused' ? 'paused' : 'active';
   if (ROLE === 'admin') renderAccess();
