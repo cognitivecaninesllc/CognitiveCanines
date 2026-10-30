@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Admin Settings | Cognitive Canines</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#2b2a26;--ink2:#4d4a42;--muted:#7d776a;
+  --accent:#2d3a2e;--accent2:#4a6741;
+  --gold:#c26a2a;--gold2:#a85a22;--btntext:#fff;
+  --surface:#f6f1e9;--white:#fffdf9;--border:#e8e0d0;
+  --errbg:#f8e3e0;--errtx:#8a2b22;--okbg:#e3efdc;--oktx:#2f5a26;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{--ink:#efeae0;--ink2:#cfc9bc;--muted:#a39d90;--gold:#e09558;--gold2:#f0b27a;--btntext:#1c1d19;
+    --surface:#1c1d19;--white:#262922;--border:#3a3d34;--errbg:#3a2020;--errtx:#e8a8a8;--okbg:#1e3320;--oktx:#a8e8b8}
+}
+body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-height:100vh}
+.dash-nav{background:var(--white);border-bottom:0.5px solid var(--border);padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.dash-nav-brand{display:flex;align-items:center;gap:10px}
+.dash-nav-brand .mark{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid var(--gold)}
+.dash-nav-brand .mark img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.dash-nav h2{font-family:var(--serif);font-size:1.1rem;font-weight:400}
+.logout-btn{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);background:none;border:0.5px solid var(--border);padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;transition:all 0.2s}
+.logout-btn:hover{color:var(--gold);border-color:var(--gold)}
+.dash-content{max-width:600px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.back-link{display:inline-block;margin-bottom:1.5rem;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.05em}
+.back-link:hover{color:var(--gold)}
+.dash-section{background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 14px rgba(70,55,30,.07);padding:1.5rem;margin-bottom:1.5rem}
+.dash-section h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;color:var(--ink);margin-bottom:1rem}
+.help{font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.form-group input[type=password],.form-group input[type=email],.form-group input[type=text]{width:100%;padding:0.8rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:16px;color:var(--ink);outline:none;border-radius:4px}
+.form-group input:focus{border-color:var(--gold)}
+.btn{border-radius:22px;background:var(--gold);color:var(--btntext);padding:0.8rem 1.4rem;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;min-height:44px}
+.btn:hover{background:var(--gold2)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-secondary{background:transparent;border:0.5px solid var(--border);color:var(--ink2)}
+.btn-secondary:hover{background:transparent;border-color:var(--gold);color:var(--gold)}
+.row{display:flex;gap:0.6rem;flex-wrap:wrap}
+.msg{font-size:0.85rem;padding:0.7rem 1rem;border-radius:4px;margin-top:1rem;display:none;line-height:1.5}
+.msg.error{background:var(--errbg);color:var(--errtx);display:block}
+.msg.success{background:var(--okbg);color:var(--oktx);display:block}
+.photo-wrap{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem}
+.photo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--surface);flex-shrink:0}
+.photo-ph{width:110px;height:110px;border-radius:50%;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2.4rem;color:var(--muted);flex-shrink:0}
+.dogp{padding:1rem 0;border-top:1px solid var(--border)}
+.dogp:first-of-type{border-top:none;padding-top:0}
+.dogp .top{display:flex;align-items:center;gap:1rem;margin-bottom:.7rem}
+.dogp .nm{font-family:var(--serif);font-size:1.15rem;overflow-wrap:anywhere}
+.dogp .photo,.dogp .photo-ph{width:84px;height:84px;font-size:2rem}
+.cur-email{font-size:0.9rem;color:var(--ink);margin-bottom:1rem;overflow-wrap:anywhere}
+textarea{width:100%;padding:0.8rem 1rem;border:0.5px solid var(--border);background:var(--surface);font-family:var(--sans);font-size:16px;color:var(--ink);outline:none;border-radius:4px;resize:vertical;min-height:120px;line-height:1.5}
+textarea:focus{border-color:var(--gold)}
+.count{font-size:.75rem;color:var(--muted);text-align:right;margin-top:.3rem}
+.sug{padding:.8rem 0;border-top:1px solid var(--border);font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}
+.sug:first-of-type{border-top:none}
+.sug .meta{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.ro{font-size:.95rem;color:var(--ink);margin-bottom:1rem;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="dash-nav">
+  <div class="dash-nav-brand">
+    <div class="mark"><img src="https://i.imgur.com/Lnrlh9e.jpg" alt=""></div>
+    <h2>Admin Settings</h2>
+  </div>
+  <button class="logout-btn" onclick="logout()">Log Out</button>
+</div>
+<div class="dash-content">
+  <a href="admin-dashboard.html" class="back-link">&larr; Back to admin dashboard</a>
+
+  <div class="dash-section">
+    <h3>Change Password</h3>
+    <form id="pwForm" autocomplete="off">
+      <div class="form-group"><label for="curPw">Current password</label><input type="password" id="curPw" autocomplete="current-password" required></div>
+      <div class="form-group"><label for="newPw">New password (at least 8 characters)</label><input type="password" id="newPw" autocomplete="new-password" minlength="8" required></div>
+      <div class="form-group"><label for="newPw2">Confirm new password</label><input type="password" id="newPw2" autocomplete="new-password" minlength="8" required></div>
+      <button type="submit" class="btn" id="pwBtn">Update password</button>
+    </form>
+    <div id="pwMsg" class="msg" role="status"></div>
+  </div>
+
+  <div class="dash-section">
+    <h3>Change Email</h3>
+    <p class="help">Your current login email:</p>
+    <p class="cur-email" id="curEmail">Loading...</p>
+    <form id="emailForm" autocomplete="off">
+      <div class="form-group"><label for="newEmail">New email address</label><input type="email" id="newEmail" autocomplete="email" required></div>
+      <div class="form-group"><label for="emailPw">Your password (to confirm it is you)</label><input type="password" id="emailPw" autocomplete="current-password" required></div>
+      <button type="submit" class="btn" id="emailBtn">Change email</button>
+    </form>
+    <p class="help" style="margin-top:1rem">We will email a confirmation link. Your login email changes only after you confirm it, so keep using your current email until then.</p>
+    <div id="emailMsg" class="msg" role="status"></div>
+  </div>
+
+</div>
+<script>
+const supabaseClient = supabase.createClient('https://mjgruhbmenjzjcrrwnyl.supabase.co', 'sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa');
+let USER = null;
+const $ = (id) => document.getElementById(id);
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function say(id, text, ok) {
+  const m = $(id);
+  m.textContent = text;
+  m.className = 'msg ' + (ok ? 'success' : 'error');
+  m.style.display = text ? 'block' : 'none';
+}
+async function logout() { await supabaseClient.auth.signOut(); window.location.href = 'login.html'; }
+
+// ---------------- BIO ----------------
+// ---------------- PASSWORD ----------------
+async function checkCurrentPassword(pw) {
+  const { error } = await supabaseClient.auth.signInWithPassword({ email: USER.email, password: pw });
+  return !error;
+}
+$('pwForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const cur = $('curPw').value, n1 = $('newPw').value, n2 = $('newPw2').value;
+  if (n1.length < 8) { say('pwMsg', 'Your new password must be at least 8 characters.', false); return; }
+  if (n1 !== n2) { say('pwMsg', 'The two new passwords do not match.', false); return; }
+  if (n1 === cur) { say('pwMsg', 'Your new password must be different from your current one.', false); return; }
+  $('pwBtn').disabled = true; $('pwBtn').textContent = 'Updating...';
+  if (!(await checkCurrentPassword(cur))) {
+    say('pwMsg', 'Your current password is not correct.', false);
+  } else {
+    const { error } = await supabaseClient.auth.updateUser({ password: n1 });
+    if (error) say('pwMsg', error.message, false);
+    else { $('pwForm').reset(); say('pwMsg', 'Your password has been updated. Use it the next time you log in.', true); }
+  }
+  $('pwBtn').disabled = false; $('pwBtn').textContent = 'Update password';
+});
+
+// ---------------- EMAIL ----------------
+$('emailForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const ne = $('newEmail').value.trim().toLowerCase(), pw = $('emailPw').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ne)) { say('emailMsg', 'Please enter a valid email address.', false); return; }
+  if (ne === (USER.email || '').toLowerCase()) { say('emailMsg', 'That is already your email address.', false); return; }
+  $('emailBtn').disabled = true; $('emailBtn').textContent = 'Sending...';
+  if (!(await checkCurrentPassword(pw))) {
+    say('emailMsg', 'Your password is not correct.', false);
+  } else {
+    const { error } = await supabaseClient.auth.updateUser({ email: ne }, { emailRedirectTo: window.location.origin + '/portal/dashboard.html' });
+    if (error) say('emailMsg', error.message, false);
+    else { $('emailForm').reset(); say('emailMsg', 'Almost done. We sent a confirmation link to ' + ne + ' (and to your current email). Click it to finish the change.', true); }
+  }
+  $('emailBtn').disabled = false; $('emailBtn').textContent = 'Change email';
+});
+
+// ---------------- START ----------------
+(async () => {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) { window.location.href = 'login.html'; return; }
+  USER = user;
+  const { data: adm } = await supabaseClient.from('admins').select('auth_id').eq('auth_id', user.id).maybeSingle();
+  if (!adm) { window.location.href = 'login.html'; return; }
+  $('curEmail').textContent = user.email;
+})();
+</script>
+</body>
+</html>
