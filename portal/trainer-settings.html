@@ -1,0 +1,101 @@
+-- Update 7: trainers edit their own bio, phone, password and email + a suggestion box
+-- Run AFTER update_6. Safe to run more than once.
+-- (Supabase will show a "destructive operations" warning because of the "drop ... if exists" lines.
+--  They only replace rules this file recreates. No data is removed.)
+
+-- 1. Trainers can update their own row, but a guard blocks every column except bio and phone.
+--    Their email can only change to match their confirmed login email (see step 2).
+drop policy if exists "Trainers edit own profile" on trainers;
+create policy "Trainers edit own profile"
+  on trainers for update to authenticated
+  using (auth_id is not null and auth_id = auth.uid())
+  with check (auth_id is not null and auth_id = auth.uid());
+
+grant update on trainers to authenticated;
+
+create or replace function public.guard_trainer_profile_edit()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare login_email text;
+begin
+  if auth.uid() is not null and not public.is_admin() then
+    -- everything except bio, phone and email must stay exactly as it was
+    if (to_jsonb(new) - 'bio' - 'phone' - 'email') is distinct from (to_jsonb(old) - 'bio' - 'phone' - 'email') then
+      raise exception 'Trainers can only edit their bio and phone number.';
+    end if;
+    -- email may only change to the trainer''s own confirmed login email
+    if new.email is distinct from old.email then
+      select lower(email) into login_email from auth.users where id = auth.uid();
+      if login_email is null or lower(new.email) is distinct from login_email then
+        raise exception 'Change your email from your settings page.';
+      end if;
+    end if;
+    if char_length(coalesce(new.bio, '')) > 1500 then
+      raise exception 'Your bio is too long. Please keep it under 1500 characters.';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists guard_trainer_profile_edit_trg on trainers;
+create trigger guard_trainer_profile_edit_trg
+  before update on trainers
+  for each row execute function public.guard_trainer_profile_edit();
+
+-- 2. When a trainer confirms a new login email, keep the trainers table in step
+create or replace function public.sync_trainer_email()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.email is distinct from old.email then
+    update public.trainers set email = lower(new.email) where auth_id = new.id;
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists sync_trainer_email_trg on auth.users;
+create trigger sync_trainer_email_trg
+  after update of email on auth.users
+  for each row execute function public.sync_trainer_email();
+
+-- 3. Suggestion box: trainers send, you read
+create table if not exists suggestions (
+  id uuid primary key default gen_random_uuid(),
+  trainer_id uuid references trainers(id) on delete set null,
+  from_name text,
+  message text not null check (char_length(message) between 1 and 2000),
+  status text not null default 'new' check (status in ('new', 'read')),
+  created_at timestamp with time zone not null default now()
+);
+alter table suggestions enable row level security;
+grant select, insert, update, delete on suggestions to authenticated;
+
+-- the sender's name and link are filled in by the database, so they cannot be faked
+create or replace function public.set_suggestion_sender()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then
+    new.trainer_id := public.my_trainer_id();
+    new.status := 'new';
+  end if;
+  select full_name into new.from_name from public.trainers where id = new.trainer_id;
+  return new;
+end;
+$$;
+drop trigger if exists set_suggestion_sender_trg on suggestions;
+create trigger set_suggestion_sender_trg
+  before insert on suggestions
+  for each row execute function public.set_suggestion_sender();
+
+drop policy if exists "Trainers send suggestions" on suggestions;
+create policy "Trainers send suggestions"
+  on suggestions for insert to authenticated
+  with check (public.my_trainer_id() is not null);
+
+drop policy if exists "Trainers see own suggestions" on suggestions;
+create policy "Trainers see own suggestions"
+  on suggestions for select to authenticated
+  using (trainer_id is not null and trainer_id = public.my_trainer_id());
+
+drop policy if exists "Admins manage suggestions" on suggestions;
+create policy "Admins manage suggestions"
+  on suggestions for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
