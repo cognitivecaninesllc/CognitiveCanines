@@ -127,6 +127,11 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
   </div>
 
   <div class="dash-section">
+    <div class="section-head"><h3 id="sugHead">Trainer Suggestions</h3></div>
+    <div id="suggestionsList"><p class="empty-state">Loading...</p></div>
+  </div>
+
+  <div class="dash-section">
     <div class="section-head"><h3>Intake Quiz Submissions</h3></div>
     <div id="intakeList"><p class="empty-state">Loading...</p></div>
   </div>
@@ -475,6 +480,45 @@ async function deleteResource(id) {
   loadResources();
 }
 
+// ---------------- TRAINER SUGGESTIONS ----------------
+let SUGS = [];
+async function loadSuggestionsAdmin() {
+  const list = document.getElementById('suggestionsList');
+  try {
+    const { data, error } = await supabaseClient.from('suggestions').select('*').order('created_at', { ascending: false }).limit(100);
+    if (error) { list.innerHTML = '<p class="empty-state">Could not load suggestions: ' + esc(error.message) + '</p>'; return; }
+    SUGS = data || [];
+    const n = SUGS.filter(x => x.status === 'new').length;
+    document.getElementById('sugHead').textContent = 'Trainer Suggestions' + (n ? ' (' + n + ' new)' : '');
+    if (!SUGS.length) { list.innerHTML = '<p class="empty-state">No suggestions yet.</p>'; return; }
+    list.innerHTML = SUGS.map(x => `
+      <div class="client-row" style="align-items:flex-start">
+        <div style="min-width:0">
+          <div class="client-name">${esc(x.from_name || 'A trainer')} ${x.status === 'new' ? '<span class="badge badge-green">New</span>' : ''}</div>
+          <div class="client-meta">${esc(new Date(x.created_at).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))}</div>
+          <div style="margin-top:.5rem;font-size:.9rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere">${esc(x.message)}</div>
+        </div>
+        <div class="client-actions">
+          ${x.status === 'new' ? `<button class="btn btn-sm btn-secondary" onclick="markSuggestionRead('${esc(x.id)}')">Mark read</button>` : ''}
+          <button class="btn btn-sm btn-secondary" onclick="deleteSuggestion('${esc(x.id)}')">Delete</button>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    list.innerHTML = '<p class="empty-state">Could not load suggestions.</p>';
+  }
+}
+async function markSuggestionRead(id) {
+  const { error } = await supabaseClient.from('suggestions').update({ status: 'read' }).eq('id', id);
+  if (error) { alert('Could not update: ' + error.message); return; }
+  loadSuggestionsAdmin();
+}
+async function deleteSuggestion(id) {
+  if (!confirm('Delete this suggestion? This cannot be undone.')) return;
+  const { error } = await supabaseClient.from('suggestions').delete().eq('id', id);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  loadSuggestionsAdmin();
+}
+
 // ---------------- ADD CLIENT FROM A QUIZ SUBMISSION ----------------
 let INTAKES = [];
 function addFromIntake(id) {
@@ -512,6 +556,7 @@ async function loadClients() {
 
   const list = document.getElementById('clientsList');
   loadIntakeList(clients);
+  loadSuggestionsAdmin();
   if (!clients || clients.length === 0) {
     list.innerHTML = '<p class="empty-state">No clients yet. Click Add Client to create your first one.</p>';
     return;
