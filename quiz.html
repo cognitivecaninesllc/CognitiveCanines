@@ -179,6 +179,14 @@ footer p{font-size:11px;letter-spacing:0.06em}
 .q-actions{display:flex;flex-direction:column;gap:.7rem;margin-top:1.4rem}
 #qContact{margin-bottom:.5rem}
 @media(min-width:600px){.q-actions{flex-direction:row}.q-nav .q-btn{flex:0 0 auto;min-width:140px}.q-nav{justify-content:space-between}.quiz-section{padding-top:4rem}}
+.cb{position:relative}
+.cb input{scroll-margin-top:90px}
+.cb-list{position:absolute;left:0;right:0;top:100%;z-index:30;max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;margin:2px 0 0;padding:0;list-style:none;background:var(--white);border:1px solid var(--accent2);border-radius:4px;box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.cb-list[hidden]{display:none}
+.cb-list li{padding:.75rem 1rem;min-height:44px;display:flex;align-items:center;font-size:.95rem;line-height:1.3;color:var(--ink);cursor:pointer;border-bottom:.5px solid var(--border)}
+.cb-list li:last-child{border-bottom:none}
+.cb-list li.on,.cb-list li:hover{background:var(--card-hover)}
+.cb-list li.cb-none{color:var(--muted);cursor:default;font-style:italic}
 </style>
 </head>
 <body>
@@ -241,8 +249,8 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <form id="qDogForm" hidden novalidate>
         <div class="form-group"><label for="qDog">Dog's Name</label><input type="text" id="qDog" maxlength="120" required></div>
         <div class="form-group"><label for="qBreedType">Purebred or mix?</label><select id="qBreedType" required><option value="">Select...</option><option>Purebred</option><option>Mixed breed</option></select></div>
-        <div class="form-group"><label for="qBreed" id="qBreedLbl">Breed</label><input type="text" id="qBreed" list="breedList" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Start typing a breed"><datalist id="breedList"></datalist></div>
-        <div class="form-group" id="qBreed2Wrap" hidden><label for="qBreed2">Another breed in the mix (optional)</label><input type="text" id="qBreed2" list="breedList" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Start typing a breed"></div>
+        <div class="form-group"><label for="qBreed" id="qBreedLbl">Breed</label><input type="text" id="qBreed" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
+        <div class="form-group" id="qBreed2Wrap" hidden><label for="qBreed2">Another breed in the mix (optional)</label><input type="text" id="qBreed2" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
         <div class="form-group"><label for="qSex">Sex</label><select id="qSex" required><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
         <div class="form-group"><label for="qFixed">Spayed / Neutered</label><select id="qFixed" required><option value="">Select...</option><option>Yes</option><option>No (intact)</option></select></div>
         <div class="form-group"><label for="qGoals">Tell us more about your goals and any concerns</label><textarea id="qGoals" required rows="4" maxlength="600" placeholder="What are you working toward? Any behaviors or concerns we should know about?"></textarea></div>
@@ -302,12 +310,70 @@ document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => 
 var SB_URL='https://mjgruhbmenjzjcrrwnyl.supabase.co/rest/v1/intake_results';
 var SB_KEY='sb_publishable_bJS9kA9KG1TT6L_o00TGxw_CB1_GQWa';
 var BREEDS=["Affenpinscher", "Afghan Hound", "Aidi", "Airedale Terrier", "Akbash Dog", "Akita", "Alaskan Klee Kai", "Alaskan Malamute", "Alentejo Mastiff", "Alpine Dachsbracke", "American Bulldog", "American Bully", "American English Coonhound", "American Eskimo Dog", "American Feist", "American Foxhound", "American Hairless Terrier", "American Leopard Hound", "American Pit Bull Terrier", "American Staffordshire Terrier", "American Water Spaniel", "Anatolian Shepherd", "Anglo-Francais de Petite Venerie", "Appenzeller", "Ariegeois", "Australian Cattle Dog", "Australian Kelpie", "Australian Shepherd", "Australian Terrier", "Austrian Black and Tan Hound", "Austrian Pinscher", "Azawakh", "Barak", "Barbet", "Basenji", "Basset Artesien Normand", "Basset Bleu de Gascogne", "Basset Fauve de Bretagne", "Basset Hound", "Bavarian Mountain Hound", "Beagle", "Beagle Harrier", "Bearded Collie", "Beauceron", "Bedlington Terrier", "Belgian Laekenois", "Belgian Malinois", "Belgian Sheepdog (Groenendael)", "Belgian Tervuren", "Bergamasco", "Berger Picard", "Bernese Mountain Dog", "Bichon Frise", "Biewer Terrier", "Billy", "Black and Tan Coonhound", "Black Forest Hound", "Black Mouth Cur", "Black Russian Terrier", "Bloodhound", "Bluetick Coonhound", "Bolognese", "Border Collie", "Border Terrier", "Borzoi", "Boston Terrier", "Bouvier des Ardennes", "Bouvier des Flandres", "Boxer", "Boykin Spaniel", "Bracco Italiano", "Braque D'Auvergne", "Braque de l'Ariege", "Braque du Bourbonnais", "Braque Francais, de Grande Taille", "Braque Francais, de Petite Taille", "Braque Saint Germain", "Briard", "Briquet Griffon Vendeen", "Brittany", "Brussels Griffon", "Bullmastiff", "Bull Terrier", "Ca de Bestiar", "Cairn Terrier", "Canaan Dog", "Canadian Eskimo Dog", "Cane Corso Italiano", "Cao de Castro Laboreiro", "Cardigan Welsh Corgi", "Carolina Dog", "Catalan Sheepdog", "Caucasian Ovcharka", "Cavalier King Charles Spaniel", "Central Asian Shepherd Dog", "Cesky Fousek", "Cesky Terrier", "Chart Polski", "Chesapeake Bay Retriever", "Chien d'Artois", "Chien Francais Blanc et Noir", "Chien Francais Tricolore", "Chihuahua", "Chinese Crested", "Chinese Shar-Pei", "Chinook", "Chow Chow", "Cimarron Uruguayo", "Ciobanesc Romanesc Carpatin", "Ciobanesc Romanesc Mioritic", "Cirneco dell'Etna", "Clumber Spaniel", "Cocker Spaniel", "Collie", "Coton de Tulear", "Croatian Sheepdog", "Curly-Coated Retriever", "Czechoslovakian Wolfdog", "Dachshund", "Dalmatian", "Dandie Dinmont Terrier", "Danish Broholmer", "Danish-Swedish Farmdog", "Deutsche Bracke", "Deutscher Wachtelhund", "Doberman Pinscher", "Dogo Argentino", "Dogue de Bordeaux", "Drentse Patrijshond", "Drever", "Dunker", "Dutch Shepherd", "Dutch Smoushond", "East Siberian Laika", "English Bulldog", "English Cocker Spaniel", "English Foxhound", "English Pointer", "English Setter", "English Shepherd", "English Springer Spaniel", "English Toy Spaniel", "Entlebucher Mountain Dog", "Epagneul Bleu de Picardie", "Epagneul Breton", "Epagneul de Pont-Audemer", "Epagneul Francais", "Epagneul Picard", "Estrela Mountain Dog", "Eurasier", "Field Spaniel", "Finnish Hound", "Finnish Lapphund", "Finnish Spitz", "Flat-Coated Retriever", "Francais Blanc et Orange", "French Bulldog", "Frisian Water Dog", "German Drahthaar", "German Long Haired Pointer", "German Pinscher", "German Rough Haired Pointer", "German Shepherd Dog", "German Shorthaired Pointer", "German Spitz", "German Wirehaired Pointer", "Giant Schnauzer", "Glen of Imaal Terrier", "Golden Retriever", "Gordon Setter", "Grand Basset Griffon Vendéen", "Grand Bleu de Gascogne", "Grand Gascon-Saintongeois", "Grand Griffon Vendeen", "Great Anglo-Francais Tricolor Hound", "Great Anglo-Francais White and Black Hound", "Great Anglo-Francais White and Orange Hound", "Great Dane", "Greater Swiss Mountain Dog", "Great Pyrenees", "Greenland Dog", "Greyhound", "Griffon Bleu de Gascogne", "Griffon Fauve de Bretagne", "Griffon Nivernais", "Haldenstover", "Hamiltonstovare", "Hanoverian Hound", "Harrier", "Havanese", "Hellenic Hound", "Hokkaido", "Hovawart", "Hungarian Greyhound", "Hygen Hound", "Ibizan Hound", "Icelandic Sheepdog", "Irish Red & White Setter", "Irish Setter", "Irish Terrier", "Irish Water Spaniel", "Irish Wolfhound", "Istrian Coarse-Haired Hound", "Istrian Short-Haired Hound", "Italian Greyhound", "Italian Hound", "Jack Russell Terrier", "Jagdterrier", "Japanese Akita", "Japanese Chin", "Japanese Spitz", "Japanese Terrier", "Jindo", "Kai", "Kangal Dog", "Karelian Bear Dog", "Karst Shepherd Dog", "Keeshond", "Kerry Blue Terrier", "Kishu", "Komondor", "Kooikerhondje", "Kromfohrlander", "Kuvasz", "Labrador Retriever", "Lagotto Romagnolo", "Lakeland Terrier", "Lancashire Heeler", "Lapinporokoira", "Large Munsterlander", "Leonberger", "Lhasa Apso", "Llewellin Setter", "Louisiana Catahoula Leopard Dog", "Löwchen", "Majorca Mastiff", "Maltese", "Manchester Terrier", "Maremma Sheepdog", "Mastiff", "Mi-Ki", "Miniature American Shepherd", "Miniature Bull Terrier", "Miniature Pinscher", "Miniature Schnauzer", "Montenegrin Mountain Hound", "Mountain Cur", "Mountain Feist", "Mudi", "Neapolitan Mastiff", "Newfoundland", "Norfolk Terrier", "Norrbottenspetz", "Norwegian Buhund", "Norwegian Elkhound", "Norwegian Lundehund", "Norwich Terrier", "Nova Scotia Duck Tolling Retriever", "Old Danish Pointing Dog", "Olde English Bulldogge", "Old English Sheepdog", "Otterhound", "Owczarek Podhalanski", "Papillon", "Parson Russell Terrier", "Patterdale Terrier", "Pekingese", "Pembroke Welsh Corgi", "Perdiguero de Burgos", "Perro de Presa Canario", "Peruvian Inca Orchid", "Petit Basset Griffon Vendéen", "Petit Bleu de Gascogne", "Petit Gascon-Saintongeois", "Pharaoh Hound", "Plott Hound", "Podenco Canario", "Poitevin", "Polish Hound", "Polish Lowland Sheepdog", "Polski Owczarek Nizinny", "Pomeranian", "Poodle (Miniature)", "Poodle (Standard)", "Poodle (Toy)", "Porcelaine", "Portuguese Podengo", "Portuguese Pointer", "Portuguese Sheepdog", "Portuguese Water Dog", "Posavaz Hound", "Pudelpointer", "Pug", "Puli", "Pumi", "Pyrenean Mastiff", "Pyrenean Shepherd", "Rat Terrier", "Redbone Coonhound", "Rhodesian Ridgeback", "Rottweiler", "Russell Terrier", "Russian-European Laika", "Russian Toy", "Russian Tsvetnaya Bolonka", "Saarloosewolfdog", "Saint Bernard", "Saluki", "Samoyed", "Sarplaninac", "Schapendoes", "Schiller Hound", "Schipperke", "Scottish Deerhound", "Scottish Terrier", "Sealyham Terrier", "Serbian Hound", "Serbian Tricolor Hound", "Shetland Sheepdog", "Shiba Inu", "Shih Tzu", "Shikoku", "Siberian Husky", "Silken Windhound", "Silky Terrier", "Skye Terrier", "Sloughi", "Slovak Cuvac", "Slovakian Wire-Haired Pointing Dog", "Smaland Hound", "Small Munsterlander", "Small Swiss Hound", "Smooth Fox Terrier", "Soft-Coated Wheaten Terrier", "South African Boerboel", "South Russian Shepherd Dog", "Spanish Greyhound", "Spanish Hound", "Spanish Mastiff", "Spanish Water Dog", "Spinone Italiano", "Sporting Lucas Terrier", "Stabyhoun", "Staffordshire Bull Terrier", "Standard Schnauzer", "Stephens' Cur", "Stumpy Tail Cattle Dog", "Styrian Coarse Haired Hound", "Sussex Spaniel", "Swedish Elkhound", "Swedish Lapphund", "Swedish Vallhund", "Swiss Hound", "Teddy Roosevelt Terrier", "Thai Ridgeback", "Tibetan Mastiff", "Tibetan Spaniel", "Tibetan Terrier", "Tornjak", "Tosa Ken", "Toy Fox Terrier", "Transylvanian Hound", "Treeing Cur", "Treeing Feist", "Treeing Tennessee Brindle", "Treeing Walker Coonhound", "Tyrolean Hound", "Vizsla", "Volpino Italiano", "Weimaraner", "Welsh Hound", "Welsh Springer Spaniel", "Welsh Terrier", "West Highland White Terrier", "Westphalian Dachsbracke", "West Siberian Laika", "Whippet", "White Shepherd", "Wire Fox Terrier", "Wirehaired Pointing Griffon", "Wirehaired Vizsla", "Xoloitzcuintli", "Yorkshire Terrier"];
+function makeCombo(id){
+  var inp=document.getElementById(id),list=document.createElement('ul'),active=-1,items=[],timer=null;
+  list.className='cb-list';list.id=id+'List';list.setAttribute('role','listbox');list.hidden=true;
+  inp.parentNode.classList.add('cb');inp.parentNode.appendChild(list);
+  inp.setAttribute('role','combobox');inp.setAttribute('aria-autocomplete','list');inp.setAttribute('aria-expanded','false');inp.setAttribute('aria-controls',list.id);
+  function close(){list.hidden=true;inp.setAttribute('aria-expanded','false');active=-1}
+  function pick(name){inp.value=name;close();inp.dispatchEvent(new Event('change'))}
+  function matches(){
+    var q=inp.value.trim().toLowerCase();
+    if(!q)return BREEDS.slice();
+    var a1=[],a2=[],a3=[];
+    BREEDS.forEach(function(b){
+      var l=b.toLowerCase();
+      if(l.indexOf(q)===0)a1.push(b);
+      else if(l.split(/[\s\-(),]+/).some(function(w){return w.indexOf(q)===0}))a2.push(b);
+      else if(l.indexOf(q)>-1)a3.push(b);
+    });
+    return a1.concat(a2,a3);
+  }
+  function open(){
+    items=matches();active=-1;list.innerHTML='';
+    if(!items.length){
+      var li=document.createElement('li');li.className='cb-none';li.textContent='No match. You can keep typing your own answer.';list.appendChild(li);
+    }else{
+      items.forEach(function(b,k){
+        var li=document.createElement('li');li.setAttribute('role','option');li.textContent=b;
+        li.addEventListener('mousedown',function(e){e.preventDefault()});
+        li.addEventListener('click',function(){pick(b)});
+        list.appendChild(li);
+      });
+    }
+    list.hidden=false;list.scrollTop=0;inp.setAttribute('aria-expanded','true');
+  }
+  function mark(k){
+    var lis=list.querySelectorAll('li');
+    if(active>-1&&lis[active])lis[active].classList.remove('on');
+    active=k;
+    if(k>-1&&lis[k]){lis[k].classList.add('on');lis[k].scrollIntoView({block:'nearest'})}
+  }
+  inp.addEventListener('focus',function(){
+    open();
+    setTimeout(function(){try{inp.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){}},250);
+  });
+  inp.addEventListener('click',function(){if(list.hidden)open()});
+  inp.addEventListener('input',open);
+  inp.addEventListener('keydown',function(e){
+    if(list.hidden&&(e.key==='ArrowDown'||e.key==='ArrowUp')){open();return}
+    if(e.key==='ArrowDown'){e.preventDefault();mark(Math.min(active+1,items.length-1))}
+    else if(e.key==='ArrowUp'){e.preventDefault();mark(Math.max(active-1,0))}
+    else if(e.key==='Enter'){if(!list.hidden&&active>-1&&items[active]){e.preventDefault();pick(items[active])}else{close()}}
+    else if(e.key==='Escape'||e.key==='Tab'){close()}
+  });
+  inp.addEventListener('blur',function(){
+    clearTimeout(timer);
+    timer=setTimeout(function(){
+      close();
+      var t=inp.value.trim().toLowerCase();
+      if(t){for(var k=0;k<BREEDS.length;k++){if(BREEDS[k].toLowerCase()===t){inp.value=BREEDS[k];break}}}
+    },220);
+  });
+  document.addEventListener('click',function(e){if(!inp.parentNode.contains(e.target))close()});
+}
 function fillBreeds(){
-  var dl=document.getElementById('breedList');
-  BREEDS.forEach(function(b){var o=document.createElement('option');o.value=b;dl.appendChild(o)});
-  function snap(){var t=this.value.trim().toLowerCase();if(!t)return;for(var k=0;k<BREEDS.length;k++){if(BREEDS[k].toLowerCase()===t){this.value=BREEDS[k];return}}}
-  document.getElementById('qBreed').addEventListener('change',snap);
-  document.getElementById('qBreed2').addEventListener('change',snap);
+  makeCombo('qBreed');makeCombo('qBreed2');
   document.getElementById('qBreedType').addEventListener('change',function(){
     var mix=this.value==='Mixed breed';
     document.getElementById('qBreed2Wrap').hidden=!mix;
