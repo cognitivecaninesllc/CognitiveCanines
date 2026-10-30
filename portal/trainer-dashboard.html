@@ -118,7 +118,10 @@ function render() {
         <div class="client-name">${esc(c.full_name)} ${c.access_status === 'paused' ? '<span class="badge badge-red">Paused</span>' : ''}</div>
         <div class="client-meta">${esc(c.dog_name || 'No dog listed')}${c.breed ? ' &middot; ' + esc(c.breed) : ''} &middot; ${esc(c.program_tier || 'No tier')}</div>
       </div>
-      <a href="admin-client.html?id=${encodeURIComponent(c.id)}" class="btn btn-sm btn-secondary" style="text-decoration:none;display:inline-block">Open</a>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <a href="admin-client.html?id=${encodeURIComponent(c.id)}" class="btn btn-sm btn-secondary" style="text-decoration:none;display:inline-block">Open</a>
+        <a href="dashboard.html?preview=${encodeURIComponent(c.id)}" class="btn btn-sm btn-secondary" style="text-decoration:none;display:inline-block">View portal</a>
+      </div>
     </div>`).join('');
 }
 
