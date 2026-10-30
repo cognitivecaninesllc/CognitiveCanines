@@ -144,6 +144,7 @@ body{font-family:var(--sans);color:var(--ink);background:var(--surface);min-heig
     <div id="addMsg" class="msg"></div>
     <div id="tempPassResult" style="display:none"></div>
     <form id="addClientForm">
+      <p id="extraDogsNote" class="client-meta" style="display:none;margin-bottom:.8rem"></p>
       <div class="form-group"><label>Full Name</label><input type="text" id="newName" required></div>
       <div class="form-group"><label>Email</label><input type="email" id="newEmail" required></div>
       <div class="form-group"><label>Dog's Name</label><input type="text" id="newDog"></div>
@@ -303,7 +304,7 @@ async function loadIntakeListInner(clients) {
     const sport = (a.sport === 'Curious' || a.sport === 'Training or competing');
     const consult = r.recommended_tier === 'Consultation first';
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
-    const detail = [['Age', a.dog_birthdate ? ageText(a.dog_birthdate) : a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals], ['Email to you', a.mail_status ? (a.mail_status === 'ok' ? 'Sent' : a.mail_status) : '']]
+    const detail = [['Age', a.dog_birthdate ? ageText(a.dog_birthdate) : a.age], ['Goal', a.goal], ['Behaviors', concerns], ['Seriousness', a.severity], ['Sport interest', a.sport], ['Support wanted', a.support], ['A \u201cgood dog\u201d to you', a.good_dog], ['Location', a.location], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Dogs in this inquiry', Number(a.dog_count) > 1 ? a.dog_count : ''], ['Other dogs', otherDogsText(a)], ['Goals and notes', a.goals], ['Email to you', a.mail_status ? (a.mail_status === 'ok' ? 'Sent' : a.mail_status) : '']]
       .filter(x => x[1]).map(x => `<div class="info-row"><span>${esc(x[0])}</span><span style="text-align:right;max-width:60%;overflow-wrap:anywhere">${esc(x[1])}</span></div>`).join('');
     const isNew = !seen.has(String(r.id));
     return `<details class="intake-item" ontoggle="if(this.open)markIntakeSeen('${esc(r.id)}',this)">
@@ -521,6 +522,33 @@ async function deleteSuggestion(id) {
 
 // ---------------- ADD CLIENT FROM A QUIZ SUBMISSION ----------------
 let INTAKES = [];
+function otherDogsText(a) {
+  const list = (a && Array.isArray(a.extra_dogs)) ? a.extra_dogs : [];
+  return list.map(e => (e.name || 'Dog') + ' (' + [e.breed, e.age, e.sex, e.fixed === 'Yes' ? 'Spayed/neutered' : (e.fixed ? 'Intact' : '')].filter(Boolean).join(', ') + ')').join('; ');
+}
+let PENDING_EXTRA_DOGS = [];
+async function addPendingDogs(email) {
+  const list = PENDING_EXTRA_DOGS.slice();
+  if (!list.length) return '';
+  try {
+    const { data: c } = await supabaseClient.from('clients').select('id').eq('email', String(email || '').trim().toLowerCase()).maybeSingle();
+    if (!c) return 'The client was created, but the other dogs could not be added. Add them from the client page.';
+    const rows = list.map(e => ({
+      client_id: c.id,
+      name: String(e.name || 'Dog').slice(0, 80),
+      breed: e.breed ? String(e.breed).slice(0, 80) : null,
+      dog_birthdate: /^\d{4}-\d{2}-\d{2}$/.test(e.dog_birthdate || '') ? e.dog_birthdate : null,
+      dog_sex: e.sex || null,
+      dog_fixed: e.fixed || null
+    }));
+    const { error } = await supabaseClient.from('client_dogs').insert(rows);
+    if (error) return 'The client was created, but the other dogs could not be added (' + error.message + '). Add them from the client page.';
+    return list.length === 1 ? '1 more dog was added to the account.' : list.length + ' more dogs were added to the account.';
+  } catch (e) {
+    return 'The client was created, but the other dogs could not be added. Add them from the client page.';
+  }
+}
+
 function addFromIntake(id) {
   const r = INTAKES.find(x => x.id === id); if (!r) return;
   const a = r.answers || {};
@@ -532,6 +560,9 @@ function addFromIntake(id) {
   document.getElementById('newBirth').value = a.dog_birthdate || '';
   document.getElementById('newSex').value = a.sex || '';
   document.getElementById('newFixed').value = a.fixed || '';
+  PENDING_EXTRA_DOGS = Array.isArray(a.extra_dogs) ? a.extra_dogs : [];
+  const note = document.getElementById('extraDogsNote');
+  if (PENDING_EXTRA_DOGS.length) { note.textContent = 'This quiz also listed ' + otherDogsText(a) + '. These will be added to the account when you create it.'; note.style.display = 'block'; }
   const t = r.recommended_tier;
   document.getElementById('newTier').value = (['Bronze','Silver','Gold','Platinum','Celestial'].indexOf(t) > -1) ? t : '';
 }
@@ -576,6 +607,8 @@ async function loadClients() {
 }
 
 function openAddClientModal() {
+  PENDING_EXTRA_DOGS = [];
+  const n0 = document.getElementById('extraDogsNote'); if (n0) n0.style.display = 'none';
   document.getElementById('addClientModal').style.display = 'flex';
   document.getElementById('tempPassResult').style.display = 'none';
   document.getElementById('addClientForm').style.display = 'block';
@@ -628,11 +661,13 @@ document.getElementById('addClientForm').addEventListener('submit', async (e) =>
       return;
     }
 
+    const extraMsg = await addPendingDogs(payload.email);
+    PENDING_EXTRA_DOGS = [];
     document.getElementById('addClientForm').style.display = 'none';
     const resultBox = document.getElementById('tempPassResult');
     resultBox.style.display = 'block';
     resultBox.innerHTML = `
-      <div class="msg success" style="display:block">Client created successfully.</div>
+      <div class="msg success" style="display:block">Client created successfully.${extraMsg ? '<br>' + esc(extraMsg) : ''}</div>
       <div class="temp-pass-box">
         Share these with your client so they can log in:<br><br>
         <strong>Email:</strong> ${esc(result.email)}<br>
