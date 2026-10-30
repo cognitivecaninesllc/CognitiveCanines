@@ -199,7 +199,7 @@ async function loadIntake(client) {
     const concerns = Array.isArray(a.concerns) ? a.concerns.join(', ') : '';
     const rows = [
       ['Dog\'s age', a.dog_birthdate ? ageText(a.dog_birthdate) : a.age], ['Main goal', a.goal], ['Behaviors', concerns],
-      ['Seriousness', a.severity], ['Support wanted', a.support], ['A “good dog” to you', a.good_dog], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Goals and notes', a.goals],
+      ['Seriousness', a.severity], ['Support wanted', a.support], ['A “good dog” to you', a.good_dog], ['Breed', a.breed], ['Sex', a.sex], ['Spayed / Neutered', a.fixed], ['Other dogs', (Array.isArray(a.extra_dogs) ? a.extra_dogs : []).map(e => (e.name || 'Dog') + (e.breed ? ' (' + e.breed + ')' : '')).join(', ')], ['Goals and notes', a.goals],
       ['Starting point', r.recommended_tier],
       ['Submitted', new Date(r.created_at).toLocaleDateString()]
     ].filter(x => x[1]);
