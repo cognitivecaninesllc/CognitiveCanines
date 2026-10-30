@@ -231,7 +231,8 @@ footer p{font-size:11px;letter-spacing:0.06em}
       <div id="qOpts" role="group" aria-labelledby="qTitle"></div>
 
       <div id="qDate" hidden>
-        <div class="form-group"><label for="qBirth">Your dog's birthday (or best estimate)</label><input type="date" id="qBirth"></div>
+        <div class="form-group"><label for="qBirth" id="qBirthLbl">Your dog's birthday (or best estimate)</label><input type="date" id="qBirth"></div>
+        <div id="qBirthX"></div>
         <p class="q-small" id="qAgeShow" style="text-align:left;margin-top:-.4rem"></p>
       </div>
 
@@ -260,7 +261,7 @@ footer p{font-size:11px;letter-spacing:0.06em}
 
       <form id="qDogX" hidden novalidate>
         <div class="form-group"><label for="qxName">Dog's Name</label><input type="text" id="qxName" maxlength="80"></div>
-        <div class="form-group"><label for="qxBirth">Birthday (or best estimate)</label><input type="date" id="qxBirth"></div>
+        <div class="form-group" id="qxBirthWrap" hidden><label for="qxBirth">Birthday (or best estimate)</label><input type="date" id="qxBirth"></div>
         <div class="form-group"><label for="qxType">Purebred or mix?</label><select id="qxType"><option value="">Select...</option><option>Purebred</option><option>Mixed breed</option></select></div>
         <div class="form-group"><label for="qxBreed" id="qxBreedLbl">Breed</label><input type="text" id="qxBreed" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
         <div class="form-group" id="qxBreed2Wrap" hidden><label for="qxBreed2">Another breed in the mix (optional)</label><input type="text" id="qxBreed2" maxlength="120" autocomplete="off" autocapitalize="words" placeholder="Tap or start typing a breed"></div>
@@ -488,11 +489,15 @@ function render(){
   $('qText').hidden=!s.text;
   $('qDate').hidden=!s.date;
   box.hidden=!!(s.form||s.text||s.date);
-  if(s.date){var t0=new Date(),mx=t0.toISOString().slice(0,10),mn=new Date(t0.getFullYear()-30,t0.getMonth(),t0.getDate()).toISOString().slice(0,10);$('qBirth').max=mx;$('qBirth').min=mn;$('qBirth').value=a.dog_birthdate||'';$('qAgeShow').textContent=a.dog_birthdate?('That makes your dog '+ageText(a.dog_birthdate)+' old.'):''}
+  if(s.date){var t0=new Date(),mx=t0.toISOString().slice(0,10),mn=new Date(t0.getFullYear()-30,t0.getMonth(),t0.getDate()).toISOString().slice(0,10);$('qBirth').max=mx;$('qBirth').min=mn;$('qBirth').value=a.dog_birthdate||'';$('qAgeShow').textContent=a.dog_birthdate?('That makes your dog '+ageText(a.dog_birthdate)+' old.'):'';
+    var nd=dogCount(),bx=$('qBirthX'),eb=a.extra_births||[];bx.innerHTML='';
+    $('qBirthLbl').textContent=nd>1?'Dog 1 (the dog who needs the most help): birthday or best estimate':'Your dog\'s birthday (or best estimate)';
+    for(var d=2;d<=nd;d++){var g=document.createElement('div');g.className='form-group';var lb=document.createElement('label');lb.htmlFor='qBirthX'+d;lb.textContent='Dog '+d+': birthday or best estimate';var inp=document.createElement('input');inp.type='date';inp.id='qBirthX'+d;inp.max=mx;inp.min=mn;inp.value=eb[d-2]||'';g.appendChild(lb);g.appendChild(inp);bx.appendChild(g)}}
   if(s.form==='qDogX'){
     var mn2=new Date(new Date().getFullYear()-30,new Date().getMonth(),new Date().getDate()).toISOString().slice(0,10);
     $('qxBirth').max=new Date().toISOString().slice(0,10);$('qxBirth').min=mn2;
     fillX(extras[s.n-2]||{});
+    $('qxBirth').value=(a.extra_births||[])[s.n-2]||$('qxBirth').value;
   }
   if(s.text){$('qGood').value=a.good_dog||'';$('qGoodCount').textContent=$('qGood').value.length+' / 500'}
   if(!s.form&&!s.text&&!s.date){
@@ -526,7 +531,7 @@ $('qGood').addEventListener('input',function(){$('qGoodCount').textContent=this.
 $('backBtn').onclick=function(){
   if(saving||i===0)return;
   if(steps[i].text){a.good_dog=v('qGood').slice(0,500)}
-  if(steps[i].date&&$('qBirth').value){a.dog_birthdate=$('qBirth').value}
+  if(steps[i].date){if($('qBirth').value)a.dog_birthdate=$('qBirth').value;var nb=dogCount(),ebk=[];for(var d=2;d<=nb;d++){var xe=$('qBirthX'+d);ebk.push(xe?xe.value:'')}a.extra_births=ebk}
   if(steps[i].form==='qDogX'){extras[steps[i].n-2]=readX()}
   go(i-1);
 };
@@ -537,6 +542,12 @@ $('nextBtn').onclick=function(){
     var bd=$('qBirth').value;
     if(!bd||!ageText(bd)){$('qErr').textContent='Please enter your dog\'s birthday (a best estimate is fine).';return}
     if(bd<$('qBirth').min){$('qErr').textContent='That date looks too far back. Please check it.';return}
+    var nd2=dogCount(),eb2=[];
+    for(var d=2;d<=nd2;d++){var bv=$('qBirthX'+d).value;
+      if(!bv||!ageText(bv)){$('qErr').textContent='Please enter the birthday for dog '+d+' (a best estimate is fine).';return}
+      if(bv<$('qBirth').min){$('qErr').textContent='That date looks too far back. Please check it.';return}
+      eb2.push(bv)}
+    a.extra_births=eb2;
     a.dog_birthdate=bd;a.age=ageText(bd);go(i+1);return;
   }
   if(s.text){a.good_dog=v('qGood').slice(0,500);go(i+1);return}
@@ -594,6 +605,7 @@ function submit(){
   var finalExtras=[];
   for(var q=0;q<dogCount()-1;q++){if(extras[q])finalExtras.push(extraFinal(extras[q]))}
   var all=Object.assign({},a,{dog_count:dogCount(),location:me.location,breed:breed,breed_type:$('qBreedType').value,sex:sex,fixed:fixed,goals:goals});
+  delete all.extra_births;
   if(finalExtras.length)all.extra_dogs=finalExtras;
   var row={full_name:me.name,email:me.email,dog_name:dogName,answers:all,recommended_tier:tierLabel};
   var fd=new FormData();
